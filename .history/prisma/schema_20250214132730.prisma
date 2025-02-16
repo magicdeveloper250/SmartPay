@@ -1,0 +1,344 @@
+datasource db {
+  provider          = "mongodb"
+  url               = env("DATABASE_URL")
+  shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+  previewFeatures = ["tracing"]
+}
+
+model PredefinedTax {
+  id   String @id @default(auto()) @map("_id") @db.ObjectId
+  rate Float
+  name String @unique
+  min      Float 
+  max      Float?  
+  companyId String @db.ObjectId
+  company           Company   @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  taxPaid TaxPaid[]
+  appliedTaxes AppliedTax[]
+  additionalIncomes AdditionalIncome[]
+}
+
+model AppliedTax {
+  id   String @id @default(auto()) @map("_id") @db.ObjectId
+  employeeId String?  @db.ObjectId
+  employee    Employee?  @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+  contractorId String?  @db.ObjectId
+  contractor    Contractor?  @relation(fields: [contractorId], references: [id], onDelete: Cascade)
+  taxId       String  @db.ObjectId
+  tax         PredefinedTax  @relation(fields: [taxId], references: [id], onDelete: Cascade)
+}
+
+model Company {
+  id                 String     @id @default(auto()) @map("_id") @db.ObjectId
+  name               String
+  email              String     @unique
+  pensionCode        String
+  adminName          String
+  adminEmail         String     @unique
+  password           String
+  country            String
+  city               String
+  industry           String
+  onBoardingFinished Boolean?   @default(true)
+  employees          Employee[]
+  contractors        Contractor[]
+  contractTerms     ContractTerms[]
+  Benefits          Benefit[]
+  predefinedTaxes    PredefinedTax[]
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+}
+
+model Session {
+  id           String   @id @default(auto()) @map("_id") @db.ObjectId
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model User {
+  id                    String    @id @default(cuid()) @map("_id")
+  name                  String?
+  email                 String?   @unique
+  emailVerified         DateTime?
+  image                 String?
+  password              String?
+  passwordResetToken    String?   @unique
+  passwordResetTokenExp DateTime?
+  sessions              Session[]
+}
+
+model VerificationToken {
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+model Employee {
+  id                String    @id @default(auto()) @map("_id") @db.ObjectId
+  firstName         String
+  secondName        String
+  email             String    @unique   
+  phoneNumber       String    @unique  
+  address           String    
+  employeeID        String    @unique
+  nationalID        String    @unique
+  startDate         DateTime  
+  department        String
+  jobTitle          String
+  currency          Currency
+  paymentMethod     PaymentMethod @default(phone)
+  paymentPhone      String?
+  monthlyGross      Float
+  bankName          String?
+  bankAccountNumber String?    @unique
+  swiftCode         String?
+  Domicile          String?
+  walletAddress     String?   
+  companyId         String    @db.ObjectId
+  company           Company   @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  createdAt         DateTime  @default(now()) 
+  updatedAt         DateTime  @updatedAt
+  benefits          EmployeeBenefit[]
+  salaries          EmployeeSalaryPayment[]
+  taxes             TaxPaid[]
+  appliedTaxes      AppliedTax[]
+  additionalIncomes AdditionalIncome[]
+  deductions        Deduction[]
+}
+
+model Contractor {
+  id                String  @id @default(auto()) @map("_id") @db.ObjectId
+  firstName         String
+  secondName        String
+  email             String  @unique
+  phoneNumber       String  @unique
+  address           String
+  contractorID        String  @unique
+  nationalID        String  @unique
+  department        String
+  jobTitle          String
+  currency          Currency 
+  paymentMethod     PaymentMethod @default(phone)
+  paymentPhone      String?
+  bankName          String?
+  bankAccountNumber String?  @unique
+  swiftCode         String?
+  Domicile          String?
+  walletAddress     String?  @unique
+  companyId         String  @db.ObjectId
+  company           Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  contractsTerms    ContractTerms[]
+  benefits          ContractorBenefit[]
+  salaries          ContractorSalaryPayment[]
+  appliedTaxes      AppliedTax[]
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+}
+
+model ContractTerms {
+  id                String  @id @default(auto()) @map("_id") @db.ObjectId
+  companyId         String  @db.ObjectId
+  company           Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  contractorId      String @db.ObjectId
+  contractor        Contractor @relation(fields: [contractorId], references: [id], onDelete: Cascade)
+  salary            Float
+  startDate         DateTime
+  endDate           DateTime
+  notes             String?
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+}
+
+model Benefit {
+  id       String  @id @default(auto()) @map("_id") @db.ObjectId
+  name     BenefitName
+  details  String?  
+  companyId         String  @db.ObjectId
+  company           Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+}
+
+model EmployeeBenefit {
+  id          String  @id @default(auto()) @map("_id") @db.ObjectId
+  employeeId  String  @db.ObjectId
+  benefit   String  
+  employee    Employee  @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+  
+}
+
+model ContractorBenefit {
+  id          String  @id @default(auto()) @map("_id") @db.ObjectId
+  contractorId  String  @db.ObjectId
+  contractor    Contractor  @relation(fields: [contractorId], references: [id], onDelete: Cascade)
+  benefit      String
+}
+
+model EmployeeSalaryPayment {
+  id          String  @id @default(auto()) @map("_id") @db.ObjectId
+  employeeId  String  @db.ObjectId
+  grossSalary  Float
+  netSalary    Float
+  salaryPeriod DateTime
+  employee    Employee  @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+}
+
+model ContractorSalaryPayment {
+  id          String  @id @default(auto()) @map("_id") @db.ObjectId
+  employeeId  String  @db.ObjectId
+  grossSalary  Float
+  netSalary    Float
+  salaryPeriod DateTime
+  contractor    Contractor @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+}
+
+model TaxPaid {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  type        TaxType  
+  taxId       String    @db.ObjectId
+  tax         PredefinedTax @relation(fields: [taxId], references: [id])
+  amount      Float    
+  year        Int       
+  month       Int       
+  employeeId  String    @db.ObjectId
+  employee    Employee @relation(fields: [employeeId], references: [id])
+  paid        Boolean  @default(false)  
+  paymentDate DateTime?  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Payroll {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  exported    Boolean @default(false)
+  file        String?
+  amount      Float    
+  status      PayrollStatus
+  paymentDate DateTime?  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  additionalIncomes AdditionalIncome[]
+}
+
+
+model AdditionalIncome {
+  id                  String   @id @default(auto()) @map("_id") @db.ObjectId
+  employee_id         String   @db.ObjectId
+  amount              Float
+  effective_date      DateTime
+  description        String?
+  income_type         IncomeType
+  payment_status      PaymentStatus @default(Pending)
+  payment_date       DateTime?
+  currency           String   @default("USD")
+  payroll_id          String? @db.ObjectId
+  created_at         DateTime @default(now())
+  updated_at         DateTime @updatedAt
+  is_taxable          Boolean @default(true)
+  tax_id              String?  @db.ObjectId
+  employee           Employee @relation(fields: [employee_id], references: [id])
+  tax                PredefinedTax?  @relation(fields: [tax_id], references: [id], onDelete: Cascade)
+  payroll            Payroll?        @relation(fields: [payroll_id], references: [id], onDelete: Cascade)
+
+  @@index([employee_id])
+  @@index([effective_date])
+  @@index([payment_status])
+}
+
+
+model Deduction {
+  id                  String   @id @default(auto()) @map("_id") @db.ObjectId
+  employee_id         String   @db.ObjectId
+  amount              Float
+  reason              String   @db.ObjectId
+  status              PaymentStatus
+  employee           Employee @relation(fields: [employee_id], references: [id])
+  created_at         DateTime @default(now())
+  updated_at         DateTime @updatedAt
+
+}
+
+
+enum PayrollStatus{
+  DRAFT
+  PENDING
+  PROCESSING
+  PAID
+}
+
+enum IncomeType {
+  Bonus
+  Commission
+  Overtime
+  Allowance
+  Reimbursement
+  Adjustment
+}
+
+enum PaymentStatus {
+  Pending
+  Paid
+  Cancelled
+  Failed
+}
+
+ 
+
+enum Currency {
+  USD
+  EUR
+  GBP
+  JPY
+  AUD
+  CAD
+  CHF
+  CNY
+  HKD
+  NZD
+  SEK
+  KRW
+  SGD
+  NOK
+  MXN
+  INR
+  RUB
+  ZAR
+  BRL
+  AED
+}
+
+enum TaxType {
+  PAYE
+  SocialSecurity
+  Insurance
+  Other
+}
+
+enum BenefitName {
+  WORKING_HOURS_AND_TIME_OFF
+  SKILLS_DEVELOPMENT
+  FOOD_AND_BEVERAGE
+  GIFTS_AND_ACTIVITIES
+  HEALTH_CARE
+  WELLNESS
+  RETIREMENT_AND_PENSION_PLANS
+  INSURANCES
+  FINANCIAL_GROWTH_BENEFITS
+  PERSONAL_FINANCE_BENEFITS
+  MOBILITY_AND_OFFICE_SETUP
+  WORKLIFE_BALANCE
+}
+
+enum PaymentMethod {
+  bank
+  crypto
+  phone
+}
+

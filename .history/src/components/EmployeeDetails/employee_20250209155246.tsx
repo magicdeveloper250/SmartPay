@@ -1,0 +1,52 @@
+import React from 'react'
+import { Plus, PencilIcon } from "lucide-react";
+import { Employee,EmployeeBenefit, Tax } from '@prisma/client';
+export default function employee({employee, benefits, taxes}:{employee:Employee, benefits:EmployeeBenefit[], taxes:Tax[]}) {
+  return ( <div className="w-full max-w-7xl mx-auto bg-white rounded-lg shadow-lg p-4">
+  <div className="w-full flex justify-between items-center mb-3">
+  <h2 className="text-lg font-semibold mb-4">Personal Information</h2>
+  <button><PencilIcon className="w-5 h-5" /></button>
+
+  </div>
+ 
+  <div className="w-full grid grid-cols-2 md:grid-cols-2 gap-3 mb-3">
+    <span className="font-medium">ID:</span>
+    <span className="text-gray-600">{employee.id}</span>
+    <span className="font-medium">First name:</span>
+    <span className="text-gray-600">{employee.firstName}</span>
+    <span className="font-medium">Second name:</span>
+    <span className="text-gray-600">{employee.secondName}</span>
+    <span className="font-medium">Phone:</span>
+    <span className="text-gray-600">{employee.phoneNumber}</span>
+  </div>
+  
+    <div>
+      <div className="w-full flex justify-between items-center mb-3">
+        <h2 className="text-lg font-semibold">Benefits</h2>
+        <button><Plus className="w-5 h-5" /></button>
+      </div>
+  {benefits.length > 0 && (
+      <ul className="list-disc pl-5 text-gray-600">
+        {benefits.map((benefit, index) => (
+          <li key={index}>{benefit.benefitId}</li>
+        ))}
+      </ul>
+  )}
+    </div>
+  
+    <div className="mt-4">
+      <div className="w-full flex justify-between items-center mb-3">
+        <h2 className="text-lg font-semibold">Taxes</h2>
+        <button><Plus className="w-5 h-5" /></button>
+      </div>
+  {taxes.length > 0 && (
+      <ul className="list-disc pl-5 text-gray-600">
+        {taxes.map((tax, index) => (
+          <li key={index}>{tax.type}</li>
+        ))}
+      </ul>
+  )}
+    </div>
+</div>
+);
+}

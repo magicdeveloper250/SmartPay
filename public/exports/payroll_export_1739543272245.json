@@ -1,0 +1,236 @@
+[
+  {
+    "id": "67a6cafbdeef890a59070ac9",
+    "name": "Tamara Guerrero",
+    "basicSalary": 7663.47,
+    "fringeBenefits": [],
+    "additions": [],
+    "taxes": [],
+    "otherExpenses": [],
+    "netSalary": 7663.47
+  },
+  {
+    "id": "67a6cafbdeef890a59070aca",
+    "name": "Garrett Diaz",
+    "basicSalary": 100000.33,
+    "fringeBenefits": [
+      "RETIREMENT_AND_PENSION_PLANS",
+      "SKILLS_DEVELOPMENT"
+    ],
+    "additions": [
+      {
+        "id": "67af4e0b222163bd074cf6d1",
+        "type": "Overtime",
+        "amount": 10000
+      }
+    ],
+    "taxes": [
+      {
+        "id": "67ab228c7ac1b70bf6c730f9",
+        "employeeId": "67a6cafbdeef890a59070aca",
+        "contractorId": null,
+        "taxId": "64e8d812a9c1b4e5f3d2a9c3",
+        "tax": {
+          "id": "64e8d812a9c1b4e5f3d2a9c3",
+          "rate": 0.3,
+          "name": "PAYE C",
+          "min": 100000,
+          "max": null,
+          "companyId": "67a4bae38b34ca49afe715c9"
+        }
+      },
+      {
+        "id": "67ab22e57ac1b70bf6c730fa",
+        "employeeId": "67a6cafbdeef890a59070aca",
+        "contractorId": null,
+        "taxId": "67a938dece871e32e8e81170",
+        "tax": {
+          "id": "67a938dece871e32e8e81170",
+          "rate": 0.08,
+          "name": "BRD",
+          "min": 0,
+          "max": null,
+          "companyId": "67a4bae38b34ca49afe715c9"
+        }
+      }
+    ],
+    "otherExpenses": [
+      {
+        "id": "67af3ad053e729f61fded2ce",
+        "employee_id": "67a6cafbdeef890a59070aca",
+        "amount": 9000,
+        "reason": "kuurya",
+        "status": "Pending",
+        "created_at": "2025-02-14T12:45:04.393Z",
+        "updated_at": "2025-02-14T13:57:50.758Z"
+      }
+    ],
+    "netSalary": 63000.204600000005
+  },
+  {
+    "id": "67a6cafbdeef890a59070acb",
+    "name": "Stephanie Porter",
+    "basicSalary": 5500.15,
+    "fringeBenefits": [
+      "WELLNESS"
+    ],
+    "additions": [
+      {
+        "id": "67aef718431612becd5627ff",
+        "type": "Overtime",
+        "amount": 7000
+      },
+      {
+        "id": "67aef733431612becd562800",
+        "type": "Commission",
+        "amount": 5000
+      }
+    ],
+    "taxes": [
+      {
+        "id": "67ab6c4cf45f0cfb78bb2b99",
+        "employeeId": "67a6cafbdeef890a59070acb",
+        "contractorId": null,
+        "taxId": "64e8d7f3a9c1b4e5f3d2a9c1",
+        "tax": {
+          "id": "64e8d7f3a9c1b4e5f3d2a9c1",
+          "rate": 0,
+          "name": "PAYE A",
+          "min": 0,
+          "max": 60000,
+          "companyId": "67a4bae38b34ca49afe715c9"
+        }
+      },
+      {
+        "id": "67adfa54b220404b246a5b9d",
+        "employeeId": "67a6cafbdeef890a59070acb",
+        "contractorId": null,
+        "taxId": "67a938dece871e32e8e81170",
+        "tax": {
+          "id": "67a938dece871e32e8e81170",
+          "rate": 0.08,
+          "name": "BRD",
+          "min": 0,
+          "max": null,
+          "companyId": "67a4bae38b34ca49afe715c9"
+        }
+      }
+    ],
+    "otherExpenses": [
+      {
+        "id": "67af394553e729f61fded2cc",
+        "employee_id": "67a6cafbdeef890a59070acb",
+        "amount": 6000,
+        "reason": "Coming late",
+        "status": "Pending",
+        "created_at": "2025-02-14T12:38:28.931Z",
+        "updated_at": "2025-02-14T12:38:28.931Z"
+      }
+    ],
+    "netSalary": 11060.137999999999
+  },
+  {
+    "id": "67a6cafbdeef890a59070acc",
+    "name": "Heidi Navarro",
+    "basicSalary": 50000.1,
+    "fringeBenefits": [],
+    "additions": [],
+    "taxes": [],
+    "otherExpenses": [],
+    "netSalary": 50000.1
+  },
+  {
+    "id": "67a6cafbdeef890a59070acd",
+    "name": "Harry Frost",
+    "basicSalary": 1000000.84,
+    "fringeBenefits": [
+      "PERSONAL_FINANCE_BENEFITS",
+      "FINANCIAL_GROWTH_BENEFITS",
+      "RETIREMENT_AND_PENSION_PLANS",
+      "FOOD_AND_BEVERAGE"
+    ],
+    "additions": [],
+    "taxes": [
+      {
+        "id": "67ab25e87ac1b70bf6c73107",
+        "employeeId": "67a6cafbdeef890a59070acd",
+        "contractorId": null,
+        "taxId": "67a938dece871e32e8e81170",
+        "tax": {
+          "id": "67a938dece871e32e8e81170",
+          "rate": 0.08,
+          "name": "BRD",
+          "min": 0,
+          "max": null,
+          "companyId": "67a4bae38b34ca49afe715c9"
+        }
+      },
+      {
+        "id": "67ab26147ac1b70bf6c73108",
+        "employeeId": "67a6cafbdeef890a59070acd",
+        "contractorId": null,
+        "taxId": "64e8d812a9c1b4e5f3d2a9c3",
+        "tax": {
+          "id": "64e8d812a9c1b4e5f3d2a9c3",
+          "rate": 0.3,
+          "name": "PAYE C",
+          "min": 100000,
+          "max": null,
+          "companyId": "67a4bae38b34ca49afe715c9"
+        }
+      }
+    ],
+    "otherExpenses": [],
+    "netSalary": 620000.5208
+  },
+  {
+    "id": "67a6cafbdeef890a59070ace",
+    "name": "Stephanie Ward",
+    "basicSalary": 5094.57,
+    "fringeBenefits": [],
+    "additions": [],
+    "taxes": [],
+    "otherExpenses": [],
+    "netSalary": 5094.57
+  },
+  {
+    "id": "67a6cafbdeef890a59070acf",
+    "name": "David Haney",
+    "basicSalary": 9240.38,
+    "fringeBenefits": [],
+    "additions": [],
+    "taxes": [],
+    "otherExpenses": [],
+    "netSalary": 9240.38
+  },
+  {
+    "id": "67a6cafbdeef890a59070ad0",
+    "name": "Jennifer Olson",
+    "basicSalary": 7891.21,
+    "fringeBenefits": [],
+    "additions": [],
+    "taxes": [],
+    "otherExpenses": [],
+    "netSalary": 7891.21
+  },
+  {
+    "id": "67a6cafbdeef890a59070ad1",
+    "name": "Joseph Smith",
+    "basicSalary": 4263.32,
+    "fringeBenefits": [],
+    "additions": [],
+    "taxes": [],
+    "otherExpenses": [],
+    "netSalary": 4263.32
+  },
+  {
+    "id": "67a6cafbdeef890a59070ad2",
+    "name": "Angela Riley",
+    "basicSalary": 5894.07,
+    "fringeBenefits": [],
+    "additions": [],
+    "taxes": [],
+    "otherExpenses": [],
+    "netSalary": 5894.07
+  }
+]

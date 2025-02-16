@@ -1,0 +1,137 @@
+[
+  {
+    "id": "67a6cafbdeef890a59070ac9",
+    "name": "Tamara Guerrero",
+    "basicSalary": 7663.47,
+    "fringeBenefits": [],
+    "additions": [],
+    "taxes": [],
+    "otherExpenses": [],
+    "netSalary": 7663.47
+  },
+  {
+    "id": "67a6cafbdeef890a59070aca",
+    "name": "Garrett Diaz",
+    "basicSalary": 100000.33,
+    "fringeBenefits": [
+      "RETIREMENT_AND_PENSION_PLANS"
+    ],
+    "additions": [],
+    "taxes": [
+      {
+        "name": "PAYE C",
+        "rate": "30.0%",
+        "amount": 30000.099
+      },
+      {
+        "name": "BRD",
+        "rate": "8.0%",
+        "amount": 8000.026400000001
+      }
+    ],
+    "otherExpenses": [],
+    "netSalary": 62000.204600000005
+  },
+  {
+    "id": "67a6cafbdeef890a59070acb",
+    "name": "Stephanie Porter",
+    "basicSalary": 5500.15,
+    "fringeBenefits": [],
+    "additions": [],
+    "taxes": [
+      {
+        "name": "PAYE A",
+        "rate": "0.0%",
+        "amount": 0
+      }
+    ],
+    "otherExpenses": [],
+    "netSalary": 5500.15
+  },
+  {
+    "id": "67a6cafbdeef890a59070acc",
+    "name": "Heidi Navarro",
+    "basicSalary": 50000.1,
+    "fringeBenefits": [],
+    "additions": [],
+    "taxes": [],
+    "otherExpenses": [],
+    "netSalary": 50000.1
+  },
+  {
+    "id": "67a6cafbdeef890a59070acd",
+    "name": "Harry Frost",
+    "basicSalary": 1000000.84,
+    "fringeBenefits": [
+      "PERSONAL_FINANCE_BENEFITS",
+      "FINANCIAL_GROWTH_BENEFITS",
+      "RETIREMENT_AND_PENSION_PLANS",
+      "FOOD_AND_BEVERAGE"
+    ],
+    "additions": [],
+    "taxes": [
+      {
+        "name": "BRD",
+        "rate": "8.0%",
+        "amount": 80000.0672
+      },
+      {
+        "name": "PAYE C",
+        "rate": "30.0%",
+        "amount": 300000.252
+      }
+    ],
+    "otherExpenses": [],
+    "netSalary": 620000.5208
+  },
+  {
+    "id": "67a6cafbdeef890a59070ace",
+    "name": "Stephanie Ward",
+    "basicSalary": 5094.57,
+    "fringeBenefits": [],
+    "additions": [],
+    "taxes": [],
+    "otherExpenses": [],
+    "netSalary": 5094.57
+  },
+  {
+    "id": "67a6cafbdeef890a59070acf",
+    "name": "David Haney",
+    "basicSalary": 9240.38,
+    "fringeBenefits": [],
+    "additions": [],
+    "taxes": [],
+    "otherExpenses": [],
+    "netSalary": 9240.38
+  },
+  {
+    "id": "67a6cafbdeef890a59070ad0",
+    "name": "Jennifer Olson",
+    "basicSalary": 7891.21,
+    "fringeBenefits": [],
+    "additions": [],
+    "taxes": [],
+    "otherExpenses": [],
+    "netSalary": 7891.21
+  },
+  {
+    "id": "67a6cafbdeef890a59070ad1",
+    "name": "Joseph Smith",
+    "basicSalary": 4263.32,
+    "fringeBenefits": [],
+    "additions": [],
+    "taxes": [],
+    "otherExpenses": [],
+    "netSalary": 4263.32
+  },
+  {
+    "id": "67a6cafbdeef890a59070ad2",
+    "name": "Angela Riley",
+    "basicSalary": 5894.07,
+    "fringeBenefits": [],
+    "additions": [],
+    "taxes": [],
+    "otherExpenses": [],
+    "netSalary": 5894.07
+  }
+]

@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 120">
+  <!-- Circle with S -->
+  <circle cx="60" cy="60" r="60" fill="#3758F9"/>
+  <path d="M45 35C45 35 55 35 65 35C75 35 85 40 85 50C85 60 75 65 65 65L55 65C45 65 35 70 35 80C35 90 45 95 55 95L75 95" 
+        stroke="white" 
+        stroke-width="12" 
+        fill="none" 
+        stroke-linecap="round"/>
+  
+  <!-- SAWAPAY text -->
+  <text x="140" y="80" 
+        font-family="Arial, sans-serif" 
+        font-size="72" 
+        font-weight="bold" 
+        fill="#1A1A2E">
+    SAWAPAY
+  </text>
+  
+  <!-- 2.0 text -->
+  <text x="140" y="105" 
+        font-family="Arial, sans-serif" 
+        font-size="24" 
+        font-weight="bold" 
+        fill="#3758F9">
+    2.0
+  </text>
+</svg>

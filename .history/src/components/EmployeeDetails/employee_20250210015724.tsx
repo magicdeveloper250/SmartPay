@@ -1,0 +1,237 @@
+"use client"
+import React, {  useEffect, useState, useTransition } from 'react';
+import { Plus, PencilIcon, MinusIcon, Check, Loader} from "lucide-react";
+import { Employee, EmployeeBenefit, AppliedTax, PredefinedTax } from '@prisma/client';
+import toast from 'react-hot-toast';
+import { addEmployeeBenefit, addEmployeeTax, deleteEmployeeBenefit, deleteEmployeeTax } from '@/actions/employeeActions';
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { employeeSchema, employeeSchemaType } from "@/validations/employeeSchema";
+import type { BankType } from "@/types/bankType";
+import { createEmployee } from "@/actions/employeeActions";
+import Link from 'next/link';
+
+export default function EmployeeDisplay({ employee, benefits, taxes }: { employee: Employee, benefits: EmployeeBenefit[], taxes: AppliedTax[] }) {
+ 
+  const [AllBenefits, setBenefits] = useState<string[]>([]);
+  const [showBenefits, setShowBenefits] = useState<Boolean>(false);
+  const [showTaxes, setShowTaxes] = useState<Boolean>(false);
+  const [AllTaxes, setTaxes] = useState<PredefinedTax[]>([]);
+  const [isEditing, setIsEditing] = useState(false);
+  const[isAddingBenefit, startAdddingBenefitTransition]= useTransition()
+  const[isDeletingBenefit, startDeletingBenefitTransition]= useTransition() 
+  const[isAddingTax, startAdddingTaxTransition]= useTransition()
+
+  const[isDeletingTax, startDeletingTaxTransition]= useTransition() 
+ 
+  const [formData, setFormData] = useState({
+    firstName: employee.firstName,
+    secondName: employee.secondName,
+    phoneNumber: employee.phoneNumber
+  });
+ 
+  const getBenefits = async () => {
+    try {
+      const resp = await fetch("/api/benefit");
+      const data = await resp.json();
+      setBenefits(data);
+    } catch (error) {
+      toast.error("Unable to fetch benefits");
+    }
+  };
+
+  const getTaxes = async () => {
+    try {
+      const resp = await fetch("/api/tax");
+      const data = await resp.json();
+      setTaxes(data.taxes);
+    } catch (error) {
+      toast.error("Unable to fetch taxes");
+    }
+  };
+
+ 
+
+  
+
+  const handleAddingBenefit= (employeeId:string, benefit:string)=>{
+    startAdddingBenefitTransition(async()=>{
+      const response= await addEmployeeBenefit(employeeId, benefit)
+    })
+  }
+
+
+  const handleDeletingBenefit= (id:string, employeeId:string, benefit:string)=>{
+    startDeletingBenefitTransition(async()=>{
+      const response= await deleteEmployeeBenefit(id, employeeId, benefit)
+    })
+  }
+
+
+  const handleAddingTax= (employeeId:string, taxId:string)=>{
+    startAdddingTaxTransition(async()=>{
+      const response= await addEmployeeTax( employeeId, taxId)
+    })
+  }
+
+
+  const handleDeletingTax= (id:string, employeeId:string,)=>{
+    startDeletingTaxTransition(async()=>{
+      const response= await deleteEmployeeTax(id, employeeId)
+    })
+  }
+
+ 
+
+
+
+
+  return (
+    <div className="w-full max-w-7xl mx-auto bg-white rounded-lg shadow-lg p-6 transform transition-all hover:shadow-2xl">
+      <div className="w-full flex justify-between items-center mb-6">
+        <h2 className="text-2xl font-bold text-gray-800">Personal Information</h2>
+        <Link
+          href={`/employee/interna/${employee.id}/edit`}
+          className="p-2 rounded-full bg-blue-100 hover:bg-blue-200 transition-colors"
+        >
+          <PencilIcon className="w-5 h-5 text-blue-600" />
+        </Link>
+      </div>
+
+      
+        <div className="w-full grid grid-cols-2 md:grid-cols-2 gap-4 mb-6">
+          <span className="font-medium text-gray-700">ID:</span>
+          <span className="text-gray-600">{employee.id}</span>
+          <span className="font-medium text-gray-700">First name:</span>
+          <span className="text-gray-600">{employee.firstName}</span>
+          <span className="font-medium text-gray-700">Second name:</span>
+          <span className="text-gray-600">{employee.secondName}</span>
+          <span className="font-medium text-gray-700">Phone:</span>
+          <span className="text-gray-600">{employee.phoneNumber}</span>
+        </div>
+      
+
+      <div className="mb-6">
+        <div className="w-full flex justify-between items-center mb-4">
+          <h2 className="text-xl font-semibold text-gray-800">Benefits</h2>
+          <button
+            onClick={() => setShowBenefits(!showBenefits)}
+            className="transition-colors p-2 rounded-full   hover:bg-primary-200 bg-primary"
+          >
+           {
+          !showBenefits ? (
+            isAddingBenefit || isDeletingBenefit ? (
+              <Loader className="w-5 h-5  text-white" />
+            ) : (
+              <Plus className="w-5 h-5  text-white" />
+            )
+          ) : (
+            (
+              isAddingBenefit || isDeletingBenefit ? (
+                <Loader className="w-5 h-5  text-white"  />
+              ) : (
+                <MinusIcon className="w-5 h-5  text-white" />
+              )
+            )
+          )
+        }
+          </button>
+        </div>
+        <div className="mb-4">
+          {showBenefits && (
+            <select className="w-full p-2 border border-primary-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" onChange={(e:React.ChangeEvent<HTMLSelectElement>)=>handleAddingBenefit(employee.id, e.target.value)}>
+              <option value="" disabled selected>Select Benefit</option>
+              {AllBenefits.map((eBenefit, index) => (
+                <option key={index} className={`text-gray-700 ${benefits.some((benefit)=>benefit.benefit==eBenefit) && "bg-gray-6"}`} disabled={benefits.some((benefit)=>benefit.benefit==eBenefit)}>{eBenefit}</option>
+              ))}
+            </select>
+          )}
+        </div>
+        {benefits.length > 0 ? (
+          <ul className="list-disc pl-5 text-gray-600">
+            {benefits.map((benefit, index) => (
+                 <div className="w-full flex justify-between gap-4 mb-6">
+                  <li key={index} className="mb-2">{benefit.benefit}</li>
+                 <button
+                   className="p-2 rounded-full bg-red-100 hover:bg-red-200 transition-colors"
+                  onClick={()=>handleDeletingBenefit(benefit.id, employee.id,benefit.benefit)}
+                 >
+                   {<MinusIcon className="w-5 h-5 text-red-600" />}
+                 </button>
+               </div>
+             
+            ))}
+          </ul>
+        ) : <span className="text-gray-500">No allowed Benefit Found</span>}
+      </div>
+
+      <div>
+        <div className="w-full flex justify-between items-center mb-4">
+          <h2 className="text-xl font-semibold text-gray-800">Taxes</h2>
+          <button
+            onClick={() => setShowTaxes(!showTaxes)}
+            className="transition-colors p-2 rounded-full   hover:bg-primary-200 bg-primary"
+          >
+            {!showTaxes ? (
+            isAddingTax || isDeletingTax ? (
+              <Loader className="w-5 h-5  text-white" />
+            ) : (
+              <Plus className="w-5 h-5  text-white" />
+            )
+          ) : (
+            (
+              isAddingTax || isDeletingTax ? (
+                <Loader className="w-5 h-5  text-white"  />
+              ) : (
+                <MinusIcon className="w-5 h-5  text-white" />
+              )
+            )
+          )}
+          </button>
+        </div>
+        <div className="mb-4">
+          {showTaxes && (
+            <select className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" onChange={(e:React.ChangeEvent<HTMLSelectElement>)=>handleAddingTax(employee.id, e.target.value)}>
+              <option value="" disabled selected>Select Tax</option>
+              {AllTaxes.map((tax, index) => {
+                const disabled =   employee.monthlyGross < tax.min ||
+                (tax.max !== null && employee.monthlyGross > tax.max) ||
+                taxes.some(etax => etax.taxId === tax.id)
+                return <option key={index} className={`text-gray-700 ${disabled && "bg-gray-6"}`} value={tax.id} disabled={disabled}>
+                {tax.name} [
+                {new Intl.NumberFormat('en-US', { style: 'currency', currency: employee.currency }).format(tax.min ?? 0)}
+                -
+                {tax.max !== null 
+                  ? new Intl.NumberFormat('en-US', { style: 'currency', currency: employee.currency }).format(tax.max) 
+                  : "More"} 
+                  =
+                {` ${tax.rate * 100}%`}]
+              </option>
+              
+})}
+            </select>
+          )}
+        </div>
+        {taxes.length > 0 ? (
+          <ul className="list-disc pl-5 text-gray-600">
+          {taxes.map((tax, index) => (
+            <div className="w-full flex justify-between gap-4 mb-6">
+              <li key={index} className="mb-2">
+              {AllTaxes.find((Atax) => Atax.id === tax.taxId)?.name || "Unknown Tax"}
+            </li>
+           <button
+             className="p-2 rounded-full bg-red-100 hover:bg-red-200 transition-colors"
+            onClick={()=>handleDeletingTax(tax.id, employee.id,)}
+           >
+             {<MinusIcon className="w-5 h-5 text-red-600" />}
+           </button>
+         </div>
+          
+          ))}
+        </ul>
+        
+        ) : <span className="text-gray-500">No assigned Taxes Found</span>}
+      </div>
+    </div>
+  );
+}

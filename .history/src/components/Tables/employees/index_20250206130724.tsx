@@ -1,0 +1,80 @@
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import {  standardFormat } from "@/lib/format-number";
+
+ 
+import { getServerSession } from "next-auth";
+import { getEmployees } from "@/data/getEmployees";
+import { authOptions } from "@/utils/auth";
+import Pagination from "@/components/Pagination";
+ 
+
+export default async function Page( {query, currentPage}:{query:string, currentPage:number}) {
+ 
+  const session = await getServerSession(authOptions);
+  
+   
+
+  if (!session?.user?.email) {
+    return <div>Unauthorized</div>;
+  }
+  const { employees, pagination } = await getEmployees(session.user.email, query, currentPage);
+ 
+
+  return (
+    
+    <>
+      <Table>
+        <TableHeader>
+          <TableRow className="border-none uppercase [&>th]:text-center">
+
+            <TableHead >ID</TableHead>
+            <TableHead >First Name</TableHead>
+            <TableHead>Second Name</TableHead>
+            <TableHead>Start Date</TableHead>
+            <TableHead>Job Title</TableHead>
+            <TableHead>Department</TableHead>
+            <TableHead>Bank Name</TableHead>
+          </TableRow>
+        </TableHeader>
+
+        <TableBody>
+          {employees?.map((employee, i) => (
+            <TableRow
+              className="text-center text-base font-medium text-dark dark:text-white"
+              key={employee.firstName + i}
+            >
+              <TableCell className="flex min-w-fit items-center gap-3">
+                <div className="">{employee.id}</div>
+              </TableCell>
+              <TableCell className="flex min-w-fit items-center gap-3">
+                <div className="">{employee.firstName}</div>
+              </TableCell>
+
+              <TableCell>{employee.secondName}</TableCell>
+              <TableCell>{employee.startDate}</TableCell>
+
+              <TableCell >
+                {employee.jobTitle}
+              </TableCell>
+
+              <TableCell>{employee.department}</TableCell>
+
+              <TableCell> ${employee.bankName}</TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+      <div className="mt-5 flex w-full justify-center">
+        <Pagination totalPages={pagination?.totalPages?pagination.totalPages:0} />
+      </div>
+      </>
+    
+  );
+}

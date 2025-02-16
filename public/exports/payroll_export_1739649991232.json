@@ -1,0 +1,580 @@
+{
+  "processedEmployees": [
+    {
+      "id": "67a6cafbdeef890a59070ac9",
+      "firstName": "Tamara",
+      "secondName": "Guerrero",
+      "email": "gainesnancy@example.org",
+      "phoneNumber": "25791135800",
+      "address": "3769 Andrade Springs\r\nLake Madison, VT 38981",
+      "employeeID": "05665935-68e0-4cb7-a6da-e8c6f08662c2",
+      "nationalID": "444-48-4929",
+      "startDate": "2024-09-03T00:00:00.000Z",
+      "department": "Sales",
+      "jobTitle": "Health service manager",
+      "currency": "CNY",
+      "paymentMethod": "crypto",
+      "paymentPhone": "25791135800",
+      "monthlyGross": 7663.47,
+      "bankName": "Chase",
+      "bankAccountNumber": "GB57SBHO46896099763806",
+      "swiftCode": "YBLQGBOKVRL",
+      "Domicile": "Isle of Man",
+      "walletAddress": "Kamembe",
+      "companyId": "67a4bae38b34ca49afe715c9",
+      "createdAt": "2025-02-08T03:09:47.396Z",
+      "updatedAt": "2025-02-11T15:33:43.256Z",
+      "appliedTaxes": [],
+      "benefits": [],
+      "additionalIncomes": [],
+      "deductions": [],
+      "taxes": [],
+      "netSalary": 7663.47
+    },
+    {
+      "id": "67a6cafbdeef890a59070aca",
+      "firstName": "Garrett",
+      "secondName": "Diaz",
+      "email": "srice@example.org",
+      "phoneNumber": "25791102800",
+      "address": "852 Patricia Union Apt. 753\r\nPort Brookeshire, OR 17037",
+      "employeeID": "ab74dfb7-34d6-4a65-ae8d-e3a8bc044660",
+      "nationalID": "857-47-3252",
+      "startDate": "2024-11-27T00:00:00.000Z",
+      "department": "HR",
+      "jobTitle": "Therapist, speech and language",
+      "currency": "CNY",
+      "paymentMethod": "phone",
+      "paymentPhone": "2507911058000",
+      "monthlyGross": 100000.33,
+      "bankName": "Wells Fargo",
+      "bankAccountNumber": "GB12SFWZ05973928499721",
+      "swiftCode": "RGXQGBPF2V3",
+      "Domicile": "Senegal",
+      "walletAddress": "7a30fb9b-1ed2-4df9-8245-f43904318f60",
+      "companyId": "67a4bae38b34ca49afe715c9",
+      "createdAt": "2025-02-08T03:09:47.396Z",
+      "updatedAt": "2025-02-11T15:35:18.023Z",
+      "appliedTaxes": [
+        {
+          "id": "67ab228c7ac1b70bf6c730f9",
+          "employeeId": "67a6cafbdeef890a59070aca",
+          "contractorId": null,
+          "taxId": "64e8d812a9c1b4e5f3d2a9c3",
+          "payrollId": null,
+          "tax": {
+            "id": "64e8d812a9c1b4e5f3d2a9c3",
+            "rate": 0.3,
+            "name": "PAYE C",
+            "min": 100000,
+            "max": null,
+            "companyId": "67a4bae38b34ca49afe715c9"
+          }
+        },
+        {
+          "id": "67ab22e57ac1b70bf6c730fa",
+          "employeeId": "67a6cafbdeef890a59070aca",
+          "contractorId": null,
+          "taxId": "67a938dece871e32e8e81170",
+          "payrollId": null,
+          "tax": {
+            "id": "67a938dece871e32e8e81170",
+            "rate": 0.08,
+            "name": "BRD",
+            "min": 0,
+            "max": null,
+            "companyId": "67a4bae38b34ca49afe715c9"
+          }
+        }
+      ],
+      "benefits": [
+        {
+          "id": "67ab24677ac1b70bf6c730fb",
+          "employeeId": "67a6cafbdeef890a59070aca",
+          "benefit": "RETIREMENT_AND_PENSION_PLANS",
+          "payrollId": null
+        },
+        {
+          "id": "67af1fd5431612becd562801",
+          "employeeId": "67a6cafbdeef890a59070aca",
+          "benefit": "SKILLS_DEVELOPMENT",
+          "payrollId": null
+        }
+      ],
+      "additionalIncomes": [
+        {
+          "id": "67af4e0b222163bd074cf6d1",
+          "type": "Overtime",
+          "amount": 10000
+        }
+      ],
+      "deductions": [
+        {
+          "id": "67af3ad053e729f61fded2ce",
+          "employee_id": "67a6cafbdeef890a59070aca",
+          "amount": 9000,
+          "reason": "kuurya",
+          "status": "Pending",
+          "created_at": "2025-02-14T12:45:04.393Z",
+          "updated_at": "2025-02-14T13:57:50.758Z",
+          "payrollId": null
+        }
+      ],
+      "taxes": [
+        {
+          "id": "67ab228c7ac1b70bf6c730f9",
+          "rate": 0.3,
+          "type": "PAYE C",
+          "amount": 30000.099
+        },
+        {
+          "id": "67ab22e57ac1b70bf6c730fa",
+          "rate": 0.08,
+          "type": "BRD",
+          "amount": 8000.026400000001
+        }
+      ],
+      "netSalary": 63000.204600000005
+    },
+    {
+      "id": "67a6cafbdeef890a59070acb",
+      "firstName": "Stephanie",
+      "secondName": "Porter",
+      "email": "denise29@example.net",
+      "phoneNumber": "25791109800",
+      "address": "3067 David Park Apt. 939\r\nHarrisstad, VA 99008",
+      "employeeID": "2d873a5e-080d-43d7-b661-298f707f0958",
+      "nationalID": "431-42-8389",
+      "startDate": "2021-06-28T00:00:00.000Z",
+      "department": "Finance",
+      "jobTitle": "IT trainer",
+      "currency": "EUR",
+      "paymentMethod": "crypto",
+      "paymentPhone": "25791109800",
+      "monthlyGross": 5500.15,
+      "bankName": "Citi",
+      "bankAccountNumber": "GB78IYCR87191241719141",
+      "swiftCode": "SZAWGBQMT0R",
+      "Domicile": "Rwanda",
+      "walletAddress": "Kamembe",
+      "companyId": "67a4bae38b34ca49afe715c9",
+      "createdAt": "2025-02-08T03:09:47.396Z",
+      "updatedAt": "2025-02-11T15:33:03.381Z",
+      "appliedTaxes": [
+        {
+          "id": "67ab6c4cf45f0cfb78bb2b99",
+          "employeeId": "67a6cafbdeef890a59070acb",
+          "contractorId": null,
+          "taxId": "64e8d7f3a9c1b4e5f3d2a9c1",
+          "payrollId": null,
+          "tax": {
+            "id": "64e8d7f3a9c1b4e5f3d2a9c1",
+            "rate": 0,
+            "name": "PAYE A",
+            "min": 0,
+            "max": 60000,
+            "companyId": "67a4bae38b34ca49afe715c9"
+          }
+        },
+        {
+          "id": "67adfa54b220404b246a5b9d",
+          "employeeId": "67a6cafbdeef890a59070acb",
+          "contractorId": null,
+          "taxId": "67a938dece871e32e8e81170",
+          "payrollId": null,
+          "tax": {
+            "id": "67a938dece871e32e8e81170",
+            "rate": 0.08,
+            "name": "BRD",
+            "min": 0,
+            "max": null,
+            "companyId": "67a4bae38b34ca49afe715c9"
+          }
+        }
+      ],
+      "benefits": [
+        {
+          "id": "67adc0f4c9108a9a7c218234",
+          "employeeId": "67a6cafbdeef890a59070acb",
+          "benefit": "WELLNESS",
+          "payrollId": null
+        }
+      ],
+      "additionalIncomes": [
+        {
+          "id": "67aef718431612becd5627ff",
+          "type": "Overtime",
+          "amount": 7000
+        },
+        {
+          "id": "67aef733431612becd562800",
+          "type": "Commission",
+          "amount": 5000
+        }
+      ],
+      "deductions": [
+        {
+          "id": "67af394553e729f61fded2cc",
+          "employee_id": "67a6cafbdeef890a59070acb",
+          "amount": 6000,
+          "reason": "Coming late",
+          "status": "Pending",
+          "created_at": "2025-02-14T12:38:28.931Z",
+          "updated_at": "2025-02-14T12:38:28.931Z",
+          "payrollId": null
+        }
+      ],
+      "taxes": [
+        {
+          "id": "67ab6c4cf45f0cfb78bb2b99",
+          "rate": 0,
+          "type": "PAYE A",
+          "amount": 0
+        },
+        {
+          "id": "67adfa54b220404b246a5b9d",
+          "rate": 0.08,
+          "type": "BRD",
+          "amount": 440.012
+        }
+      ],
+      "netSalary": 11060.137999999999
+    },
+    {
+      "id": "67a6cafbdeef890a59070acc",
+      "firstName": "Heidi",
+      "secondName": "Navarro",
+      "email": "courtneywilliams@example.net",
+      "phoneNumber": "250791103800",
+      "address": "026 Amber Pine Suite 141\r\nNew Beverlyside, NM 97841",
+      "employeeID": "2d3b5672-4817-46c5-a749-67d6cf38edf4",
+      "nationalID": "803-31-8865",
+      "startDate": "2020-07-06T00:00:00.000Z",
+      "department": "Finance",
+      "jobTitle": "Ophthalmologist",
+      "currency": "NOK",
+      "paymentMethod": "phone",
+      "paymentPhone": "250791103800",
+      "monthlyGross": 50000.1,
+      "bankName": "Chase",
+      "bankAccountNumber": "GB22XVNY55199901445987",
+      "swiftCode": "QGMUGBI3M0A",
+      "Domicile": "Bahrain",
+      "walletAddress": "798472dc-3da3-4ba8-b898-76028503b548",
+      "companyId": "67a4bae38b34ca49afe715c9",
+      "createdAt": "2025-02-08T03:09:47.396Z",
+      "updatedAt": "2025-02-11T15:36:48.759Z",
+      "appliedTaxes": [],
+      "benefits": [],
+      "additionalIncomes": [],
+      "deductions": [],
+      "taxes": [],
+      "netSalary": 50000.1
+    },
+    {
+      "id": "67a6cafbdeef890a59070acd",
+      "firstName": "Harry",
+      "secondName": "Frost",
+      "email": "john13@example.net",
+      "phoneNumber": "25791105200",
+      "address": "90063 Walker Port\r\nSouth Aaron, WI 00786",
+      "employeeID": "d8316274-86d0-4a01-81e0-f6c3d11a139d",
+      "nationalID": "771-94-1379",
+      "startDate": "2024-11-25T00:00:00.000Z",
+      "department": "HR",
+      "jobTitle": "Scientist, research (medical)",
+      "currency": "EUR",
+      "paymentMethod": "phone",
+      "paymentPhone": "25791105200",
+      "monthlyGross": 1000000.84,
+      "bankName": "Wells Fargo",
+      "bankAccountNumber": "GB54QAOB43441098424007",
+      "swiftCode": "VQPSGBMKEFG",
+      "Domicile": "Belarus",
+      "walletAddress": "908367e5-3e92-494b-ad6c-680b692222c2",
+      "companyId": "67a4bae38b34ca49afe715c9",
+      "createdAt": "2025-02-08T03:09:47.396Z",
+      "updatedAt": "2025-02-12T11:03:13.231Z",
+      "appliedTaxes": [
+        {
+          "id": "67ab25e87ac1b70bf6c73107",
+          "employeeId": "67a6cafbdeef890a59070acd",
+          "contractorId": null,
+          "taxId": "67a938dece871e32e8e81170",
+          "payrollId": null,
+          "tax": {
+            "id": "67a938dece871e32e8e81170",
+            "rate": 0.08,
+            "name": "BRD",
+            "min": 0,
+            "max": null,
+            "companyId": "67a4bae38b34ca49afe715c9"
+          }
+        },
+        {
+          "id": "67ab26147ac1b70bf6c73108",
+          "employeeId": "67a6cafbdeef890a59070acd",
+          "contractorId": null,
+          "taxId": "64e8d812a9c1b4e5f3d2a9c3",
+          "payrollId": null,
+          "tax": {
+            "id": "64e8d812a9c1b4e5f3d2a9c3",
+            "rate": 0.3,
+            "name": "PAYE C",
+            "min": 100000,
+            "max": null,
+            "companyId": "67a4bae38b34ca49afe715c9"
+          }
+        }
+      ],
+      "benefits": [
+        {
+          "id": "67ac7fc663bb43c18389594d",
+          "employeeId": "67a6cafbdeef890a59070acd",
+          "benefit": "PERSONAL_FINANCE_BENEFITS",
+          "payrollId": null
+        },
+        {
+          "id": "67ac7fc863bb43c18389594e",
+          "employeeId": "67a6cafbdeef890a59070acd",
+          "benefit": "FINANCIAL_GROWTH_BENEFITS",
+          "payrollId": null
+        },
+        {
+          "id": "67ac7fca63bb43c18389594f",
+          "employeeId": "67a6cafbdeef890a59070acd",
+          "benefit": "RETIREMENT_AND_PENSION_PLANS",
+          "payrollId": null
+        },
+        {
+          "id": "67ac7fcd63bb43c183895950",
+          "employeeId": "67a6cafbdeef890a59070acd",
+          "benefit": "FOOD_AND_BEVERAGE",
+          "payrollId": null
+        }
+      ],
+      "additionalIncomes": [],
+      "deductions": [],
+      "taxes": [
+        {
+          "id": "67ab25e87ac1b70bf6c73107",
+          "rate": 0.08,
+          "type": "BRD",
+          "amount": 80000.0672
+        },
+        {
+          "id": "67ab26147ac1b70bf6c73108",
+          "rate": 0.3,
+          "type": "PAYE C",
+          "amount": 300000.252
+        }
+      ],
+      "netSalary": 620000.5208
+    },
+    {
+      "id": "67a6cafbdeef890a59070ace",
+      "firstName": "Stephanie",
+      "secondName": "Ward",
+      "email": "lgalloway@example.com",
+      "phoneNumber": "25791103800",
+      "address": "906 Palmer Stream Apt. 280\r\nThomasview, PW 80927",
+      "employeeID": "a97aa8f3-da74-4cd6-8892-8867d0fd32ad",
+      "nationalID": "317-54-3919",
+      "startDate": "2023-05-03T00:00:00.000Z",
+      "department": "Sales",
+      "jobTitle": "Editor, film/video",
+      "currency": "EUR",
+      "paymentMethod": "phone",
+      "paymentPhone": "25791103800",
+      "monthlyGross": 5094.57,
+      "bankName": "Bank of America",
+      "bankAccountNumber": "GB84WCPT60138864864953",
+      "swiftCode": "QVDPGBQQTFW",
+      "Domicile": "Trinidad and Tobago",
+      "walletAddress": "c043c864-f5c2-4b79-a4c3-bc127fc0181d",
+      "companyId": "67a4bae38b34ca49afe715c9",
+      "createdAt": "2025-02-08T03:09:47.396Z",
+      "updatedAt": "2025-02-08T03:09:47.396Z",
+      "appliedTaxes": [],
+      "benefits": [],
+      "additionalIncomes": [],
+      "deductions": [],
+      "taxes": [],
+      "netSalary": 5094.57
+    },
+    {
+      "id": "67a6cafbdeef890a59070acf",
+      "firstName": "David",
+      "secondName": "Haney",
+      "email": "michellemiller@example.org",
+      "phoneNumber": "25791105600",
+      "address": "4968 Smith Loaf\r\nPearsonshire, WV 21996",
+      "employeeID": "02e31646-7a83-4dde-85af-50fd1c41f731",
+      "nationalID": "495-21-0782",
+      "startDate": "2022-09-11T00:00:00.000Z",
+      "department": "Finance",
+      "jobTitle": "Rural practice surveyor",
+      "currency": "NOK",
+      "paymentMethod": "phone",
+      "paymentPhone": "25791105600",
+      "monthlyGross": 9240.38,
+      "bankName": "Chase",
+      "bankAccountNumber": "GB48GXNT25311095973320",
+      "swiftCode": "AHPAGBWCZOM",
+      "Domicile": "Paraguay",
+      "walletAddress": null,
+      "companyId": "67a4bae38b34ca49afe715c9",
+      "createdAt": "2025-02-08T03:09:47.396Z",
+      "updatedAt": "2025-02-08T03:09:47.396Z",
+      "appliedTaxes": [],
+      "benefits": [],
+      "additionalIncomes": [],
+      "deductions": [],
+      "taxes": [],
+      "netSalary": 9240.38
+    },
+    {
+      "id": "67a6cafbdeef890a59070ad0",
+      "firstName": "Jennifer",
+      "secondName": "Olson",
+      "email": "timothy14@example.org",
+      "phoneNumber": "25791105700",
+      "address": "PSC 6058, Box 2329\r\nAPO AE 39172",
+      "employeeID": "26abecec-8575-42b9-b07b-bfd5dce7a623",
+      "nationalID": "625-97-7403",
+      "startDate": "2020-06-04T00:00:00.000Z",
+      "department": "HR",
+      "jobTitle": "Financial manager",
+      "currency": "HKD",
+      "paymentMethod": "phone",
+      "paymentPhone": "25791105700",
+      "monthlyGross": 7891.21,
+      "bankName": "Chase",
+      "bankAccountNumber": "GB33HQMT03222517878664",
+      "swiftCode": "TSWFGB1YUIK",
+      "Domicile": "Vietnam",
+      "walletAddress": null,
+      "companyId": "67a4bae38b34ca49afe715c9",
+      "createdAt": "2025-02-08T03:09:47.396Z",
+      "updatedAt": "2025-02-08T03:09:47.396Z",
+      "appliedTaxes": [],
+      "benefits": [],
+      "additionalIncomes": [],
+      "deductions": [],
+      "taxes": [],
+      "netSalary": 7891.21
+    },
+    {
+      "id": "67a6cafbdeef890a59070ad1",
+      "firstName": "Joseph",
+      "secondName": "Smith",
+      "email": "brittany10@example.com",
+      "phoneNumber": "25791105880",
+      "address": "702 Taylor Branch Suite 650\r\nNorth Amyville, ND 29541",
+      "employeeID": "970ddb38-3346-44fd-be0c-3f8f301262e5",
+      "nationalID": "396-69-2863",
+      "startDate": "2024-09-26T00:00:00.000Z",
+      "department": "Engineering",
+      "jobTitle": "Development worker, community",
+      "currency": "RUB",
+      "paymentMethod": "phone",
+      "paymentPhone": "25791105880",
+      "monthlyGross": 4263.32,
+      "bankName": "Bank of America",
+      "bankAccountNumber": "GB17NEXD45382078570945",
+      "swiftCode": "KGRBGBF12GR",
+      "Domicile": "Honduras",
+      "walletAddress": "635e7494-ceb4-4571-bcde-b0705d02742d",
+      "companyId": "67a4bae38b34ca49afe715c9",
+      "createdAt": "2025-02-08T03:09:47.396Z",
+      "updatedAt": "2025-02-08T03:09:47.396Z",
+      "appliedTaxes": [],
+      "benefits": [],
+      "additionalIncomes": [],
+      "deductions": [],
+      "taxes": [],
+      "netSalary": 4263.32
+    },
+    {
+      "id": "67a6cafbdeef890a59070ad2",
+      "firstName": "Angela",
+      "secondName": "Riley",
+      "email": "dawnmurphy@example.org",
+      "phoneNumber": "25791105800",
+      "address": "USNS Fitzgerald\r\nFPO AP 86710",
+      "employeeID": "c5bc8d04-f41f-4013-a234-c650547ad0c2",
+      "nationalID": "129-44-4450",
+      "startDate": "2020-03-24T00:00:00.000Z",
+      "department": "HR",
+      "jobTitle": "Engineer, drilling",
+      "currency": "RUB",
+      "paymentMethod": "phone",
+      "paymentPhone": "25791105800",
+      "monthlyGross": 5894.07,
+      "bankName": "Citi",
+      "bankAccountNumber": "GB88QJVG74264830307077",
+      "swiftCode": "KZISGB8OPX7",
+      "Domicile": "Kyrgyz Republic",
+      "walletAddress": "2958ed95-3edb-4f57-92ec-6ec0fc98f408",
+      "companyId": "67a4bae38b34ca49afe715c9",
+      "createdAt": "2025-02-08T03:09:47.396Z",
+      "updatedAt": "2025-02-08T03:09:47.396Z",
+      "appliedTaxes": [],
+      "benefits": [],
+      "additionalIncomes": [],
+      "deductions": [],
+      "taxes": [],
+      "netSalary": 5894.07
+    }
+  ],
+  "totalMonthlyGross": 1195548.44,
+  "totalAdditionalIncomes": [
+    {
+      "id": "67af4e0b222163bd074cf6d1",
+      "type": "Overtime",
+      "amount": 17000
+    },
+    {
+      "id": "67aef733431612becd562800",
+      "type": "Commission",
+      "amount": 5000
+    }
+  ],
+  "totalDeductions": [
+    {
+      "id": "67af3ad053e729f61fded2ce",
+      "reason": "kuurya",
+      "amount": 9000
+    },
+    {
+      "id": "67af394553e729f61fded2cc",
+      "reason": "Coming late",
+      "amount": 6000
+    }
+  ],
+  "totalTaxes": [
+    {
+      "id": "67ab228c7ac1b70bf6c730f9",
+      "name": "PAYE C",
+      "rate": 0.3,
+      "amount": 330000.35099999997
+    },
+    {
+      "id": "67ab22e57ac1b70bf6c730fa",
+      "name": "BRD",
+      "rate": 0.08,
+      "amount": 88440.10560000001
+    },
+    {
+      "id": "67ab6c4cf45f0cfb78bb2b99",
+      "name": "PAYE A",
+      "rate": 0,
+      "amount": 0
+    }
+  ],
+  "totalNetSalary": 784107.9833999999,
+  "totalAdditonalIncomesAmount": 22000,
+  "totalTaxesAmount": 418440.4566,
+  "totalDeductionsAmount": 15000,
+  "currency": "RWF"
+}

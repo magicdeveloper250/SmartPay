@@ -1,0 +1,117 @@
+"use client"
+import React, { useEffect } from 'react';
+import { Plus, PencilIcon, MinusIcon } from "lucide-react";
+import { Employee, EmployeeBenefit, Tax } from '@prisma/client';
+import toast from 'react-hot-toast';
+import { useState } from 'react';
+
+export default function EmployeeDisplay({ employee, benefits, taxes }: { employee: Employee, benefits: EmployeeBenefit[], taxes: Tax[] }) {
+  const [AllBenefits, setBenefits] = useState<string[]>([]);
+  const [showBenefits, setShowBenefits] = useState<Boolean>(false);
+  const [showTaxes, setShowTaxes] = useState<Boolean>(false);
+  const [AllTaxes, setTaxes] = useState<string[]>([]);
+
+  const getBenefits = async () => {
+    try {
+      const resp = await fetch("/api/benefit");
+      const data = await resp.json();
+      setBenefits(data);
+    } catch (error) {
+      toast.error("Unable to fetch benefits");
+    }
+  };
+
+  const getTaxes = async () => {
+    try {
+      const resp = await fetch("/api/tax");
+      const data = await resp.json();
+      setTaxes(data);
+    } catch (error) {
+      toast.error("Unable to fetch taxes");
+    }
+  };
+
+  useEffect(() => {
+    Promise.all([getBenefits(), getTaxes()]);
+  }, []);
+
+  return (
+    <div className="w-full max-w-7xl mx-auto bg-white rounded-lg shadow-lg p-6 transform transition-all hover:shadow-2xl">
+      <div className="w-full flex justify-between items-center mb-6">
+        <h2 className="text-2xl font-bold text-gray-800">Personal Information</h2>
+        <button className="p-2 rounded-full bg-blue-100 hover:bg-blue-200 transition-colors">
+          <PencilIcon className="w-5 h-5 text-blue-600" />
+        </button>
+      </div>
+
+      <div className="w-full grid grid-cols-2 md:grid-cols-2 gap-4 mb-6">
+        <span className="font-medium text-gray-700">ID:</span>
+        <span className="text-gray-600">{employee.id}</span>
+        <span className="font-medium text-gray-700">First name:</span>
+        <span className="text-gray-600">{employee.firstName}</span>
+        <span className="font-medium text-gray-700">Second name:</span>
+        <span className="text-gray-600">{employee.secondName}</span>
+        <span className="font-medium text-gray-700">Phone:</span>
+        <span className="text-gray-600">{employee.phoneNumber}</span>
+      </div>
+
+      <div className="mb-6">
+        <div className="w-full flex justify-between items-center mb-4">
+          <h2 className="text-xl font-semibold text-gray-800">Benefits</h2>
+          <button
+            onClick={() => setShowBenefits(!showBenefits)}
+            className="p-2 rounded-full bg-green-100 hover:bg-green-200 transition-colors"
+          >
+            {!showBenefits ? <Plus className="w-5 h-5 text-green-600" /> : <MinusIcon className="w-5 h-5 text-green-600" />}
+          </button>
+        </div>
+        <div className="mb-4">
+          {showBenefits && (
+            <select className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+              <option value="" disabled selected>Select Benefit</option>
+              {AllBenefits.map((benefit, index) => (
+                <option key={index} className="text-gray-700">{benefit}</option>
+              ))}
+            </select>
+          )}
+        </div>
+        {benefits.length > 0 ? (
+          <ul className="list-disc pl-5 text-gray-600">
+            {benefits.map((benefit, index) => (
+              <li key={index} className="mb-2">{benefit.benefitId}</li>
+            ))}
+          </ul>
+        ) : <span className="text-gray-500">No allowed Benefit Found</span>}
+      </div>
+
+      <div>
+        <div className="w-full flex justify-between items-center mb-4">
+          <h2 className="text-xl font-semibold text-gray-800">Taxes</h2>
+          <button
+            onClick={() => setShowTaxes(!showTaxes)}
+            className="p-2 rounded-full bg-red-100 hover:bg-red-200 transition-colors"
+          >
+            {!showTaxes ? <Plus className="w-5 h-5 text-red-600" /> : <MinusIcon className="w-5 h-5 text-red-600" />}
+          </button>
+        </div>
+        <div className="mb-4">
+          {showTaxes && (
+            <select className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+              <option value="" disabled selected>Select Tax</option>
+              {AllTaxes.map((tax, index) => (
+                <option key={index} className="text-gray-700">{tax}</option>
+              ))}
+            </select>
+          )}
+        </div>
+        {taxes.length > 0 ? (
+          <ul className="list-disc pl-5 text-gray-600">
+            {taxes.map((tax, index) => (
+              <li key={index} className="mb-2">{tax.type}</li>
+            ))}
+          </ul>
+        ) : <span className="text-gray-500">No assigned Taxes Found</span>}
+      </div>
+    </div>
+  );
+}
