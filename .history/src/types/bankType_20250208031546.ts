@@ -1,1 +1,0 @@
-export type BankType= "crypto" | "bank"| "phone"
