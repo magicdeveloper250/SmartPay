@@ -3,14 +3,10 @@ import ContractPaper from "@/components/ContractPaper";
 import { Modal} from "@/components/Modal";
  
 
-interface PageProps {
-  params: {
-    contractorId?: string;
-  };
-}
+type Props = Promise<{ contractorId: string }>
 
-export default async function Page({ params }: PageProps) {
-  const { contractorId } = params;
+export default async function Page( props: { params: Props }) {
+  const { contractorId } = await props.params;
   return (
     <Modal 
       title="Contract" 

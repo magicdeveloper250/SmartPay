@@ -5,15 +5,11 @@ import { PayrollDetail } from "@/components/PayrollDetails";
 import { Suspense } from "react";
 import { notFound } from "next/navigation";
 
-interface PageProps {
-  params: {
-    payrollId?: string;
-  };
-}
- 
+type Props = Promise<{ payrollId: string }>
 
-export default async function Page({ params }: PageProps){
-    const payroll = await getPayrollById(params.payrollId || "");
+export default async function Page( props: { params: Props }) {
+  const { payrollId } = await props.params;
+    const payroll = await getPayrollById(payrollId || "");
      if ("error" in payroll) {
        notFound();
      }
