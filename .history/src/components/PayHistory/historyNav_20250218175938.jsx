@@ -16,7 +16,7 @@ export function HistoryNav( ) {
   const { replace } = useRouter();
 
  const payrollStatus = new URLSearchParams(searchParams).get("status");
- const handleToggleTab =(term) => {
+ const handleToggleTab = useDebouncedCallback((term) => {
     const params = new URLSearchParams(searchParams);
     if (term) {
       params.set('status', term);
@@ -24,7 +24,7 @@ export function HistoryNav( ) {
       params.delete('status');
     }
     replace(`${pathname}?${params.toString()}`, {scroll:false});
-  };
+  }, 10);
 
    useEffect(()=>{
     const params = new URLSearchParams(searchParams);
