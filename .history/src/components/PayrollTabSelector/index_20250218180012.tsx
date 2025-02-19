@@ -24,7 +24,7 @@ export default function PayrollTabSelector( ) {
   const params = new URLSearchParams(searchParams);
   params.set('tab', "employees");
   replace(`${pathname}?${params.toString()}`);
- },[])
+ })
   
   return <div className="flex items-center justify-between border-b pb-3">
     <div className="flex gap-2 bg-gray-200 p-1 rounded-md dark:bg-gray-700">

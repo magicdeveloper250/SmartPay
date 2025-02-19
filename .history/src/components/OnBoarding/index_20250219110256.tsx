@@ -32,7 +32,7 @@ export  default  function OnBoarding( ) {
      
       params.set('tab', "none");
       replace(`${pathname}?${params.toString()}`);
-     }, [])
+     })
   return (
     <Modal 
       title="Employee Onboarding" 
