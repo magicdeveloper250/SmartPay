@@ -24,128 +24,8 @@ export default async function Page({ tab, query, currentPage }: { query: string;
   
  
   return (
-    <div className="overflow-x-auto mt-0 ">
+    <div className="overflow-x-auto mt-0">
       
-      <Table className="min-w-full border-collapse border border-gray-200 mb-5">
-      <TableHeader>
-          <TableRow className="uppercase bg-gray-100 dark:bg-gray-800">
-          <TableHead colSpan={2} className="border border-gray-300 text-center">
-              <div className="flex items-center justify-center">Details</div>
-            </TableHead>
-
-            <TableHead colSpan={2} className="border border-gray-300 text-center bg-blue-100">
-              <div className="flex items-center justify-center"> Total Earnings <Plus className="ml-2 cursor-pointer text-blue-500" size={16} /></div>
-            </TableHead>
-
-            <TableHead className="border border-gray-300 text-center bg-green-100">
-              <div className="flex items-center justify-center">Total Additions <Plus className="ml-2 cursor-pointer text-green-500" size={16} /></div>
-            </TableHead>
-
-            <TableHead className="border border-gray-300 text-center bg-red-100" colSpan={2}>
-              <div className="flex items-center justify-center w-full">Toal Deductions <Minus className="ml-2 cursor-pointer text-red-500" size={16} /></div>
-            </TableHead>
-
-            <TableHead className="border border-gray-300 text-center bg-blue-100" rowSpan={2}>
-              <div className="flex items-center justify-center" >Total Net Salaries</div>
-            </TableHead>
-          </TableRow>
-
-          <TableRow className="uppercase">
-            <TableHead className="  text-center w-1/6 border-b-0"></TableHead>
-            <TableHead className="  text-center w-1/6 border-b-0"></TableHead>
-
-            <TableHead className="border border-gray-300 text-center bg-blue-50">Basic Salary</TableHead>
-            <TableHead className="border border-gray-300 text-center bg-blue-50">Fringe Benefits</TableHead>
-
-            <TableHead className="border border-gray-300 text-center bg-green-50">Additions</TableHead>
-            <TableHead   className="border border-gray-300 text-center bg-red-50 ">Taxes</TableHead>
-            <TableHead className="border border-gray-300 text-center bg-red-50">Others</TableHead>
-          </TableRow>
-        </TableHeader>
-
-        <TableBody>
-        <TableRow className="text-center text-lg font-bold bg-gray-100">
-          <TableCell className="font-bold bg-white border" colSpan={2} rowSpan={2}>Total</TableCell>
-          <TableCell className="border border-gray-400 bg-blue-100">
-            {new Intl.NumberFormat('en-US', { style: 'currency', currency: payroll?.currency }).format(
-              payroll?.totalMonthlyGross || 0
-            )}
-          </TableCell>
-          <TableCell className="border border-gray-400 bg-blue-100"></TableCell>
-          <TableCell className="border border-gray-400 bg-green-100">
-          <ul className="divide-y divide-gray-300 rounded-lg">
-              { payroll?.totalAdditionalIncomes.map((income, index) => (
-                  <li key={index} className="grid grid-cols-1 text-sm">
-                    <span className="p-2 font-extrabold">
-                      {income.type}
-                    </span>
-                    
-                    <span className="p-2 text-right font-medium">
-                      {new Intl.NumberFormat('en-US', { style: 'currency', currency: payroll.currency}).format(income.amount)}
-                    </span>
-                  </li>
-                ))}
-                <li className="font-bold">
-            {new Intl.NumberFormat('en-US', { style: 'currency', currency: payroll?.currency}).format(
-              payroll?.totalAdditonalIncomesAmount ||0
-            )}
-          </li>
-            </ul>
-          </TableCell>
-          <TableCell className="border border-gray-400 bg-red-100 p-0">
-            <ul className="divide-y divide-gray-300 rounded-lg">
-              { payroll?.totalTaxes.map((tax, index) => (
-                  <li key={index} className="grid grid-cols-1 text-sm">
-                    <span className="p-2  font-extrabold">
-                      {tax.name}
-                    </span>
-                    
-                    <span className="p-2 text-right font-medium">
-                      {new Intl.NumberFormat('en-US', { style: 'currency', currency: payroll.currency }).format(tax.amount)}
-                    </span>
-                  </li>
-                ))}
-                  <li className="font-bold">
-            {new Intl.NumberFormat('en-US', { style: 'currency', currency: payroll?.currency}).format(
-              payroll?.totalTaxesAmount ||0
-            )}
-          </li>
-            </ul>
-          </TableCell>
-          <TableCell className="border border-gray-400 bg-red-100 p-0">
-            <ul className="divide-y divide-gray-300 rounded-lg">
-              { payroll?.totalDeductions.map((deduction, index) => (
-                  <li key={index} className="grid grid-cols-1 text-sm">
-                    <span className="p-2 border-r border-gray-400 font-extrabold">
-                      {deduction.reason}
-                    </span>
-                    
-                    <span className="p-2 text-right font-medium">
-                      {new Intl.NumberFormat('en-US', { style: 'currency', currency: payroll.currency }).format(deduction.amount)}
-                    </span>
-                  </li>
-                ))}
-                  <li className="border  font-bold">
-            {new Intl.NumberFormat('en-US', { style: 'currency', currency: payroll?.currency}).format(
-              payroll?.totalDeductionsAmount ||0
-            )}
-          </li>
-            </ul>
-          </TableCell>
-          <TableCell className="border border-gray-400 font-bold">
-            {new Intl.NumberFormat('en-US', { style: 'currency', currency: payroll?.currency}).format(
-              payroll?.totalNetSalary ||0
-            )}
-          </TableCell>
-      </TableRow>
-        </TableBody>
-      </Table>
-
-
-
-
-
-
       <Table className="min-w-full border-collapse border border-gray-200">
         <TableHeader>
           <TableRow className="uppercase bg-gray-100 dark:bg-gray-800">
@@ -186,13 +66,85 @@ export default async function Page({ tab, query, currentPage }: { query: string;
         <TableBody>
         {tab == "employees" && employeesLength > 0 && (
   <>
-
+  <TableRow className="text-center text-lg font-semibold bg-gray-100">
+    <TableCell className="border border-gray-400 font-bold" colSpan={2}>Total</TableCell>
+    <TableCell className="border border-gray-400 bg-blue-100">
+      {new Intl.NumberFormat('en-US', { style: 'currency', currency: payroll?.currency }).format(
+        payroll?.totalMonthlyGross || 0
+      )}
+    </TableCell>
+    <TableCell className="border border-gray-400 bg-blue-100"></TableCell>
+    <TableCell className="border border-gray-400 bg-green-100">
+    <ul className="divide-y divide-gray-300 rounded-lg">
+        { payroll?.totalAdditionalIncomes.map((income, index) => (
+            <li key={index} className="grid grid-cols-1 text-sm">
+              <span className="p-2 font-extrabold">
+                {income.type}
+              </span>
+              
+              <span className="p-2 text-right font-medium">
+                {new Intl.NumberFormat('en-US', { style: 'currency', currency: payroll.currency}).format(income.amount)}
+              </span>
+            </li>
+          ))}
+          <li className="border border-gray-400 font-bold bg-blue-100">
+      {new Intl.NumberFormat('en-US', { style: 'currency', currency: payroll?.currency}).format(
+        payroll?.totalAdditonalIncomesAmount ||0
+      )}
+    </li>
+      </ul>
+    </TableCell>
+    <TableCell className="border border-gray-400 bg-red-100 p-0">
+      <ul className="divide-y divide-gray-300 rounded-lg">
+        { payroll?.totalTaxes.map((tax, index) => (
+            <li key={index} className="grid grid-cols-1 text-sm">
+              <span className="p-2  font-extrabold">
+                {tax.name}
+              </span>
+              
+              <span className="p-2 text-right font-medium">
+                {new Intl.NumberFormat('en-US', { style: 'currency', currency: payroll.currency }).format(tax.amount)}
+              </span>
+            </li>
+          ))}
+            <li className="font-bold bg-blue-100">
+      {new Intl.NumberFormat('en-US', { style: 'currency', currency: payroll?.currency}).format(
+        payroll?.totalTaxesAmount ||0
+      )}
+    </li>
+      </ul>
+    </TableCell>
+    <TableCell className="border border-gray-400 bg-red-100 p-0">
+      <ul className="divide-y divide-gray-300 rounded-lg">
+        { payroll?.totalDeductions.map((deduction, index) => (
+            <li key={index} className="grid grid-cols-1 text-sm">
+              <span className="p-2 border-r border-gray-400 font-extrabold">
+                {deduction.reason}
+              </span>
+              
+              <span className="p-2 text-right font-medium">
+                {new Intl.NumberFormat('en-US', { style: 'currency', currency: payroll.currency }).format(deduction.amount)}
+              </span>
+            </li>
+          ))}
+            <li className="border border-gray-400 font-bold bg-blue-100">
+      {new Intl.NumberFormat('en-US', { style: 'currency', currency: payroll?.currency}).format(
+        payroll?.totalDeductionsAmount ||0
+      )}
+    </li>
+      </ul>
+    </TableCell>
+    <TableCell className="border border-gray-400 font-bold bg-blue-100">
+      {new Intl.NumberFormat('en-US', { style: 'currency', currency: payroll?.currency}).format(
+        payroll?.totalNetSalary ||0
+      )}
+    </TableCell>
+</TableRow>
     {payroll?.processedEmployees.map((employee, i) => (
-      <TableRow key={employee.id} className="text-center text-base font-medium mb-2">
-        <TableCell className="w-fit border border-gray-300">{i + 1}</TableCell>
-        <TableCell className="w-fit border border-gray-300">
-          
-          {employee.firstName} {employee.secondName}
+      <TableRow key={employee.id} className="text-center text-base font-medium">
+        <TableCell className="w-fit">{i + 1}</TableCell>
+        <TableCell className="border border-gray-300 flex items-center justify-center h-full">
+          <span className="font-semibold">{employee.firstName} {employee.secondName}</span>
         </TableCell>
         <TableCell className="border border-gray-300 bg-blue-50">
           {new Intl.NumberFormat('en-US', { style: 'currency', currency: payroll?.currency }).format(employee.monthlyGross) || "0.00"}
@@ -224,7 +176,7 @@ export default async function Page({ tab, query, currentPage }: { query: string;
                 <span className="p-2 border-r  font-extrabold">
                   {tax.tax.name}
                 </span>
-                <span className="p-2 text-center text-gray-600 font-bold">
+                <span className="p-2 text-center text-gray-600 font-semibold">
                   {(tax.tax.rate * 100).toFixed(1)}%
                 </span>
                 <span className="p-2 text-right font-medium">
@@ -272,7 +224,7 @@ export default async function Page({ tab, query, currentPage }: { query: string;
             <TableRow key={contractor.id} className="text-center text-base font-medium">
               <TableCell className="border border-gray-300 w-fit">{i+1}</TableCell>
               <TableCell className="border border-gray-300 flex items-center justify-center">
-                <span className="font-bold">{contractor.firstName} {contractor.secondName}</span>
+                <span className="font-semibold">{contractor.firstName} {contractor.secondName}</span>
                 <Info className="ml-2 cursor-pointer text-gray-500" size={16} />
               </TableCell>
 

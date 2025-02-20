@@ -52,7 +52,7 @@ export default function PayrollTabSelector( ) {
       </button>
 
       <Link
-        className={`px-4 py-2 rounded-md transition text-blue-600 underline`}
+        className={`px-4 py-2 rounded-md transition`}
          href={"/history"}
          scroll={false}
     

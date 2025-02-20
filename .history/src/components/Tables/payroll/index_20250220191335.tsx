@@ -190,7 +190,7 @@ export default async function Page({ tab, query, currentPage }: { query: string;
     {payroll?.processedEmployees.map((employee, i) => (
       <TableRow key={employee.id} className="text-center text-base font-medium mb-2">
         <TableCell className="w-fit border border-gray-300">{i + 1}</TableCell>
-        <TableCell className="w-fit border border-gray-300">
+        <TableCell className="flex flex-col items-center justify-center h-full font-bold">
           
           {employee.firstName} {employee.secondName}
         </TableCell>

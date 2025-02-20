@@ -190,9 +190,8 @@ export default async function Page({ tab, query, currentPage }: { query: string;
     {payroll?.processedEmployees.map((employee, i) => (
       <TableRow key={employee.id} className="text-center text-base font-medium mb-2">
         <TableCell className="w-fit border border-gray-300">{i + 1}</TableCell>
-        <TableCell className="w-fit border border-gray-300">
-          
-          {employee.firstName} {employee.secondName}
+        <TableCell className="flex justify-center h-full">
+          <span className="font-bold">{employee.firstName} {employee.secondName}</span>
         </TableCell>
         <TableCell className="border border-gray-300 bg-blue-50">
           {new Intl.NumberFormat('en-US', { style: 'currency', currency: payroll?.currency }).format(employee.monthlyGross) || "0.00"}
