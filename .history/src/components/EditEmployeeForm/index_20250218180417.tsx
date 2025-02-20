@@ -57,7 +57,7 @@ import { Loader } from 'lucide-react';
 
   useEffect(() => {
     Promise.all([ getEmployee()]);
-  },[]);
+  });
   useEffect(() => {
       if (employee) {
         setValue("firstName", employee.firstName);

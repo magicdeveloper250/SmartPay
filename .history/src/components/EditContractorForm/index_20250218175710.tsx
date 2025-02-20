@@ -71,7 +71,7 @@ import { updateContractor } from '@/actions/contractorActions';
 
   useEffect(() => {
     Promise.all([getCurrencies(), getContractor()]);
-  },[]);
+  });
   useEffect(() => {
       if (contractor && contract) {
         setValue("firstName", contractor.firstName);
