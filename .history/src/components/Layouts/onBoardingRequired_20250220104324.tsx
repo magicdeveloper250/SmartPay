@@ -6,8 +6,10 @@ import { useEffect, useState } from "react";
 
 export default function OnBoardingRequiredLayout({
   children,
+  onboarding,
 }: {
   children: React.ReactNode;
+  onboarding: React.ReactNode;
 }) {
   const [isFinished, setIsFinished] = useState(false);
   const router = useRouter();
@@ -20,7 +22,7 @@ export default function OnBoardingRequiredLayout({
       if (typeof result === "boolean") {
         setIsFinished(result);
         if (!result) {
-          router.push("/onboarding", { scroll: false });
+          router.push("/onboarding", { scroll: true });
         }
       } else {
         console.error("Error checking onboarding status:", result);
@@ -30,7 +32,9 @@ export default function OnBoardingRequiredLayout({
     checkOnBoardingStatus();
   }, [router]);
 
- 
+  if (!isFinished) {
+    return onboarding;  
+  }
 
   return children;  
 }

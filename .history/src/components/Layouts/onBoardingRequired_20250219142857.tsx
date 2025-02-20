@@ -1,4 +1,4 @@
-"use client";
+"use client";  
 
 import { useRouter } from "next/navigation";
 import { onBoardingFinished } from "@/actions/companyActions";
@@ -15,12 +15,12 @@ export default function OnBoardingRequiredLayout({
   useEffect(() => {
     const checkOnBoardingStatus = async () => {
       const result = await onBoardingFinished();
-      console.log(result);
+      console.log(result)
 
       if (typeof result === "boolean") {
-        setIsFinished(result);
+        setIsFinished(result);  
         if (!result) {
-          router.push("/onboarding", { scroll: false });
+          router.push("/onboarding", { scroll: true });  
         }
       } else {
         console.error("Error checking onboarding status:", result);
@@ -30,7 +30,9 @@ export default function OnBoardingRequiredLayout({
     checkOnBoardingStatus();
   }, [router]);
 
- 
+  if (!isFinished) {
+    return null;  
+  }
 
-  return children;  
+  return <>{children}</>;
 }

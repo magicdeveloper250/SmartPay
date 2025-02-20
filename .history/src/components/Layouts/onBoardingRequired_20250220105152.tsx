@@ -8,6 +8,7 @@ export default function OnBoardingRequiredLayout({
   children,
 }: {
   children: React.ReactNode;
+  onboarding: React.ReactNode;
 }) {
   const [isFinished, setIsFinished] = useState(false);
   const router = useRouter();

@@ -9,8 +9,8 @@ import React from "react";
 import { Header } from "@/components/Layouts/header";
 import type { Metadata } from "next";
 import { Providers } from "./providers";
-import OnBoarding from "@/components/OnBoarding";
-import OnBoardingRequiredLayout from "@/components/Layouts/onBoardingRequired";
+import LoginRRequiredLayout from "@/components/Layouts/LoginRequiredLayout";
+import OnBoardingRRequiredLayout from "@/components/Layouts/onBoardingRequired";
 
 export const metadata: Metadata = {
   title: {
@@ -24,7 +24,7 @@ export const metadata: Metadata = {
 export default function DashboardLayout({ children }:Readonly<{children:React.ReactNode}>) {
   return (
    
-    <OnBoardingRequiredLayout  >
+      <OnBoardingRRequiredLayout>
       
             <Providers>
               
@@ -42,6 +42,6 @@ export default function DashboardLayout({ children }:Readonly<{children:React.Re
               </div>
             </Providers>
          
-      </OnBoardingRequiredLayout>
+      </OnBoardingRRequiredLayout>
   );
 }

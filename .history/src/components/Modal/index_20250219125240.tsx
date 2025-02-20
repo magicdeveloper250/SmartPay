@@ -69,8 +69,8 @@ export  function Modal({
             disabled={backButtonDisabled}
             className={`inline-flex items-center px-3 py-2 text-sm font-medium rounded-md transition-colors
               ${ backButtonDisabled 
-                ? "text-gray-400 bg-blue-100 border border-gray-200 cursor-not-allowed" 
-                : "text-gray-700 bg-blue border border-gray-300 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                ? "text-gray-400 bg-gray-100 border border-gray-200 cursor-not-allowed" 
+                : "text-gray-700 bg-white border border-gray-300 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
               }`}
           >
             <ChevronLeft className="h-4 w-4 mr-1" />

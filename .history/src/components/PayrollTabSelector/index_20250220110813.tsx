@@ -23,7 +23,7 @@ export default function PayrollTabSelector( ) {
  useEffect(()=>{
   const params = new URLSearchParams(searchParams);
   params.set('tab', "employees");
-  replace(`${pathname}?${params.toString()}`, {scroll:false});
+  replace(`${pathname}?${params.toString()}`);
  },[])
   
   return <div className="flex items-center justify-between border-b pb-3">
