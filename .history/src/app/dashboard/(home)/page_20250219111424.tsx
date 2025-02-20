@@ -20,8 +20,7 @@ export default async function Page( props: { params: Props }) {
   const extractTimeFrame = createTimeFrameExtractor(selected_time_frame);
 
   return (
-   <Suspense fallback={<OverviewCardsSkeleton/>}>
-     <DashboardLayout>
+    <DashboardLayout>
       <Suspense fallback={<OverviewCardsSkeleton />}>
         <OverviewCardsGroup />
       </Suspense>
@@ -57,6 +56,5 @@ export default async function Page( props: { params: Props }) {
         </Suspense>
       </div>
     </DashboardLayout>
-   </Suspense>
   );
 }

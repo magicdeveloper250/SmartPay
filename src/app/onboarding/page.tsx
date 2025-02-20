@@ -7,7 +7,7 @@ export default async function Page() {
   
   return (
     <Suspense fallback={<EmployeeDetailsSkeleton/>}>
-    <OnBoarding/>
+        <OnBoarding/>
     </Suspense>
   );
 }

@@ -2,8 +2,9 @@
 
 import { useRouter } from "next/navigation";
 import { onBoardingFinished } from "@/actions/companyActions";
-import { useEffect } from "react";
+import { Suspense, useEffect } from "react";
 import toast from "react-hot-toast";
+import { OverviewCardsSkeleton } from "@/app/dashboard/(home)/_components/overview-cards/skeleton";
 export default function OnBoardingRequiredLayout({
   children,
 }: {
@@ -27,5 +28,7 @@ export default function OnBoardingRequiredLayout({
     checkOnBoardingStatus();
   }, [router]);
 
-  return children;
+  return <Suspense fallback={<OverviewCardsSkeleton/>}>
+    {children}
+  </Suspense>;
 }
