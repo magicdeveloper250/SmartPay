@@ -363,7 +363,7 @@ export function A4Modal({
             )}
           </div>
 
-          <div>{children}</div>
+          <div className="p-4">{children}</div>
         </DialogPanel>
       </div>
     </Dialog>

@@ -327,9 +327,10 @@ export function A4Modal({
     <Dialog open={true} onClose={() => {}} className="relative z-50">
       <DialogBackdrop className="fixed inset-0 bg-black/50 backdrop-blur-none" />
 
-      <div className="fixed inset-0 flex w-screen justify-center h-screen overflow-y-auto">
+      {/* Adjust the container to align the modal to the right */}
+      <div className="fixed inset-0 flex w-screen justify-center p-4 h-screen overflow-y-auto">
         <DialogPanel
-          className={`w-[695px] transform rounded-xl bg-white transition-all h-fit`}
+          className={`w-[695px] transform rounded-xl bg-white shadow-2xl transition-all h-fit`}
         >
           <div className="flex items-center justify-between p-4 border-b">
             {onBack && (
@@ -363,7 +364,7 @@ export function A4Modal({
             )}
           </div>
 
-          <div>{children}</div>
+          <div className="p-4">{children}</div>
         </DialogPanel>
       </div>
     </Dialog>

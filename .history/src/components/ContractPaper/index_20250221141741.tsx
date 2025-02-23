@@ -25,7 +25,14 @@ const ContractPaper = ({ contractId }:{contractId:string}) => {
 
   return (
     <div className="w-full bg-white">
-      
+      {/* Header */}
+      <div className="border-b border-gray-200">
+        <h2 className="text-2xl font-bold text-gray-800 px-8 py-6">
+          Contract Terms
+        </h2>
+      </div>
+
+      {/* Content */}
       <div className="space-y-6">
         <div className="grid grid-cols-2 gap-4">
           <div className="px-8 py-4">

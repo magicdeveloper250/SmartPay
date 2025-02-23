@@ -331,7 +331,7 @@ export function A4Modal({
         <DialogPanel
           className={`w-[695px] transform rounded-xl bg-white transition-all h-fit`}
         >
-          <div className="flex items-center justify-between p-4 border-b">
+          <div className="flex items-center justify-between border-b">
             {onBack && (
               <div className="mb-6">
                 <button

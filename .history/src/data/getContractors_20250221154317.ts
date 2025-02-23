@@ -77,10 +77,9 @@ export async function getContractors(
         const netSalary = contract.salary - totalTaxes;
         return {
           ...contract,
-          taxes: contractor.appliedTaxes.map((appliedTax) => ({
-            ...appliedTax.tax, amount: contract.salary * appliedTax.tax.rate,})),
           totalTaxes: totalTaxes,
           netSalary: netSalary,
+          totalSalary:
         };
       });
     
@@ -106,12 +105,12 @@ export async function getContractors(
     const totalNetSalary=processedContractors.reduce((sum, contractor) => sum +  contractor.NetOverallSalary, 0)
     const TotalOverallSalaries= processedContractors.reduce((sum, contractor) => sum + contractor.TotalContractsSalaries, 0)
     const currency= "RWF"
-    const payrollContractors= {processedContractors, totalTaxes, totalNetSalary, TotalOverallSalaries, currency}
+    const payroll= {processedContractors, totalTaxes, totalNetSalary, TotalOverallSalaries, currency}
 
     return id
       ? { contractor: contractors[0] || null }
       : {
-          contractors: payrollContractors,
+          payroll,
           pagination: {
             page,
             pageSize,

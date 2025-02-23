@@ -9,94 +9,104 @@ const ContractPaper = ({ contractId }:{contractId:string}) => {
     return new Date(date).toISOString().split('T')[0];
   };
  
+
   const getContract= async()=>{
     try {
       const resp= await fetch(`/api/contract/?id=${contractId}`);
       const data= await resp.json();
       setContractTerms(data.contract)
+      
     } catch (error) {
       toast.error("Unable to fetch Contract");
+      
     }
   }
 
   useEffect(()=>{
     getContract()
-  }, [contractId])
+  })
 
   return (
-    <div className="w-full bg-white">
-      
-      <div className="space-y-6">
+    <div className="w-full max-w-xl mx-auto bg-white rounded-lg shadow-lg overflow-hidden">
+      <div className="border-b border-gray-200 px-6 py-4">
+        <h2 className="text-2xl font-bold text-gray-800">
+          Contract Terms
+        </h2>
+      </div>
+
+      <div className="p-6 space-y-6">
         <div className="grid grid-cols-2 gap-4">
-          <div className="px-8 py-4">
+          <div>
             <label className="block text-sm font-medium text-gray-600 mb-1">
               Contract ID
             </label>
-            <div className="text-gray-800 bg-gray-50 p-2 rounded">
+            <div className="text-gray-800 bg-gray-50 p-2 rounded-md">
               {contractTerms?.id}
             </div>
           </div>
-          <div className="px-8 py-4">
+          <div>
             <label className="block text-sm font-medium text-gray-600 mb-1">
               Company ID
             </label>
-            <div className="text-gray-800 bg-gray-50 p-2 rounded">
+            <div className="text-gray-800 bg-gray-50 p-2 rounded-md">
               {contractTerms?.companyId}
             </div>
           </div>
         </div>
 
-        <div className="px-8 py-4">
+        <div>
           <label className="block text-sm font-medium text-gray-600 mb-1">
             Contractor ID
           </label>
-          <div className="text-gray-800 bg-gray-50 p-2 rounded">
+          <div className="text-gray-800 bg-gray-50 p-2 rounded-md">
             {contractTerms?.contractorId}
           </div>
         </div>
 
-        <div className="px-8 py-4">
+        <div>
           <label className="block text-sm font-medium text-gray-600 mb-1">
             Salary
           </label>
-          <div className="text-gray-800 bg-gray-50 p-2 rounded">
-            {new Intl.NumberFormat('en-US', {
-              style: 'currency',
-              currency: "USD"
-            }).format(contractTerms?.salary || 0)}
+          <div className="text-gray-800 bg-gray-50 p-2 rounded-md">
+            {    new Intl.NumberFormat('en-US', {
+            style: 'currency',
+            currency: "USD"
+          }).format(contractTerms?.salary ||0)}
           </div>
         </div>
 
         <div className="grid grid-cols-2 gap-4">
-          <div className="px-8 py-4">
+          <div>
             <label className="block text-sm font-medium text-gray-600 mb-1">
               Start Date
             </label>
-            <div className="text-gray-800 bg-gray-50 p-2 rounded">
+            <div className="text-gray-800 bg-gray-50 p-2 rounded-md">
               {formatDate(contractTerms?.startDate || new Date())}
             </div>
           </div>
-          <div className="px-8 py-4">
+          <div>
             <label className="block text-sm font-medium text-gray-600 mb-1">
               End Date
             </label>
-            <div className="text-gray-800 bg-gray-50 p-2 rounded">
+            <div className="text-gray-800 bg-gray-50 p-2 rounded-md">
               {formatDate(contractTerms?.endDate || new Date())}
             </div>
           </div>
         </div>
 
-        <div className="px-8 py-4">
+        {/* Notes */}
+        <div>
           <label className="block text-sm font-medium text-gray-600 mb-1">
             Notes
           </label>
-          <div className="text-gray-800 bg-gray-50 p-2 rounded min-h-[100px] whitespace-pre-wrap">
+          <div className="text-gray-800 bg-gray-50 p-2 rounded-md min-h-[100px] whitespace-pre-wrap">
             {contractTerms?.notes || 'No notes provided'}
           </div>
         </div>
 
-        <div className="grid grid-cols-2 gap-4 border-t border-gray-200 mt-6">
-          <div className="px-8 py-4">
+        {/* Timestamps */}
+        <div className="grid grid-cols-2 gap-4 border-t border-gray-200 pt-4 mt-6">
+          <div>
             <label className="block text-sm font-medium text-gray-600 mb-1">
               Created At
             </label>
@@ -104,7 +114,7 @@ const ContractPaper = ({ contractId }:{contractId:string}) => {
               {new Date(contractTerms?.createdAt || new Date()).toLocaleString()}
             </div>
           </div>
-          <div className="px-8 py-4">
+          <div>
             <label className="block text-sm font-medium text-gray-600 mb-1">
               Updated At
             </label>

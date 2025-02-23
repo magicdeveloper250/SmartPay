@@ -77,8 +77,6 @@ export async function getContractors(
         const netSalary = contract.salary - totalTaxes;
         return {
           ...contract,
-          taxes: contractor.appliedTaxes.map((appliedTax) => ({
-            ...appliedTax.tax, amount: contract.salary * appliedTax.tax.rate,})),
           totalTaxes: totalTaxes,
           netSalary: netSalary,
         };

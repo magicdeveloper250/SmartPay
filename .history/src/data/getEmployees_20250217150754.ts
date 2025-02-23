@@ -139,26 +139,26 @@ export async function getPayrollEmployees(
     });
  
     const processedEmployees = employees.map((employee) => {
-          const totalAdditions = employee.additionalIncomes.reduce((sum, income) => sum + income.amount, 0);
-          const totalDeductions= employee.deductions.reduce((sum, deduction) => sum + deduction.amount, 0);
-          const totalTaxes = employee.appliedTaxes.reduce((sum, tax) => sum + (employee.monthlyGross * tax.tax.rate), 0);
-          const netSalary = employee.monthlyGross - (totalTaxes+totalDeductions) + totalAdditions;
-      
-          return {
-            ...employee,
-            additionalIncomes: employee.additionalIncomes.map((income) => ({
-              id:income.id,
-              type: income.income_type,
-              amount: income.amount,
-            })),
-            taxes: employee.appliedTaxes.map((tax) => ({
-              id:tax.id,
-              rate:tax.tax.rate,
-              type: tax.tax.name,
-              amount: employee.monthlyGross * tax.tax.rate,
-            })),
-            netSalary: netSalary,
-          };
+    const totalAdditions = employee.additionalIncomes.reduce((sum, income) => sum + income.amount, 0);
+    const totalDeductions= employee.deductions.reduce((sum, deduction) => sum + deduction.amount, 0);
+    const totalTaxes = employee.appliedTaxes.reduce((sum, tax) => sum + (employee.monthlyGross * tax.tax.rate), 0);
+    const netSalary = employee.monthlyGross - (totalTaxes+totalDeductions) + totalAdditions;
+ 
+    return {
+      ...employee,
+      additionalIncomes: employee.additionalIncomes.map((income) => ({
+        id:income.id,
+        type: income.income_type,
+        amount: income.amount,
+      })),
+      taxes: employee.appliedTaxes.map((tax) => ({
+        id:tax.id,
+        rate:tax.tax.rate,
+        type: tax.tax.name,
+        amount: employee.monthlyGross * tax.tax.rate,
+      })),
+      netSalary: netSalary,
+    };
   });
  
     const totalCount = await prisma.employee.count({

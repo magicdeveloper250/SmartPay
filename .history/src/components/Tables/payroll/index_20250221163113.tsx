@@ -1,5 +1,3 @@
-
-
 import {
   Table,
   TableBody,
@@ -236,7 +234,6 @@ export default async function Page({ tab, query, currentPage }: { query: string;
           <ul className="divide-y divide-gray-200  rounded-lg">
             {employee.deductions.map((deduction, index) => (
               <li key={index} className="grid grid-cols-1 text-sm">
-
                 <span className="p-2 border-r  font-extrabold">
                   {deduction.reason}
                 </span>
