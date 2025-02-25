@@ -26,6 +26,8 @@
     "date-fns": "^3.4.0",
     "dayjs": "^1.11.13",
     "flatpickr": "^4.6.13",
+    "flutterwave-node-v3": "^1.1.14",
+    "framer-motion": "^12.4.7",
     "gray-matter": "^4.0.3",
     "heroicons": "^2.2.0",
     "jsvectormap": "^1.6.0",
