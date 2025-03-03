@@ -35,3 +35,22 @@ export type PayrollReturnType =
   export type payrollWithContractor = Prisma.PayrollGetPayload<typeof payrollWithContractorData>
 
   export type PayrollWithPerson = payrollWithEmployee | payrollWithContractor;
+  export type PayrollHistoryData = {
+    months: string[];
+    paidAmounts: number[];
+    dueAmounts: number[];
+    totalPaid: number;
+    totalDue: number;
+    currency:string;
+  };
+
+  export enum PayrollTimeRange {
+    THISMONTH = "THISMONTH",
+    LASTMONTH = "LASTMONTH",
+    THISYEAR = "THISYEAR",
+    LASTYEAR = "LASTYEAR",
+    LAST3MONTHS = "LAST3MONTHS",
+    LAST6MONTHS = "LAST6MONTHS",
+    LAST12MONTHS = "LAST12MONTHS",
+  }
+  

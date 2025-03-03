@@ -132,7 +132,7 @@ export default function ExportControl({ query, page, type }: ExportControlProps)
                        transition-all duration-200 ease-in-out
                        ${isExporting 
                          ? 'bg-gray-50 text-gray-400 cursor-not-allowed'
-                         : 'bg-gradient-to-r from-indigo-600 to-indigo-700 text-white hover:from-indigo-700 hover:to-indigo-800'
+                         : 'bg-gradient-to-r from-primary to-indigo-700 text-white hover:from-indigo-700 hover:to-primary'
                        }`}
           >
             {isExporting ? (
@@ -150,7 +150,7 @@ export default function ExportControl({ query, page, type }: ExportControlProps)
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" 
                         d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/>
                 </svg>
-                Export Data
+                Submit Payroll
               </>
             )}
           </button>

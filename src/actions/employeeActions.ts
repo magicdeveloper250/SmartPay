@@ -1,5 +1,5 @@
 "use server"
-import { employeeSchema, employeeSchemaType } from "@/validations/employeeSchema";
+import { editEmployeeSchemaType, employeeSchema, employeeSchemaType } from "@/validations/employeeSchema";
 import { prisma } from "@/utils/prismaDB";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/utils/auth";
@@ -43,6 +43,7 @@ export async function createEmployee(formData:employeeSchemaType) {
     })])
 
       revalidatePath("/dashboard/employees/internal");
+      revalidatePath(`/dashboard/payroll/internal?tab=employees`);
   } catch (error) {
   return  handleActionsPrismaError(error)
   }
@@ -87,6 +88,7 @@ try {
   })])
 
     revalidatePath(`/employee/internal/${employeeId}`);
+    revalidatePath(`/dashboard/payroll/internal?tab=employees`);
 } catch (error) {
 return  handleActionsPrismaError(error)
 }
@@ -136,6 +138,7 @@ export async function addEmployeeBenefit(employeeId: string, benefit:string) {
     }
 
     revalidatePath(`/employee/internal/${employeeId}`);
+    revalidatePath(`/dashboard/payroll/internal?tab=employees`);
   } catch (error) {
     return handleActionsPrismaError(error);
   }
@@ -157,6 +160,7 @@ export async function deleteEmployeeBenefit(id:string, employeeId: string, benef
     }
 
     revalidatePath(`/employee/internal/${employeeId}`);
+    revalidatePath(`/dashboard/payroll/internal?tab=employees`);
   } catch (error) {
     return handleActionsPrismaError(error);
   }
@@ -178,6 +182,7 @@ export async function addEmployeeTax(employeeId: string, taxId:string) {
 
     
     revalidatePath(`/employee/internal/${employeeId}`);
+    revalidatePath(`/dashboard/payroll/internal?tab=employees`);
   } catch (error) {
     return handleActionsPrismaError(error);
   }
@@ -194,6 +199,7 @@ export async function deleteEmployeeTax( taxId: string, employeeId: string,) {
     });
 
     revalidatePath(`/employee/internal/${employeeId}`);
+    revalidatePath(`/dashboard/payroll/internal?tab=employees`);
   } catch (error) {
     return handleActionsPrismaError(error);
   }
@@ -210,6 +216,7 @@ export async function deleteEmployeeIncome( incomeId: string, employeeId: string
     });
 
     revalidatePath(`/employee/internal/${employeeId}`);
+    revalidatePath(`/dashboard/payroll/internal?tab=employees`);
   } catch (error) {
     return handleActionsPrismaError(error);
   }
@@ -229,6 +236,7 @@ export async function changeEmployeeIncomeStatus( incomeId: string, employeeId: 
     });
 
     revalidatePath(`/employee/internal/${employeeId}`);
+    revalidatePath(`/dashboard/payroll/internal?tab=employees`);
   } catch (error) {
     return handleActionsPrismaError(error);
   }
@@ -246,6 +254,7 @@ export async function deleteEmployeeDeduction( deductionId: string, employeeId: 
     });
 
     revalidatePath(`/employee/internal/${employeeId}`);
+    revalidatePath(`/dashboard/payroll/internal?tab=employees`);
   } catch (error) {
     return handleActionsPrismaError(error);
   }
@@ -265,6 +274,48 @@ export async function changeEmployeeDeductionStatus( deductionId: string, employ
     });
 
     revalidatePath(`/employee/internal/${employeeId}`);
+    revalidatePath(`/dashboard/payroll/internal?tab=employees`);
+  } catch (error) {
+    return handleActionsPrismaError(error);
+  }
+}
+
+
+
+
+export async function updateEmployeeData(employeeId:string, employeeData: editEmployeeSchemaType) {
+  try {
+    const session = await getServerSession(authOptions);
+    if (!session?.user) {
+      return {"error":"Unauthorized"};
+    }
+
+    const company = await prisma.company.findFirstOrThrow({ 
+      where: { adminEmail: session.user.email as string },
+    
+    });
+    if (!company)  
+      return {"error": "Company not found"}
+    await prisma.employee.update({
+      where:{id:employeeId},
+      data:{
+        firstName:employeeData.firstName,
+        secondName:employeeData.secondName,
+        email:employeeData.email,
+        phoneNumber:employeeData.phoneNumber,
+        address:employeeData.address,
+        employeeID:employeeData.employeeID,
+        nationalID:employeeData.nationalID,
+        jobTitle:employeeData.jobTitle,
+        department:employeeData.department,
+        startDate:new Date(employeeData.startDate).toISOString(),
+        monthlyGross:employeeData.monthlyGross
+      }
+
+    })
+   
+    revalidatePath(`/employee/internal/${employeeData.id}`);
+    return Promise.resolve(employeeData);
   } catch (error) {
     return handleActionsPrismaError(error);
   }

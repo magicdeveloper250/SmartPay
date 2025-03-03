@@ -1,31 +1,44 @@
 import { compactFormat } from "@/lib/format-number";
-import { getOverviewData } from "../../fetch";
 import { OverviewCard } from "./card";
-import * as icons from "./icons";
+import { getOverviewData } from "@/actions/dashboardActions";
+import { UserCheck, Users, ListCheck } from "lucide-react";
 
 export async function OverviewCardsGroup() {
-  const { views, profit, products, users } = await getOverviewData();
+  const overviewData = await getOverviewData();
+
+  if ("error" in overviewData) {
+    return <div className="text-red-500">Error: {overviewData.error}</div>;
+  }
+
+  const { users, payrolls } = overviewData;
+  
 
   return (
-    <div className="grid gap-4 sm:grid-cols-2 sm:gap-6 xl:grid-cols-4 2xl:gap-7.5">
- 
- 
-
+    <div className="grid gap-4 sm:grid-cols-2 sm:gap-2 xl:grid-cols-2 2xl:gap-7.5 place-content-center">
       <OverviewCard
         label="Total Employees"
         data={{
-          ...users,
-          value: compactFormat(users.value),
+          value: compactFormat(users.employees.value),
+          growthRate: users.employees.growthRate,
         }}
-        Icon={icons.Users}
+        Icon={Users}
       />
-       <OverviewCard
+      <OverviewCard
         label="Total Contractors"
         data={{
-          ...users,
-          value: compactFormat(users.value),
+          value: compactFormat(users.contractors.value),  
+          growthRate: users.contractors.growthRate,  
         }}
-        Icon={icons.Users}
+        Icon={UserCheck}
+      />
+
+      <OverviewCard
+        label="Total Payrolls"
+        data={{
+          value: compactFormat(payrolls.count),  
+          growthRate: payrolls.employees.growthRate,  
+        }}
+        Icon={ListCheck}
       />
     </div>
   );

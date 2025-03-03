@@ -1,6 +1,16 @@
-import { Contractor, ContractTerms,  } from "@prisma/client";
+import { Contractor, ContractTerms, } from "@prisma/client";
+import { Prisma } from '@prisma/client';
 
-export type ContractorWithContractorTerms = Contractor & {
-  
-    contractsTerms:ContractTerms
-};
+ const ContractorWithContractorTermsData = Prisma.validator<Prisma.ContractorFindFirstArgs>()({
+    include: {
+        benefits: true,
+        salaries: true,
+        contractsTerms:true,
+        appliedTaxes:true
+      },
+  })
+
+
+ 
+
+export type ContractorWithContractorTerms = Prisma.ContractorGetPayload<typeof ContractorWithContractorTermsData>

@@ -168,14 +168,46 @@ export async function SavePayroll(
           deductions: employee.deductions,
           salary: employee.monthlyGross,
           netSalary: netSalary,
+          totalAdditions:totalAdditions,
+          totalTaxes:totalTaxes,
+          totalDeductions:totalDeductions
         };
       });
 
+      const totolGrossAmount=  processedPayrollEmployees.reduce(
+        (sum, employee) => sum +employee.salary,
+        0
+      );
+
+
+      const totolNetAmount=  processedPayrollEmployees.reduce(
+        (sum, employee) => sum +employee.netSalary,
+        0
+      );
+      const totolTaxesAmount=  processedPayrollEmployees.reduce(
+        (sum, employee) => sum +employee.totalTaxes,
+        0
+      );
+
+      const totolAdditionalAmount=  processedPayrollEmployees.reduce(
+        (sum, employee) => sum +employee.totalAdditions,
+        0
+      );
+      const  totolDeductions=  processedPayrollEmployees.reduce(
+        (sum, employee) => sum +employee.totalDeductions,
+        0
+      );
       const mainPayroll = await tx.mainPayroll.create({
         data: {
           paymentDate:  payDate.toISOString(),
           companyId: company.id,
-          payrollType: PayrollType.EMPLOYEE
+          payrollType: PayrollType.EMPLOYEE,
+          totalGrossAmount: totolGrossAmount,
+          totalAdditionalIncomeAmount:totolAdditionalAmount,
+          totalNetAmount:totolNetAmount,
+          totalTaxesAmount:totolTaxesAmount,
+          totalDeductionAmount:totolDeductions
+
         }
       });
 

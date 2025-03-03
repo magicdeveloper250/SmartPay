@@ -1,0 +1,104 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2560 1440">
+  <!-- Dark blue gradient background -->
+  <defs>
+    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#051937" />
+      <stop offset="100%" stop-color="#082b5c" />
+    </linearGradient>
+    
+    <!-- Grid pattern -->
+    <pattern id="grid" width="100" height="100" patternUnits="userSpaceOnUse">
+      <path d="M 100 0 L 0 0 0 100" fill="none" stroke="#0a3874" stroke-width="0.5" opacity="0.3"/>
+    </pattern>
+    
+    <!-- Glow filter -->
+    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="10" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+  </defs>
+
+  <!-- Base background -->
+  <rect width="2560" height="1440" fill="url(#bgGradient)" />
+  
+  <!-- Grid overlay -->
+  <rect width="2560" height="1440" fill="url(#grid)" />
+  
+  <!-- Abstract data visualizations -->
+  <!-- Left side data points -->
+  <g opacity="0.7">
+    <circle cx="400" cy="300" r="4" fill="#4fc3f7" />
+    <circle cx="450" cy="350" r="4" fill="#4fc3f7" />
+    <circle cx="500" cy="280" r="4" fill="#4fc3f7" />
+    <circle cx="550" cy="400" r="4" fill="#4fc3f7" />
+    <circle cx="600" cy="320" r="4" fill="#4fc3f7" />
+    
+    <line x1="400" y1="300" x2="450" y2="350" stroke="#4fc3f7" stroke-width="1" opacity="0.5" />
+    <line x1="450" y1="350" x2="500" y2="280" stroke="#4fc3f7" stroke-width="1" opacity="0.5" />
+    <line x1="500" y1="280" x2="550" y2="400" stroke="#4fc3f7" stroke-width="1" opacity="0.5" />
+    <line x1="550" y1="400" x2="600" y2="320" stroke="#4fc3f7" stroke-width="1" opacity="0.5" />
+  </g>
+  
+  <!-- Right side data points -->
+  <g opacity="0.7">
+    <circle cx="1800" cy="400" r="4" fill="#64ffda" />
+    <circle cx="1850" cy="450" r="4" fill="#64ffda" />
+    <circle cx="1900" cy="380" r="4" fill="#64ffda" />
+    <circle cx="1950" cy="500" r="4" fill="#64ffda" />
+    <circle cx="2000" cy="420" r="4" fill="#64ffda" />
+    
+    <line x1="1800" y1="400" x2="1850" y2="450" stroke="#64ffda" stroke-width="1" opacity="0.5" />
+    <line x1="1850" y1="450" x2="1900" y2="380" stroke="#64ffda" stroke-width="1" opacity="0.5" />
+    <line x1="1900" y1="380" x2="1950" y2="500" stroke="#64ffda" stroke-width="1" opacity="0.5" />
+    <line x1="1950" y1="500" x2="2000" y2="420" stroke="#64ffda" stroke-width="1" opacity="0.5" />
+  </g>
+  
+  <!-- Digital particles -->
+  <g>
+    <circle cx="800" cy="200" r="2" fill="#ffffff" opacity="0.8" />
+    <circle cx="1200" cy="300" r="1.5" fill="#ffffff" opacity="0.6" />
+    <circle cx="1600" cy="250" r="2" fill="#ffffff" opacity="0.7" />
+    <circle cx="400" cy="700" r="1.5" fill="#ffffff" opacity="0.5" />
+    <circle cx="1000" cy="800" r="2" fill="#ffffff" opacity="0.7" />
+    <circle cx="1800" cy="900" r="1.5" fill="#ffffff" opacity="0.6" />
+    <circle cx="2200" cy="600" r="2" fill="#ffffff" opacity="0.8" />
+    <circle cx="900" cy="1100" r="1.5" fill="#ffffff" opacity="0.5" />
+    <circle cx="1500" cy="1000" r="2" fill="#ffffff" opacity="0.7" />
+    <circle cx="2000" cy="1200" r="1.5" fill="#ffffff" opacity="0.6" />
+  </g>
+  
+  <!-- Abstract data flow lines -->
+  <g opacity="0.2">
+    <!-- Horizontal lines -->
+    <line x1="0" y1="400" x2="2560" y2="400" stroke="#4fc3f7" stroke-width="1" />
+    <line x1="0" y1="800" x2="2560" y2="800" stroke="#4fc3f7" stroke-width="1" />
+    <line x1="0" y1="1200" x2="2560" y2="1200" stroke="#4fc3f7" stroke-width="1" />
+    
+    <!-- Vertical lines -->
+    <line x1="640" y1="0" x2="640" y2="1440" stroke="#4fc3f7" stroke-width="1" />
+    <line x1="1280" y1="0" x2="1280" y2="1440" stroke="#4fc3f7" stroke-width="1" />
+    <line x1="1920" y1="0" x2="1920" y2="1440" stroke="#4fc3f7" stroke-width="1" />
+  </g>
+  
+  <!-- Glowing orbs representing data nodes -->
+  <circle cx="1280" cy="720" r="120" fill="#0a4d92" opacity="0.15" filter="url(#glow)" />
+  <circle cx="640" cy="480" r="80" fill="#0a92b8" opacity="0.1" filter="url(#glow)" />
+  <circle cx="1920" cy="960" r="100" fill="#0a92b8" opacity="0.1" filter="url(#glow)" />
+  
+  <!-- Abstract financial symbols/elements -->
+  <g opacity="0.3">
+    <!-- Dollar sign -->
+    <path d="M1200 600 C1200 585 1215 585 1215 570 C1215 555 1200 555 1200 540 L1200 525 L1185 525 L1185 540 C1185 555 1170 555 1170 570 C1170 585 1185 585 1185 600 L1185 615 L1200 615 Z" fill="#64ffda" />
+    
+    <!-- Percent sign -->
+    <path d="M1360 600 C1375 600 1375 585 1360 585 C1345 585 1345 600 1360 600 M1340 620 L1380 580 M1360 580 C1345 580 1345 565 1360 565 C1375 565 1375 580 1360 580" stroke="#64ffda" stroke-width="2" fill="none" />
+    
+    <!-- Hash/number sign -->
+    <path d="M1270 565 L1270 605 M1290 565 L1290 605 M1260 575 L1300 575 M1260 595 L1300 595" stroke="#64ffda" stroke-width="2" />
+  </g>
+  
+  <!-- Digital binary code suggestion -->
+  <text x="400" y="900" font-family="monospace" font-size="12" fill="#4fc3f7" opacity="0.3">10010110</text>
+  <text x="1800" y="700" font-family="monospace" font-size="12" fill="#4fc3f7" opacity="0.3">01101001</text>
+  <text x="1000" y="1100" font-family="monospace" font-size="12" fill="#4fc3f7" opacity="0.3">11001010</text>
+</svg>

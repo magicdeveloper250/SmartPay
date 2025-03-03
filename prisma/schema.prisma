@@ -11,7 +11,7 @@ generator client {
 model PredefinedTax {
   id           String       @id @default(auto()) @map("_id") @db.ObjectId
   rate         Float
-  name         String       @unique
+  name         String       
   min          Float
   max          Float?
   companyId    String       @db.ObjectId
@@ -50,6 +50,8 @@ model Company {
   Benefits           Benefit[]
   predefinedTaxes    PredefinedTax[]
   payrolls            MainPayroll[]
+  settings           Settings?
+  payrollSettings    PayrollSettings?
   createdAt          DateTime        @default(now())
   updatedAt          DateTime        @updatedAt
 }
@@ -241,6 +243,12 @@ model MainPayroll {
   contractTerms               ContractTerms[]
   companyId                   String?            @db.ObjectId
   company                     Company?            @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  paymentHistory              PaymentHistory[]
+  totalGrossAmount            Float?
+  totalNetAmount              Float?
+  totalTaxesAmount            Float?
+  totalAdditionalIncomeAmount Float?
+  totalDeductionAmount        Float?
 }
 
 model Payroll {
@@ -262,6 +270,7 @@ model Payroll {
   mainPayroll                 MainPayroll?        @relation(fields: [mainPayollId], references: [id])
   contractId                  String?            @db.ObjectId
   contract                   ContractTerms?        @relation(fields: [contractId], references: [id])
+  paymentHistory              PaymentHistory[]
    
   @@index([mainPayollId])
   @@index([employeeId])
@@ -343,6 +352,7 @@ enum Currency {
   ZAR
   BRL
   AED
+  RWF
 }
 
 enum TaxType {
@@ -372,3 +382,72 @@ enum PaymentMethod {
   crypto
   phone
 }
+
+model Settings {
+  id                String   @id @default(auto()) @map("_id") @db.ObjectId
+  companyId         String   @unique @db.ObjectId
+  company           Company  @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  defaultCurrency   Currency @default(USD)
+  payrollStartDate  Int      @default(1)     
+  payrollEndDate    Int      @default(30)     
+  paymentDay        Int      @default(5)      
+  taxCalculation    TaxCalculationType @default(PROGRESSIVE)
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+}
+
+enum TaxCalculationType {
+  PROGRESSIVE
+  FLAT_RATE
+}
+
+model PaymentHistory {
+  id              String        @id @default(auto()) @map("_id") @db.ObjectId
+  amount          Float
+  currency        Currency
+  status          PaymentStatus
+  paymentMethod   PaymentMethod
+  reference       String?       // Payment reference/transaction ID
+  payrollId       String?       @db.ObjectId
+  payroll         Payroll?     @relation(fields: [payrollId], references: [id])
+  mainPayrollId   String?      @db.ObjectId
+  mainPayroll     MainPayroll? @relation(fields: [mainPayrollId], references: [id])
+  recipientType   RecipientType
+  recipientId     String       @db.ObjectId   
+  description     String?
+  errorMessage    String?      
+  processedAt     DateTime?
+  createdAt       DateTime     @default(now())
+  updatedAt       DateTime     @updatedAt
+}
+
+model PayrollSettings {
+  id                      String   @id @default(auto()) @map("_id") @db.ObjectId
+  companyId              String   @unique @db.ObjectId
+  company                Company  @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  overtimeRate           Float    @default(1.5)    
+  weekendRate            Float    @default(2.0)     
+  holidayRate            Float    @default(2.0)     
+  maxOvertimeHours       Int      @default(40)     
+  minWorkingHours        Int      @default(160)    
+  taxDeductionOrder     String[]  
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+}
+
+enum RecipientType {
+  EMPLOYEE
+  CONTRACTOR
+}
+
+enum BillingFrequency {
+  WEEKLY
+  BIWEEKLY
+  MONTHLY
+  QUARTERLY
+  SEMI_ANNUALLY
+  ANNUALLY
+}
+
+
+

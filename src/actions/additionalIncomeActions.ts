@@ -7,7 +7,6 @@ import { deductionSchema, deductionSchemaType } from "@/validations/deductionSch
 
 
 export async function addAdditionalIncome(formData: AdditionalIncomeSchemaType, employeeId: string) {
-  console.log(formData)
   const result = additionalIncomeSchema.safeParse(formData);
 
   if (!result.success) {
@@ -24,7 +23,7 @@ export async function addAdditionalIncome(formData: AdditionalIncomeSchemaType, 
       data: { 
         ...formData,
         employeeId,
-        incomeType: formData.income_type  
+        incomeType: formData.incomeType
       }
     })
 

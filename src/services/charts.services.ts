@@ -1,3 +1,5 @@
+import { PaymentStatus } from "@prisma/client";
+
 export async function getDevicesUsedData(
   timeFrame?: "monthly" | "yearly" | (string & {}),
 ) {
@@ -94,44 +96,13 @@ export async function getPaymentsOverviewData(
   };
 }
 
-export async function getWeeksProfitData(timeFrame?: string) {
+ 
+export async function getWeeksProfitData(timeFrame?: string, status?: PaymentStatus) {
   // Fake delay
   await new Promise((resolve) => setTimeout(resolve, 1000));
-
-  if (timeFrame === "payment") {
-    return {
-      payment: [
-        { x: "Sat", y: 33 },
-        { x: "Sun", y: 44 },
-        { x: "Mon", y: 31 },
-        { x: "Tue", y: 57 },
-        { x: "Wed", y: 12 },
-        { x: "Thu", y: 33 },
-        { x: "Fri", y: 55 },
-      ],
-      paid: [
-        { x: "Sat", y: 10 },
-        { x: "Sun", y: 20 },
-        { x: "Mon", y: 17 },
-        { x: "Tue", y: 7 },
-        { x: "Wed", y: 10 },
-        { x: "Thu", y: 23 },
-        { x: "Fri", y: 13 },
-      ],
-      pending: [
-        { x: "Sat", y: 10 },
-        { x: "Sun", y: 20 },
-        { x: "Mon", y: 17 },
-        { x: "Tue", y: 7 },
-        { x: "Wed", y: 10 },
-        { x: "Thu", y: 23 },
-        { x: "Fri", y: 13 },
-      ],
-    };
-  }
-
-  return {
-    payment: [
+  
+  let baseData = {
+    Payment: [
       { x: "Sat", y: 44 },
       { x: "Sun", y: 55 },
       { x: "Mon", y: 41 },
@@ -140,7 +111,7 @@ export async function getWeeksProfitData(timeFrame?: string) {
       { x: "Thu", y: 43 },
       { x: "Fri", y: 65 },
     ],
-    paid: [
+    Paid: [
       { x: "Sat", y: 13 },
       { x: "Sun", y: 23 },
       { x: "Mon", y: 20 },
@@ -149,7 +120,7 @@ export async function getWeeksProfitData(timeFrame?: string) {
       { x: "Thu", y: 27 },
       { x: "Fri", y: 15 },
     ],
-    pending: [
+    Pending: [
       { x: "Sat", y: 13 },
       { x: "Sun", y: 23 },
       { x: "Mon", y: 20 },
@@ -157,8 +128,109 @@ export async function getWeeksProfitData(timeFrame?: string) {
       { x: "Wed", y: 13 },
       { x: "Thu", y: 27 },
       { x: "Fri", y: 15 },
+    ],
+    Cancelled: [
+      { x: "Sat", y: 5 },
+      { x: "Sun", y: 7 },
+      { x: "Mon", y: 3 },
+      { x: "Tue", y: 6 },
+      { x: "Wed", y: 2 },
+      { x: "Thu", y: 4 },
+      { x: "Fri", y: 8 },
+    ],
+    Failed: [
+      { x: "Sat", y: 3 },
+      { x: "Sun", y: 2 },
+      { x: "Mon", y: 5 },
+      { x: "Tue", y: 4 },
+      { x: "Wed", y: 3 },
+      { x: "Thu", y: 2 },
+      { x: "Fri", y: 4 },
+    ],
+    Ready: [
+      { x: "Sat", y: 10 },
+      { x: "Sun", y: 12 },
+      { x: "Mon", y: 8 },
+      { x: "Tue", y: 14 },
+      { x: "Wed", y: 6 },
+      { x: "Thu", y: 9 },
+      { x: "Fri", y: 11 },
     ],
   };
+
+  // Payment timeFrame data
+  if (timeFrame === "payment") {
+    baseData = {
+      Payment: [
+        { x: "Sat", y: 33 },
+        { x: "Sun", y: 44 },
+        { x: "Mon", y: 31 },
+        { x: "Tue", y: 57 },
+        { x: "Wed", y: 12 },
+        { x: "Thu", y: 33 },
+        { x: "Fri", y: 55 },
+      ],
+      Paid: [
+        { x: "Sat", y: 10 },
+        { x: "Sun", y: 20 },
+        { x: "Mon", y: 17 },
+        { x: "Tue", y: 7 },
+        { x: "Wed", y: 10 },
+        { x: "Thu", y: 23 },
+        { x: "Fri", y: 13 },
+      ],
+      Pending: [
+        { x: "Sat", y: 10 },
+        { x: "Sun", y: 20 },
+        { x: "Mon", y: 17 },
+        { x: "Tue", y: 7 },
+        { x: "Wed", y: 10 },
+        { x: "Thu", y: 23 },
+        { x: "Fri", y: 13 },
+      ],
+      Cancelled: [
+        { x: "Sat", y: 4 },
+        { x: "Sun", y: 5 },
+        { x: "Mon", y: 2 },
+        { x: "Tue", y: 5 },
+        { x: "Wed", y: 1 },
+        { x: "Thu", y: 3 },
+        { x: "Fri", y: 6 },
+      ],
+      Failed: [
+        { x: "Sat", y: 2 },
+        { x: "Sun", y: 1 },
+        { x: "Mon", y: 3 },
+        { x: "Tue", y: 2 },
+        { x: "Wed", y: 2 },
+        { x: "Thu", y: 1 },
+        { x: "Fri", y: 3 },
+      ],
+      Ready: [
+        { x: "Sat", y: 7 },
+        { x: "Sun", y: 8 },
+        { x: "Mon", y: 6 },
+        { x: "Tue", y: 9 },
+        { x: "Wed", y: 4 },
+        { x: "Thu", y: 6 },
+        { x: "Fri", y: 8 },
+      ],
+    };
+  }
+
+  // Filter data based on status
+  if (status && status !== PaymentStatus.All) {
+    const statusKey = status.toLowerCase() as keyof typeof baseData;
+    if (statusKey in baseData) {
+      return {
+        [statusKey]: baseData[statusKey]
+      };
+    }
+    // Return empty data if status doesn't exist
+    return {};
+  }
+
+  return baseData;
 }
 
 export async function getCampaignVisitorsData() {

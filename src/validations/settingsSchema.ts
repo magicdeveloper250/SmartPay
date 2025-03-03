@@ -1,0 +1,82 @@
+import { z } from 'zod'
+import { Currency } from '@prisma/client'
+
+// Company profile schema
+export const CompanyProfileSchema = z.object({
+  name: z.string().min(1, "Company name is required"),
+  email: z.string().email("Invalid email address"),
+  pensionCode: z.string().min(1, "Pension code is required"),
+  industry: z.string().min(1, "Industry is required"),
+  country: z.string().min(1, "Country is required"),
+  city: z.string().min(1, "City is required"),
+})
+
+// General settings schema
+export const GeneralSettingsSchema = z.object({
+  id: z.string().optional(),
+  defaultCurrency:z.nativeEnum(Currency, { message: "Invalid currency selected" }),
+  payrollStartDate: z.number().min(1).max(31),
+  payrollEndDate: z.number().min(1).max(31),
+  paymentDay: z.number().min(1).max(31),
+})
+
+// Payroll settings schema
+export const PayrollSettingsSchema = z.object({
+  id: z.string().optional(),
+  overtimeRate: z.number().min(1),
+  weekendRate: z.number().min(1),
+  holidayRate: z.number().min(1),
+  maxOvertimeHours: z.number().min(0),
+  minWorkingHours: z.number().min(0),
+  taxDeductionOrder: z.array(z.string())
+})
+
+const TaxSettingsSchema = z.object({
+  id: z.string().optional(),
+  name: z.string().min(1, "Tax name is required"),
+  rate: z.number().min(0, "Rate must be at least 0").max(100, "Rate cannot exceed 100%"),
+  min: z.number().min(0, "Minimum value must be at least 0"),
+  max: z.number().nullable().optional().refine(
+    (val) => val === null || val === undefined || val > 0, 
+    { message: "Maximum value must be greater than 0 if provided" }
+  ),
+});
+// Wrapped schemas (for form sections)
+
+export const TaxFormSchema = z.object({
+  tax: TaxSettingsSchema
+});
+
+export const TaxesArraySchema = z.object({
+  taxes: z.array(TaxFormSchema)
+});
+
+
+
+export const CompanyProfileFormSchema = z.object({
+  company: CompanyProfileSchema
+})
+
+export const GeneralSettingsFormSchema = z.object({
+  generalSettings: GeneralSettingsSchema
+})
+
+export const PayrollSettingsFormSchema = z.object({
+  payrollSettings: PayrollSettingsSchema
+})
+
+// Combined schema for all settings
+export const SettingsFormValuesSchema = z.object({
+  company: CompanyProfileSchema,
+  generalSettings: GeneralSettingsSchema,
+  payrollSettings: PayrollSettingsSchema,
+  taxes: z.array(TaxSettingsSchema)
+})
+
+// Type exports
+export type CompanyProfileFormValues = z.infer<typeof CompanyProfileFormSchema>
+export type GeneralSettingsFormValues = z.infer<typeof GeneralSettingsFormSchema>
+export type PayrollSettingsFormValues = z.infer<typeof PayrollSettingsFormSchema>
+export type SettingsFormValues = z.infer<typeof SettingsFormValuesSchema> // Fixed this type inference
+export type TaxValues = z.infer<typeof TaxFormSchema >  
+export type TaxesArrayValues = z.infer<typeof TaxesArraySchema>;

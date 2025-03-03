@@ -87,6 +87,14 @@ export async function getPayrollEmployees(
     const take = pageSize;
     const company = await prisma.company.findUnique({
       where: { adminEmail: userEmail },
+      select:{
+        id:true,
+        settings:{
+          select:{
+            defaultCurrency:true
+          }
+        }
+      }
     });
 
     if (!company) {
@@ -221,7 +229,7 @@ export async function getPayrollEmployees(
     const totalTaxesAmount= totalTaxes.reduce((sum, tax) => sum + tax.amount, 0)
     const totalAdditonalIncomesAmount= totalAdditionalIncomes.reduce((sum, income) => sum + income.amount, 0)
     const totalDeductionsAmount= totalDeductions.reduce((sum, deduction) => sum + deduction.amount, 0)
-    const currency= "RWF"
+    const currency= company.settings?.defaultCurrency || "USD"
     const payroll= {processedEmployees, totalMonthlyGross, totalAdditionalIncomes, totalDeductions,totalTaxes, totalNetSalary, totalAdditonalIncomesAmount, totalTaxesAmount, totalDeductionsAmount,currency}
     return id
       ? { employee: employees[0] || null }  

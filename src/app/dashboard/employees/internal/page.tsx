@@ -5,6 +5,7 @@ import { Metadata } from "next";
 import { Suspense } from "react";
 import Search from "@/components/Search";
 import { cn } from "@/lib/utils";
+import Link from "next/link";
 
 export const metadata: Metadata = {
   title: "Internal Employees",
@@ -29,9 +30,9 @@ const EmployeePage = async (props: {
           <h1 className="text-2xl font-semibold text-gray-900 dark:text-white">
             Employee Directory
           </h1>
-          <button className="rounded-lg bg-primary px-4 py-2 text-white hover:bg-primary/90 transition-colors">
+          <Link href={"/employee"} scroll={false} className="rounded-lg bg-primary px-4 py-2 text-white hover:bg-primary/90 transition-colors">
             Add Employee
-          </button>
+          </Link>
         </div>
       </div>
 

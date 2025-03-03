@@ -40,3 +40,25 @@ export const employeeSchema = z.object({
 });
 
 export type employeeSchemaType = z.infer<typeof employeeSchema>;
+
+
+
+
+export const editEmployeeSchema = z.object({
+  id:z.string().optional(),
+  firstName: z.string().min(2, "First name must be at least 2 characters"),
+  secondName: z.string().min(2, "Second name must be at least 2 characters"),
+  email: z.string().email("Invalid email address"),
+  phoneNumber: z.string().regex(/^\+?[1-9]\d{1,14}$/, "Invalid phone number"),
+  address: z.string().min(5, "Address must be at least 5 characters"),
+  employeeID: z.string().min(1, "Employee ID is required"),
+  nationalID: z.string().min(1, "National ID/Passport is required"),
+  jobTitle: z.string().min(2, "Job title must be at least 2 characters"),
+  department: z.string().min(2, "Department must be at least 2 characters"),
+  startDate: z.string().min(1, "Start Date required."),
+  monthlyGross: z.union([z.string(), z.number()])
+  .transform((val) => Number(val))
+  .pipe(z.number().positive("monthly must be positive")),
+}) 
+
+export type editEmployeeSchemaType = z.infer<typeof editEmployeeSchema>;

@@ -8,7 +8,9 @@ import toast from 'react-hot-toast';
 import { addDeduction } from '@/actions/additionalIncomeActions';
 import Loader from '../Common/Loader';
 import { deductionSchema, deductionSchemaType } from '@/validations/deductionSchema';
+import { useRouter } from 'next/navigation';
 const DeductionForm = ({ employeeId }: { employeeId: string }) => {
+  const router= useRouter()
   const {
     register,
     handleSubmit,
@@ -29,6 +31,7 @@ const onSubmit = (data: deductionSchemaType) => {
     } else {
       toast.success("income added successfully");
       reset()
+      router.back()
     }
   });
 };

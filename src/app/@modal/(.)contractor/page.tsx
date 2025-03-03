@@ -1,12 +1,12 @@
 "use client";
 import {Modal }from "@/components/Modal";
-import ContractorPage from "@/app/contractor/page";
+import ContractorForm from "@/components/ContractorForm";
 
 
-export default function Contractor() {
+export default function Page() {
   return (
     <Modal title="Contractor Form"  backButtonDisabled={true}>
-     <ContractorPage/>
+     <ContractorForm/>
     </Modal>
   );
 }

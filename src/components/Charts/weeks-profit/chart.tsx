@@ -1,15 +1,21 @@
 "use client";
 
+import { PaymentStatus } from "@prisma/client";
 import type { ApexOptions } from "apexcharts";
 import dynamic from "next/dynamic";
 
 type PropsType = {
   data: {
-    payment: { x: string; y: number }[];
-    paid: { x: string; y: number }[];
-    pending: { x: string; y: number }[];
+    Payment: { x: string; y: number }[];
+    Paid: { x: string; y: number }[];
+    Pending: { x: string; y: number }[];
+    Cancelled: { x: string; y: number }[];
+    Failed: { x: string; y: number }[];
+    Ready: { x: string; y: number }[];
   };
 };
+
+ 
 
 const Chart = dynamic(() => import("react-apexcharts"), {
   ssr: false,
@@ -17,7 +23,14 @@ const Chart = dynamic(() => import("react-apexcharts"), {
 
 export function WeeksProfitChart({ data }: PropsType) {
   const options: ApexOptions = {
-    colors: ["#5750F1", "#0ABEF9", "#FABEF9"],
+    colors: [
+      "#808080", // All (Gray)
+      "#28A745", // Paid (Green)
+      "#FFA500", // Pending (Orange)
+      "#0C757a", // Cancelled (Dark Gray)
+      "#DC3545", // Failed (Red)
+      "#007BFF"  // Ready (Blue)
+    ],
     chart: {
       type: "bar",
       stacked: true,
@@ -98,16 +111,24 @@ export function WeeksProfitChart({ data }: PropsType) {
         options={options}
         series={[
           {
-            name: "Payments",
-            data: data.payment,
+            name: PaymentStatus.Ready,
+            data: data.Ready,
           },
           {
-            name: "Paid",
-            data: data.paid,
+            name: PaymentStatus.Paid,
+            data: data.Paid,
           },
           {
-            name: "Pending",
-            data: data.pending,
+            name: PaymentStatus.Pending,
+            data: data.Pending,
+          },
+          {
+            name: PaymentStatus.Cancelled,
+            data: data.Cancelled,
+          },
+          {
+            name: PaymentStatus.Failed,
+            data: data.Failed,
           },
         ]}
         type="bar"

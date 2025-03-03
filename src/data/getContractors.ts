@@ -19,6 +19,14 @@ export async function getContractors(
 
     const company = await prisma.company.findUnique({
       where: { adminEmail: userEmail },
+      select:{
+        id:true,
+        settings:{
+          select:{
+            defaultCurrency:true
+          }
+        }
+      }
     });
 
     if (!company) {
@@ -109,7 +117,7 @@ export async function getContractors(
     const totalTaxes = processedContractors.reduce((sum, contractor) => sum + contractor.TotalOverallTaxes, 0);
     const totalNetSalary = processedContractors.reduce((sum, contractor) => sum + contractor.NetOverallSalary, 0);
     const TotalOverallSalaries = processedContractors.reduce((sum, contractor) => sum + contractor.TotalContractsSalaries, 0);
-    const currency = "RWF";
+    const currency = company?.settings?.defaultCurrency ||"USD";
     const payrollContractors = { processedContractors, totalTaxes, totalNetSalary, TotalOverallSalaries, currency };
 
     return id

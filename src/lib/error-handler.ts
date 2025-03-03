@@ -105,7 +105,6 @@ export function handlePrismaError(error: any) {
 
 export function handleActionsPrismaError(error: unknown): PrismaErrorResponse {
  
-
   if (error instanceof Prisma.PrismaClientKnownRequestError) {
     switch (error.code) {
       // Authentication & Connection Errors
@@ -120,8 +119,8 @@ export function handleActionsPrismaError(error: unknown): PrismaErrorResponse {
       // Data Constraint Errors
       case 'P2002': {
         const target = Array.isArray(error.meta?.target) 
-          ? 'these fields' 
-          : 'this field';
+          ? `these fields ` 
+          : 'this field ' + String(error.meta?.target).split("_")[1];
         return {
           error: `A record with ${target} already exists.`,
           code: error.code,

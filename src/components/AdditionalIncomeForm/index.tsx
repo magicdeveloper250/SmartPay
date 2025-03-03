@@ -3,13 +3,15 @@
 import React from 'react';
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import {  IncomeType, PaymentStatus } from '@prisma/client';  
+import {  IncomeType } from '@prisma/client';  
 import { AdditionalIncomeSchemaType, additionalIncomeSchema } from '@/validations/additionalIncome';
  import { useTransition } from 'react';
 import toast from 'react-hot-toast';
 import { addAdditionalIncome } from '@/actions/additionalIncomeActions';
+import { useRouter } from 'next/navigation';
 import Loader from '../Common/Loader';
 const AdditionalIncomeForm = ({ employeeId }: { employeeId: string }) => {
+  const router= useRouter()
   const {
     register,
     handleSubmit,
@@ -30,6 +32,7 @@ const onSubmit = (data: AdditionalIncomeSchemaType) => {
     } else {
       toast.success("income added successfully");
       reset()
+      router.back()
     }
   });
 };
@@ -78,9 +81,9 @@ const onSubmit = (data: AdditionalIncomeSchemaType) => {
             Income Type
           </label>
           <select
-            {...register('income_type')}
+            {...register('incomeType')}
             className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
-              errors.income_type ? 'border-red-500' : 'border-gray-300'
+              errors.incomeType ? 'border-red-500' : 'border-gray-300'
             }`}
           >
             {Object.values(IncomeType).map((type) => (
@@ -89,8 +92,8 @@ const onSubmit = (data: AdditionalIncomeSchemaType) => {
               </option>
             ))}
           </select>
-          {errors.income_type && (
-            <p className="mt-1 text-sm text-red-600">{errors.income_type.message}</p>
+          {errors.incomeType && (
+            <p className="mt-1 text-sm text-red-600">{errors.incomeType.message}</p>
           )}
         </div>
 

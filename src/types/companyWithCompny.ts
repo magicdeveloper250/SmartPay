@@ -6,3 +6,5 @@ export type CompanyWithCount = Company & {
     contractors: number;
   };
 };
+
+

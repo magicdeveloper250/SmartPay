@@ -1,343 +1,327 @@
-"use client"
-import React, {  useEffect, useState, useTransition } from 'react';
-import toast from 'react-hot-toast';
+"use client";
+
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { employeeSchema, employeeSchemaType } from "@/validations/employeeSchema";
-import type { BankType } from "@/types/bankType";
-import {  updateEmployee } from "@/actions/employeeActions";
-import { Currency, Employee } from '@prisma/client';
-import { Loader } from 'lucide-react';
- 
- export default  function EditEmployeeForm({employeeId}:{employeeId:string}) {
-   const[banckType, setBankType]= useState<BankType>("phone");
-   const [employee, setEmployee]= useState<Employee|null>(null)
-      const[isUpdating, startUpdatingTransition]= useTransition()
-       const { 
-          register, 
-          handleSubmit, 
-          setValue,
-          formState: { errors }, 
-        } = useForm<employeeSchemaType>({
-          resolver: zodResolver(employeeSchema),
-          mode: "onSubmit"
-        });
+import Loader from "@/components/Common/Loader";
+import { editEmployeeSchema, editEmployeeSchemaType } from "@/validations/employeeSchema";
+import { useEffect, useState, useTransition } from "react";
+import { useRouter } from "next/navigation";
+import { Employee } from "@prisma/client";
+import { getEmployee, updateEmployeeData } from "@/actions/employeeActions";
+import toast from "react-hot-toast";
+import { ContractorDetailsSkeleton } from "../ContractorDetails/skeleton";
+import { SubmitHandler } from "react-hook-form";
 
+export default function EditEmployeeForm({employeeId}:{employeeId:string}) {
+  const [isSubmitting, startTransition] = useTransition();
+  const[isLoadingEmployee, startLoadingTransition]= useTransition()
+  const router= useRouter();
+  const[employee, setEmployee]= useState<Employee|null>(null)
+
+  const getUpdateEmployee= ()=>{
+    startLoadingTransition(async()=>{
+      let employee = await getEmployee(employeeId);
+      if ("error" in employee)
+        toast.error(employee.error)
+      else{
+        setEmployee(employee)
        
+      }
+    })
+  }
+  const { 
+    register, 
+    handleSubmit, 
+    setValue,
+    reset,
+    formState: { errors, isValid, isDirty }, 
+  } = useForm<editEmployeeSchemaType>({
+    resolver: zodResolver(editEmployeeSchema),
+    mode: "onChange" 
+  });
 
-        const getEmployee= async()=>{
-          try {
-            const resp= await fetch(`/api/employee/?id=${employeeId}`);
-            const data= await resp.json();
-            setEmployee(data.employee)
-            
-          } catch (error) {
-            toast.error("Unable to fetch empoyee");
-            
-          }
+ 
+
+  const onSubmit: SubmitHandler<editEmployeeSchemaType> = (data) => {
+    
+    startTransition(async () => {
+      try {
+        const result = await updateEmployeeData(employeeId, data);
+        
+        if ("error" in result) {
+          toast.error(result.error);
+        } else {
+          toast.success("Employee data updated successfully.");
+          router.back()
         }
-     
- const onSubmit = (data: employeeSchemaType) => {
-    startUpdatingTransition(async () => {
-      const response = await updateEmployee(employee?.id || data.employeeID, data);
-      if (response?.error) {
-        toast.error(response?.error || "update failed");
-      } else {
-        toast.success("Employee updated successfully");
-      
+      } catch (error) {
+        toast.error("Failed to update Employee data.");
       }
     });
   };
-  const handlePaymentMethodChange = (type: BankType) => {
-    setBankType(type);
-    setValue("paymentMethod", type);
-  };
 
  
 
-  useEffect(() => {
-    Promise.all([ getEmployee()]);
-  },[]);
-  useEffect(() => {
-      if (employee) {
-        setValue("firstName", employee.firstName);
-        setValue("secondName", employee.secondName);
-        setValue("email", employee.email);
-        setValue("phoneNumber", employee.phoneNumber);
-        setValue("address", employee.address);
-        setValue("employeeID", employee.employeeID);
-        setValue("nationalID", employee.nationalID);
-        setValue("startDate", new Date(employee.startDate).toISOString().split('T')[0]); 
-        setValue("jobTitle", employee.jobTitle);
-        setValue("monthlyGross", employee.monthlyGross);
-        setValue("currency", employee.currency);
-        setValue("department", employee.department);
-        setValue("paymentMethod", employee.paymentMethod);
-        setValue("bankName", employee?.bankName || "")
-        setValue("bankAccountNumber", employee?.bankAccountNumber || "")
-        setValue("swiftCode", employee?.swiftCode || "")
-        setValue("Domicile", employee?.Domicile || "")
-        setValue("walletAddress", employee.walletAddress || "")
-        setValue("paymentPhone", employee.paymentPhone || "")
-        setBankType(employee.paymentMethod);
-
-    }
+useEffect(()=>{
+  getUpdateEmployee()
+},[])
    
-  }, [employee, setValue]);
-        
-   return <form  onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-   <fieldset className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-4">
-   <legend className="text-xl font-semibold mb-4 col-span-2">Personal Information</legend>
-    <div>
-      <label className="block text-sm font-medium mb-1">First Name</label>
-      <input 
-        {...register("firstName")}
-       className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
-      />
-      {errors.firstName && (
-            <p className="text-red-500 text-sm mt-1">{errors.firstName.message}</p>
-          )}
-    </div>
-    <div>
-      <label className="block text-sm font-medium mb-1">Second Name</label>
-      <input 
-        {...register("secondName")}
-       className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
-      />
-      {errors.secondName && (
-            <p className="text-red-500 text-sm mt-1">{errors.secondName.message}</p>
-          )}
-    </div>
-    <div>
-      <label className="block text-sm font-medium mb-1">Email</label>
-      <input 
-        {...register("email")}
-       className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
-      />
-      {errors.email && (
-            <p className="text-red-500 text-sm mt-1">{errors.email.message}</p>
-          )}
-    </div>
-    <div>
-      <label className="block text-sm font-medium mb-1">Phone</label>
-      <input 
-        {...register("phoneNumber")}
-       className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
-      />
-      {errors.phoneNumber && (
-            <p className="text-red-500 text-sm mt-1">{errors.phoneNumber.message}</p>
-          )}
-    </div>
-    <div>
-      <label className="block text-sm font-medium mb-1">Address</label>
-      <input 
-        {...register("address")}
-       className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
-      />
-      {errors.address && (
-            <p className="text-red-500 text-sm mt-1">{errors.address.message}</p>
-          )}
-    </div>
-    <div>
-      <label className="block text-sm font-medium mb-1">Employee ID</label>
-      <input 
-        {...register("employeeID")}
-       className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
-      />
-      {errors.employeeID && (
-            <p className="text-red-500 text-sm mt-1">{errors.employeeID.message}</p>
-          )}
-      
-    </div>
-    <div>
-      <label className="block text-sm font-medium mb-1">National ID/Passport</label>
-      <input 
-        {...register("nationalID")}
-       className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
-      />
-      {errors.nationalID && (
-            <p className="text-red-500 text-sm mt-1">{errors.nationalID.message}</p>
-          )}
-      
-    </div>
-    <div>
-      <label className="block text-sm font-medium mb-1">start Date</label>
-      <input 
-        {...register("startDate")}
-        type="date"
-       className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
-      />
-      {errors.startDate && (
-            <p className="text-red-500 text-sm mt-1">{errors.startDate.message}</p>
-          )}
-    </div>
-    <div>
-      <label className="block text-sm font-medium mb-1">Job Title</label>
-      <input 
-        {...register("jobTitle")}
-       className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
-      />
-      {errors.jobTitle && (
-            <p className="text-red-500 text-sm mt-1">{errors.jobTitle.message}</p>
-          )}
-    </div>
-    <div>
-      <label className="block text-sm font-medium mb-1">Monthly Gross</label>
-      <input 
-        type="number"
-        step="0.01"
-        {...register("monthlyGross")}
-       className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
-      />
-      {errors.monthlyGross && (
-            <p className="text-red-500 text-sm mt-1">{errors.monthlyGross.message}</p>
-          )}
-    </div>
-    <div>
-      <label className="block text-sm font-medium mb-1">Currency</label>
-      <select 
-        {...register("currency")}
-        required
-        className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
-      >
-        <option defaultValue="" disabled>Select currency</option>
-        {Object.values(Currency).map(currency=>{
-          return <option key={currency} defaultValue={currency}>{currency}</option>
-
-        })}
-      </select>
-      {errors.currency && (
-            <p className="text-red-500 text-sm mt-1">{errors.currency.message}</p>
-          )}
-    </div>
-    <div>
-      <label className="block text-sm font-medium mb-1">Department</label>
-      <input 
-        {...register("department")}
-       className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
-      />
-      {errors.department && (
-            <p className="text-red-500 text-sm mt-1">{errors.department.message}</p>
-          )}
-    </div>
-   </fieldset>
-
-   <fieldset className="mt-8">
-     <legend className="text-xl font-semibold mb-4">Payment Details</legend>
-     <div className="grid grid-cols-3 md:grid-cols-3 gap-6 mb-6">  
-          <button 
-            onClick={() => handlePaymentMethodChange("bank")}
-            className={`h-12 border-2 rounded-lg transition-colors ${
-              banckType === "bank" ? "border-blue-500 bg-blue-50" : "border-gray-200 hover:border-blue-500 hover:bg-blue-50"
-            }`}
-            type="button"
-          >
-            Bank
-          </button>
-          <button 
-            onClick={() => handlePaymentMethodChange("crypto")}
-            className={`h-12 border-2 rounded-lg transition-colors ${
-              banckType === "crypto" ? "border-blue-500 bg-blue-50" : "border-gray-200 hover:border-blue-500 hover:bg-blue-50"
-            }`}
-            type="button"
-          >
-            Crypto Wallet
-          </button>
-          <button 
-            onClick={() => handlePaymentMethodChange("phone")}
-            className={`h-12 border-2 rounded-lg transition-colors ${
-              banckType === "phone" ? "border-blue-500 bg-blue-50" : "border-gray-200 hover:border-blue-500 hover:bg-blue-50"
-            }`}
-            type="button"
-          >
-            Mobile Phone
-          </button>
-          <input {...register("paymentMethod")} type="hidden" defaultValue={banckType} />
-        </div>
-    {banckType=="bank"&&<>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-4">
-     <div>
-   
-     <label className="block text-sm font-medium mb-1">Bank Name</label>
-      <input 
-        {...register("bankName")}
-       className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
-      />
-      {errors.bankName && (
-            <p className="text-red-500 text-sm mt-1">{errors.bankName.message}</p>
-          )}
-     
-     </div>
-     <div>
-     <label className="block text-sm font-medium mb-1">Bank Account Number</label>
-      <input 
-        {...register("bankAccountNumber")}
-       className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
-      />
-      {errors.bankAccountNumber && (
-            <p className="text-red-500 text-sm mt-1">{errors.bankAccountNumber.message}</p>
-          )}
-     </div>
-     
-     <div>
-     <label className="block text-sm font-medium mb-1">Swift Code</label>
-      <input 
-        {...register("swiftCode")}
-       className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
-      />
-      {errors.swiftCode && (
-            <p className="text-red-500 text-sm mt-1">{errors.swiftCode.message}</p>
-          )}
-     </div>
-   
-     <div>
-     <label className="block text-sm font-medium mb-1">Domicile</label>
-      <input 
-        {...register("Domicile")}
-       className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
-      />
-      {errors.Domicile && (
-            <p className="text-red-500 text-sm mt-1">{errors.Domicile.message}</p>
-          )}
-     </div>
-    </div>
-    </>}
-    {banckType=="crypto"&& <div>
-      <div>
-            <label className="block text-sm font-medium mb-2">Wallet Address</label>
-            <input 
-              {...register("walletAddress")}
-              className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
-            />
-            {errors.walletAddress && (
-              <p className="text-red-500 text-sm mt-1">{errors.walletAddress.message}</p>
-            )}
+useEffect(()=>{
+  setValue("id", employee?.firstName || "" ),
+  setValue("firstName", employee?.firstName || "")
+  setValue("secondName", employee?.secondName || "")
+  setValue("email", employee?.email || "")
+  setValue("address", employee?.address || "")
+  setValue("department", employee?.department || "")
+  setValue("jobTitle", employee?.jobTitle || "")
+  setValue("monthlyGross", employee?.monthlyGross || 0)
+  setValue("nationalID", employee?.nationalID || "")
+  setValue("phoneNumber", employee?.phoneNumber || "")
+  setValue("startDate", employee?.startDate?.toISOString().split("T")[0] || "")
+  setValue("employeeID", employee?.employeeID || "")
+},[employee])
+  return (
+    <div className="w-full max-w-7xl mx-auto rounded-lg p-6 bg-white shadow-md">
+      <h1 className="text-2xl font-bold text-gray-800 mb-6">Edit Employee Details</h1>
+      {isLoadingEmployee ? <ContractorDetailsSkeleton/>:
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-8" aria-label="Employee registration form">
+        <fieldset className="border rounded-lg p-6 bg-gray-50">
+          <legend className="text-xl font-semibold px-2 bg-gray-50 text-priary">
+            Personal Information
+          </legend>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-4">
+            <div>
+              <label htmlFor="firstName" className="block text-sm font-medium mb-1 text-gray-700">
+                First Name <span className="text-red-500">*</span>
+              </label>
+              <input 
+                id="firstName"
+                {...register("firstName")}
+                aria-invalid={errors.firstName ? "true" : "false"}
+                aria-describedby={errors.firstName ? "firstName-error" : undefined}
+                className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none"
+                placeholder="Enter first name"
+              />
+              {errors.firstName && (
+                <p id="firstName-error" className="text-red-500 text-sm mt-1" role="alert">{errors.firstName.message}</p>
+              )}
+            </div>
+            
+            <div>
+              <label htmlFor="secondName" className="block text-sm font-medium mb-1 text-gray-700">
+                Last Name <span className="text-red-500">*</span>
+              </label>
+              <input 
+                id="secondName"
+                {...register("secondName")}
+                aria-invalid={errors.secondName ? "true" : "false"}
+                aria-describedby={errors.secondName ? "secondName-error" : undefined}
+                className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none"
+                placeholder="Enter last name"
+              />
+              {errors.secondName && (
+                <p id="secondName-error" className="text-red-500 text-sm mt-1" role="alert">{errors.secondName.message}</p>
+              )}
+            </div>
+            
+            <div>
+              <label htmlFor="email" className="block text-sm font-medium mb-1 text-gray-700">
+                Email Address <span className="text-red-500">*</span>
+              </label>
+              <input 
+                id="email"
+                type="email"
+                {...register("email")}
+                aria-invalid={errors.email ? "true" : "false"}
+                aria-describedby={errors.email ? "email-error" : undefined}
+                className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none"
+                placeholder="name@example.com"
+              />
+              {errors.email && (
+                <p id="email-error" className="text-red-500 text-sm mt-1" role="alert">{errors.email.message}</p>
+              )}
+            </div>
+            
+            <div>
+              <label htmlFor="phoneNumber" className="block text-sm font-medium mb-1 text-gray-700">
+                Phone Number <span className="text-red-500">*</span>
+              </label>
+              <input 
+                id="phoneNumber"
+                type="tel"
+                {...register("phoneNumber")}
+                aria-invalid={errors.phoneNumber ? "true" : "false"}
+                aria-describedby={errors.phoneNumber ? "phoneNumber-error" : undefined}
+                className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none"
+                placeholder="+1 (123) 456-7890"
+              />
+              {errors.phoneNumber && (
+                <p id="phoneNumber-error" className="text-red-500 text-sm mt-1" role="alert">{errors.phoneNumber.message}</p>
+              )}
+            </div>
+            
+            <div>
+              <label htmlFor="address" className="block text-sm font-medium mb-1 text-gray-700">
+                Address <span className="text-red-500">*</span>
+              </label>
+              <input 
+                id="address"
+                {...register("address")}
+                aria-invalid={errors.address ? "true" : "false"}
+                aria-describedby={errors.address ? "address-error" : undefined}
+                className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none"
+                placeholder="Enter your address"
+              />
+              {errors.address && (
+                <p id="address-error" className="text-red-500 text-sm mt-1" role="alert">{errors.address.message}</p>
+              )}
+            </div>
+            
+            <div>
+              <label htmlFor="employeeID" className="block text-sm font-medium mb-1 text-gray-700">
+                Employee ID <span className="text-red-500">*</span>
+              </label>
+              <input 
+                id="employeeID"
+                {...register("employeeID")}
+                aria-invalid={errors.employeeID ? "true" : "false"}
+                aria-describedby={errors.employeeID ? "employeeID-error" : undefined}
+                className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none"
+                placeholder="Enter employee ID"
+                disabled
+              />
+              {errors.employeeID && (
+                <p id="employeeID-error" className="text-red-500 text-sm mt-1" role="alert">{errors.employeeID.message}</p>
+              )}
+            </div>
+            
+            <div>
+              <label htmlFor="nationalID" className="block text-sm font-medium mb-1 text-gray-700">
+                National ID/Passport <span className="text-red-500">*</span>
+              </label>
+              <input 
+                id="nationalID"
+                {...register("nationalID")}
+                aria-invalid={errors.nationalID ? "true" : "false"}
+                aria-describedby={errors.nationalID ? "nationalID-error" : undefined}
+                className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none"
+                placeholder="Enter national ID or passport number"
+                disabled
+              />
+              {errors.nationalID && (
+                <p id="nationalID-error" className="text-red-500 text-sm mt-1" role="alert">{errors.nationalID.message}</p>
+              )}
+            </div>
+            
+            <div>
+              <label htmlFor="startDate" className="block text-sm font-medium mb-1 text-gray-700">
+                Start Date <span className="text-red-500">*</span>
+              </label>
+              <input 
+                id="startDate"
+                {...register("startDate")}
+                type="date"
+                aria-invalid={errors.startDate ? "true" : "false"}
+                aria-describedby={errors.startDate ? "startDate-error" : undefined}
+                className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none"
+              />
+              {errors.startDate && (
+                <p id="startDate-error" className="text-red-500 text-sm mt-1" role="alert">{errors.startDate.message}</p>
+              )}
+            </div>
+            
+            <div>
+              <label htmlFor="jobTitle" className="block text-sm font-medium mb-1 text-gray-700">
+                Job Title <span className="text-red-500">*</span>
+              </label>
+              <input 
+                id="jobTitle"
+                {...register("jobTitle")}
+                aria-invalid={errors.jobTitle ? "true" : "false"}
+                aria-describedby={errors.jobTitle ? "jobTitle-error" : undefined}
+                className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none"
+                placeholder="Enter job title"
+              />
+              {errors.jobTitle && (
+                <p id="jobTitle-error" className="text-red-500 text-sm mt-1" role="alert">{errors.jobTitle.message}</p>
+              )}
+            </div>
+            
+            <div>
+              <label htmlFor="monthlyGross" className="block text-sm font-medium mb-1 text-gray-700">
+                Monthly Gross Salary <span className="text-red-500">*</span>
+              </label>
+              <div className="relative">
+                <input 
+                  id="monthlyGross"
+                  type="number"
+                  step="0.01"
+                  {...register("monthlyGross")}
+                  aria-invalid={errors.monthlyGross ? "true" : "false"}
+                  aria-describedby={errors.monthlyGross ? "monthlyGross-error" : undefined}
+                  className="w-full p-3 pl-8 border rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none"
+                  placeholder="0.00"
+                />
+                <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                  <span className="text-gray-500">$</span>
+                </div>
+              </div>
+              {errors.monthlyGross && (
+                <p id="monthlyGross-error" className="text-red-500 text-sm mt-1" role="alert">{errors.monthlyGross.message}</p>
+              )}
+            </div>
+            
+          
+            
+            <div>
+              <label htmlFor="department" className="block text-sm font-medium mb-1 text-gray-700">
+                Department <span className="text-red-500">*</span>
+              </label>
+              <input 
+                id="department"
+                {...register("department")}
+                aria-invalid={errors.department ? "true" : "false"}
+                aria-describedby={errors.department ? "department-error" : undefined}
+                className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none"
+                placeholder="Enter department"
+              />
+              {errors.department && (
+                <p id="department-error" className="text-red-500 text-sm mt-1" role="alert">{errors.department.message}</p>
+              )}
+            </div>
           </div>
-    </div>}
+        </fieldset>
 
-    {banckType=="phone"&& <div>
-      <div>
-            <label className="block text-sm font-medium mb-2">Payment Phone Number</label>
-            <input 
-              {...register("paymentPhone")}
-              className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
-            />
-            {errors.paymentPhone && (
-              <p className="text-red-500 text-sm mt-1">{errors.paymentPhone.message}</p>
-            )}
-          </div>
-    </div>}
-     </fieldset>
-     <div className="flex gap-6">
-      <button 
-        type='submit'
-        // disabled={isUpdating}
-         className="flex-1 p-2  flex w-full cursor-pointer items-center justify-center rounded-md border border-primary bg-primary px-5 py-3 text-base text-white transition duration-300 ease-in-out hover:bg-blue-dark"
-      >
-        Submit {isUpdating && <Loader/>}
-      </button>
        
+        <div className="flex flex-col sm:flex-row gap-4 mt-8">
+          <button 
+            type="submit"
+            disabled={isSubmitting || !isDirty || !isValid}
+            className="flex justify-center items-center px-6 py-3 bg-primary text-white font-medium rounded-lg transition duration-300 hover:bg-primary focus:outline-none focus:ring-4 focus:ring-blue-300 disabled:opacity-50 disabled:cursor-not-allowed sm:flex-1"
+            aria-label="Submit employee registration form"
+          >
+            {isSubmitting ? (
+              <>
+                <Loader/>
+              </>
+            ) : (
+              "Save Changes"
+            )}
+          </button>
+          
+        </div>
+        
+        <div className="text-sm text-gray-500 mt-4">
+          <p>
+            <span className="text-red-500">*</span> indicates required fields
+          </p>
+        </div>
+      </form>
+     
+     }
+      
+    
     </div>
-  </form>
- }
- 
+  );
+}

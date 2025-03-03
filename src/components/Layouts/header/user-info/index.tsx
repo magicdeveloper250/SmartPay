@@ -12,11 +12,15 @@ import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 import { LogOutIcon, SettingsIcon, UserIcon } from "./icons";
+import { useRouter } from "next/navigation";
 
 export function UserInfo() {
   const [isOpen, setIsOpen] = useState(false);
-
+const router= useRouter()
   const {data:session} =  useSession()
+  const logout= async()=>{
+    await signOut({redirect:true, callbackUrl:"/signin"})
+  }
 
   return (
     <Dropdown isOpen={isOpen} setIsOpen={setIsOpen}>
@@ -64,11 +68,9 @@ export function UserInfo() {
           />
 
           <figcaption className="space-y-1 text-base font-medium">
-            <div className="mb-2 leading-none text-dark dark:text-white">
-              {session?.user?.name}
-            </div>
+            
 
-            <div className="leading-none text-gray-6">{session?.user?.email}</div>
+            <div className="leading-none text-gray-6">{session?.user?.name}</div>
           </figcaption>
         </figure>
 
@@ -86,7 +88,7 @@ export function UserInfo() {
           </Link>
 
           <Link
-            href={"/dashboard/pages/settings"}
+            href={"/dashboard/settings"}
             onClick={() => setIsOpen(false)}
             className="flex w-full items-center gap-2.5 rounded-lg px-2.5 py-[9px] hover:bg-gray-2 hover:text-dark dark:hover:bg-dark-3 dark:hover:text-white"
           >
@@ -103,7 +105,7 @@ export function UserInfo() {
         <div className="p-2 text-base text-[#4B5563] dark:text-dark-6">
           <button
             className="flex w-full items-center gap-2.5 rounded-lg px-2.5 py-[9px] hover:bg-gray-2 hover:text-dark dark:hover:bg-dark-3 dark:hover:text-white"
-            onClick={() => signOut()}
+            onClick={ logout}
           >
             <LogOutIcon />
 

@@ -1,16 +1,16 @@
 import { PaymentsOverview } from "@/components/Charts/payments-overview";
 import { UsedDevices } from "@/components/Charts/used-devices";
 import { WeeksProfit } from "@/components/Charts/weeks-profit";
-import { TopChannels } from "@/components/Tables/top-channels";
+import { TopEmployees } from "@/components/Tables/top-channels";
 import { TopChannelsSkeleton } from "@/components/Tables/top-channels/skeleton";
 import { createTimeFrameExtractor } from "@/utils/timeframe-extractor";
 import { Suspense } from "react";
 import { ChatsCard } from "./_components/chats-card";
 import { OverviewCardsGroup } from "./_components/overview-cards";
 import { OverviewCardsSkeleton } from "./_components/overview-cards/skeleton";
-import { RegionLabels } from "./_components/region-labels";
 import DashboardLayout from "../DashboardLayout";
 import DashboardSkeleton from "@/components/DashboardSkeleton";
+import { PayrollTimeRange } from "@/types/payroll";
 
  
 type Props = Promise<{selected_time_frame?: string }>
@@ -31,7 +31,7 @@ export default async function Page( props: { params: Props }) {
         <PaymentsOverview
           className="col-span-12 xl:col-span-7"
           key={extractTimeFrame("payments_overview")}
-          timeFrame={extractTimeFrame("payments_overview")?.split(":")[1]}
+          timeFrame={extractTimeFrame("payments_overview")?.split(":")[1] as unknown as PayrollTimeRange}
         />
 
         <WeeksProfit
@@ -39,23 +39,15 @@ export default async function Page( props: { params: Props }) {
           className="col-span-12 xl:col-span-5"
         />
 
-        <UsedDevices
-          className="col-span-12 xl:col-span-5"
-          key={extractTimeFrame("used_devices")}
-          timeFrame={extractTimeFrame("used_devices")?.split(":")[1]}
-        />
-
-        <RegionLabels />
+       
 
         <div className="col-span-12 grid xl:col-span-8">
           <Suspense fallback={<TopChannelsSkeleton />}>
-            <TopChannels />
+            <TopEmployees />
           </Suspense>
         </div>
 
-        <Suspense fallback={null}>
-          <ChatsCard />
-        </Suspense>
+     
       </div>
     </DashboardLayout>
    </Suspense>

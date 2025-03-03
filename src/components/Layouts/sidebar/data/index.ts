@@ -30,27 +30,14 @@ export const NAV_DATA = [
       {
         title: "Payroll",
         icon: Icons.Table,
-        items: [
-          {
-            title: "Internal",
-            url: "/dashboard/payroll/internal",
-          },
-          {
-            title: "Contractors",
-            url: "/dashboard/tables?contractors=true&payroll=true",
-          },
-        ],
+        url: "/dashboard/payroll/internal",
+        items: [],
       },
       {
         title: "Reporting",
         url: "/tables",
         icon: Icons.PieChart,
-        items: [
-          {
-            title: "Tables",
-            url: "/dashboard/tables",
-          },
-        ],
+        items: [],
       },
      
     ],

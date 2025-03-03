@@ -6,13 +6,19 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { compactFormat, standardFormat } from "@/lib/format-number";
+import {  standardFormat } from "@/lib/format-number";
 import { cn } from "@/lib/utils";
-import Image from "next/image";
-import { getTopChannels } from "../fetch";
+ 
+import { getTopEmployees } from "@/actions/dashboardActions";
+import toast from "react-hot-toast";
 
-export async function TopChannels({ className }: { className?: string }) {
-  const data = await getTopChannels();
+export async function TopEmployees({ className }: { className?: string }) {
+  const data = await getTopEmployees();
+  
+  if("error" in data)
+    toast.error(data.error)
+  const employees = "employees" in data ? data.employees : []
+  const currency = "settings" in data ? data.settings?.defaultCurrency : "USD"
 
   return (
     <div
@@ -22,47 +28,41 @@ export async function TopChannels({ className }: { className?: string }) {
       )}
     >
       <h2 className="mb-4 text-body-2xlg font-bold text-dark dark:text-white">
-        Top Channels
+        Top Employees
       </h2>
 
       <Table>
         <TableHeader>
           <TableRow className="border-none uppercase [&>th]:text-center">
             <TableHead className="min-w-[120px] !text-left">Source</TableHead>
-            <TableHead>Visitors</TableHead>
-            <TableHead className="!text-right">Revenues</TableHead>
-            <TableHead>Sales</TableHead>
-            <TableHead>Conversion</TableHead>
+            <TableHead>Departement</TableHead>
+            <TableHead>Job Title</TableHead>
+            <TableHead>Start Date</TableHead>
+            <TableHead className="!text-right">Salary</TableHead>
           </TableRow>
         </TableHeader>
 
         <TableBody>
-          {data.map((channel, i) => (
+          {Array.isArray(employees) && employees.map((employee, i) => (
             <TableRow
               className="text-center text-base font-medium text-dark dark:text-white"
-              key={channel.name + i}
+              key={employee.id + i}
             >
               <TableCell className="flex min-w-fit items-center gap-3">
-                <Image
-                  src={channel.logo}
-                  className="size-8 rounded-full object-cover"
-                  width={40}
-                  height={40}
-                  alt={channel.name + " Logo"}
-                  role="presentation"
-                />
-                <div className="">{channel.name}</div>
+                 
+                <div className="">{employee.firstName} {employee.secondName}</div>
               </TableCell>
 
-              <TableCell>{compactFormat(channel.visitors)}</TableCell>
+              <TableCell>{employee.department}</TableCell>
 
-              <TableCell className="!text-right text-green-light-1">
-                ${standardFormat(channel.revenues)}
-              </TableCell>
+          
+               
+          
 
-              <TableCell>{channel.sales}</TableCell>
+              <TableCell>{employee.jobTitle}</TableCell>
+              <TableCell>{employee.startDate.toLocaleDateString()}</TableCell>
 
-              <TableCell>{channel.conversion}%</TableCell>
+              <TableCell className="!text-right text-green-light-1"> {currency}{standardFormat(employee.monthlyGross)}</TableCell>
             </TableRow>
           ))}
         </TableBody>

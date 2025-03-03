@@ -6,7 +6,7 @@ export const additionalIncomeSchema = z.object({
     .transform((val) => Number(val))
     .pipe(z.number().positive("Amount must be positive")),
   description: z.string().optional(),
-  income_type: z.nativeEnum(IncomeType, { message: "Invalid income type selected" }),
+  incomeType: z.nativeEnum(IncomeType, { message: "Invalid income type selected" }),
 }) 
 
 export type AdditionalIncomeSchemaType = z.infer<typeof additionalIncomeSchema>;
