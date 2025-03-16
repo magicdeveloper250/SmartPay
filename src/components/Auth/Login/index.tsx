@@ -1,12 +1,13 @@
 "use client";
-import { signIn } from "next-auth/react";
+
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useState, useTransition } from "react";
 import toast from "react-hot-toast";
 import Loader from "@/components/Common/Loader";
 import HeaderLayout from "@/app/headerLayout";
+import { verifyCredintials } from "@/actions/authActions";
 
 export const Login = () => {
   const router = useRouter();
@@ -16,34 +17,28 @@ export const Login = () => {
     password: "",
     checkboxToggle: false,
   });
-
-  const [isPassword, setIsPassword] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const [pending, startVerifyingTransition] = useTransition();
 
   const loginUser = (e: any) => {
     e.preventDefault();
 
-    setLoading(true);
-    signIn("credentials", { ...loginData, redirect: false })
-      .then((callback) => {
-        if (callback?.error) {
-          toast.error(callback?.error);
-          console.log(callback?.error);
-          setLoading(false);
-          return;
-        }
-
-        if (callback?.ok && !callback?.error) {
-          toast.success("Login successful");
-          setLoading(false);
-          router.push("/dashboard");
-        }
-      })
-      .catch((err) => {
-        setLoading(false);
-        console.log(err.message);
-        toast.error(err.message);
-      });
+  startVerifyingTransition(async()=>{
+    try {
+      const resp= await verifyCredintials(loginData.email, loginData.password)
+      if("error" in resp){
+        toast.error(resp.error)
+      }else{
+        const urlParams = new URLSearchParams(window.location.search);
+        const callbackUrl = urlParams.get('callbackUrl');
+        router.push(`/OTP?identifier=${btoa(loginData.email)}&callback=${callbackUrl?callbackUrl:"/dashboard"}`);
+      }
+      
+    } catch (error) {
+      toast.error("Logging in failed")
+      
+    }
+  })
+  
   };
 
   return (
@@ -75,22 +70,7 @@ export const Login = () => {
                   />
                 </Link>
               </div>
-{/* 
-              <SocialSignIn />
-
-              <span className="z-1 relative my-8 block text-center">
-                <span className="-z-1 absolute left-0 top-1/2 block h-px w-full bg-stroke dark:bg-dark-3"></span>
-                <span className="text-body-secondary relative z-10 inline-block bg-white px-3 text-base dark:bg-dark-2">
-                  OR
-                </span>
-              </span> */}
-
-              {/* <SwitchOption
-                isPassword={isPassword}
-                setIsPassword={setIsPassword}
-              /> */}
-
-              {/* {isPassword ? ( */}
+ 
                 <form onSubmit={(e) => e.preventDefault()}>
                   <div className="mb-[22px]">
                     <input
@@ -118,13 +98,11 @@ export const Login = () => {
                       type="submit"
                       className="flex w-full cursor-pointer items-center justify-center rounded-md border border-primary bg-primary px-5 py-3 text-base text-white transition duration-300 ease-in-out hover:bg-primary/90"
                     >
-                      Sign In {loading && <Loader />}
+                      Sign In {pending && <Loader />}
                     </button>
                   </div>
                 </form>
-              {/* ) : (
-                <MagicLink />
-              )} */}
+             
 
               <Link
                 href="/forgot-password"

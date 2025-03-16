@@ -51,17 +51,19 @@ export async function createContractor(formData: contractorSchemaType) {
      
       const { salary, startDate, endDate, notes, ...contractorData } = formData;
   
-      const company = await prisma.company.findUnique({
-        where: { adminEmail: session.user.email },
+      const user = await prisma.user.findUnique({
+        where: { email: session.user.email }, include:{
+          company:true
+        }
       });
   
-      if (!company) {
+      if (!user||!user.company) {
         return { error: "Company not found" };
       }
   
        await prisma.$transaction(async (tx) => {
         const newContractor = await tx.contractor.create({
-          data: { ...contractorData, companyId: company.id },
+          data: { ...contractorData, companyId: user.company.id },
         });
   
         await tx.contractTerms.create({
@@ -70,13 +72,13 @@ export async function createContractor(formData: contractorSchemaType) {
             startDate: new Date(startDate).toISOString(),
             endDate: new Date(endDate).toISOString(),
             notes,
-            companyId: company.id,
+            companyId: user.company.id,
             contractorId: newContractor.id,  
           },
         });
    
          await tx.company.update({
-          where: { id: company.id },
+          where: { id: user.company.id },
           data: { onBoardingFinished: true },
         });
   
@@ -110,18 +112,18 @@ try {
       if (!session?.user?.email) {
         return { error: "Unauthorized" }
       }
-   const company = await prisma.company.findUnique({
-          where: { adminEmail: session.user.email },
+   const user = await prisma.user.findUnique({
+          where: { email: session.user.email }, include:{company:true}
         });
     
-        if (!company) {
+        if (! user || !user.company) {
           return { error: "Company not found" };
         }
         const { salary, startDate, endDate, notes, ...contractorData } = formData;
         
         await prisma.$transaction([  prisma.contractor.update({
           where:{id: contractorId},
-          data: { ...contractorData, companyId: company.id },
+          data: { ...contractorData, companyId: user.company.id },
         }), 
         prisma.contractTerms.update({
           where:{id:contractId, contractorId:contractorId},
@@ -130,7 +132,7 @@ try {
             startDate: new Date(startDate).toISOString(),
             endDate: new Date(endDate).toISOString(),
             notes,
-            companyId: company.id,
+            companyId: user.company.id,
             contractorId: contractorId,  
           },
         })]);
@@ -262,11 +264,13 @@ export async function updateContractorData(contractorId:string, contractorData: 
       return {"error":"Unauthorized"};
     }
 
-    const company = await prisma.company.findFirstOrThrow({ 
-      where: { adminEmail: session.user.email as string },
+    const user = await prisma.user.findFirstOrThrow({ 
+      where: { email: session.user.email as string }, include:{
+        company:true
+      }
     
     });
-    if (!company)  
+    if (!user ||! user.company)  
       return {"error": "Company not found"}
     await prisma.contractor.update({
       where:{id:contractorId},

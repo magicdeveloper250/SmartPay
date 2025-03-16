@@ -16,11 +16,13 @@ export async function GET(req: NextRequest) {
   try {
     const { searchParams } = new URL(req.url);
     const id = searchParams.get('id');
-    const company = await prisma.company.findUnique({
-      where: { adminEmail: session.user.email }
+    const user = await prisma.user.findUnique({
+      where: { email: session.user.email },
+      include:{company:true}
+
     });
 
-    if (!company) {
+    if (!user ||!user.company) {
       return NextResponse.json({ error: "Company not found" }, { status: 404 });
     }
 
@@ -28,7 +30,7 @@ export async function GET(req: NextRequest) {
       const employee = await prisma.employee.findFirst({
         where: {
           id,
-          companyId: company.id
+          companyId: user.company.id
           
         },
 
@@ -43,7 +45,7 @@ export async function GET(req: NextRequest) {
     }
 
     const employees = await prisma.employee.findMany({
-      where: { companyId: company.id }
+      where: { companyId: user.company.id }
     });
 
     return NextResponse.json({ employees });
@@ -61,11 +63,12 @@ export async function POST(req: NextRequest) {
 
   try {
     const body = await req.json();
-    const company = await prisma.company.findUnique({
-      where: { adminEmail: session.user.email },
+    const user = await prisma.user.findUnique({
+      where: {email: session.user.email },
+      include:{company:true}
     });
     
-    if (!company) {
+    if (!user ||!user.company) {
       return NextResponse.json({ error: "Company not found" }, { status: 404 });
     }
 
@@ -75,11 +78,11 @@ export async function POST(req: NextRequest) {
           ...emp,
           monthlyGross:Number.parseFloat(emp.monthlyGross),
           startDate: new Date(emp.startDate).toISOString(), 
-          companyId:company.id,
+          companyId:user.company.id,
            
         })),
       }),  prisma.company.update({
-        where: { id: company.id },
+        where: { id: user.company.id },
         data: { onBoardingFinished: true },
       })])
 
@@ -87,17 +90,17 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({
         message: "Employees registered successfully!",
         employees:employees,
-        updatedCompany:company,
+        updatedCompany:user.company,
         count: employees.count,
       });
     } else {
        
      
      const[newEmployee, updatedCompany]=  await prisma.$transaction([ prisma.employee.create({
-      data: {...body, startDate: new Date(body.startDate).toISOString(), companyId:company.id}
+      data: {...body, startDate: new Date(body.startDate).toISOString(), companyId:user.company.id}
       
     }),   prisma.company.update({
-      where: { id: company.id },
+      where: { id: user.company.id },
       data: { onBoardingFinished: true },
     })])
 
@@ -122,18 +125,19 @@ export async function PUT(req: NextRequest) {
     const body = await req.json();
     const { id, ...updateData } = body;
 
-    const company = await prisma.company.findUnique({
-      where: { adminEmail: session.user.email },
+    const user = await prisma.user.findUnique({
+      where: { email: session.user.email },
+      include:{company:true}
     });
 
-    if (!company) {
+    if (!user ||!user.company) {
       return NextResponse.json({ error: "Company not found" }, { status: 404 });
     }
 
     const employee = await prisma.employee.findFirst({
       where: { 
         id,
-        companyId: company.id
+        companyId: user.company.id
       }
     });
 
@@ -169,18 +173,19 @@ export async function DELETE(req: NextRequest) {
       return NextResponse.json({ error: "Employee ID is required" }, { status: 400 });
     }
 
-    const company = await prisma.company.findUnique({
-      where: { adminEmail: session.user.email },
+    const user= await prisma.user.findUnique({
+      where: { email: session.user.email },
+      include:{company:true}
     });
 
-    if (!company) {
+    if ( !user ||!user.company) {
       return NextResponse.json({ error: "Company not found" }, { status: 404 });
     }
 
     const employee = await prisma.employee.findFirst({
       where: { 
         id,
-        companyId: company.id
+        companyId: user.company.id
       }
     });
 

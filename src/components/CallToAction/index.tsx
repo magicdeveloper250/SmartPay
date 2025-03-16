@@ -7,11 +7,11 @@ const CallToAction = () => {
         <div className="text-center max-w-3xl mx-auto">
           <h2 className="text-4xl font-extrabold text-white md:text-5xl leading-tight">
             Effortless & Secure Transactions with{" "}
-            <span className="text-[#0BB489]">SawaPay</span>
+            <span className="text-[#0BB489]">impanoPay</span>
           </h2>
           <p className="mt-4 text-lg text-gray-200">
             Experience seamless cross-border payments, instant transactions, and 
-            robust security with <span className="font-semibold text-white">SawaPay</span>. 
+            robust security with <span className="font-semibold text-white">impanoPay</span>. 
             Whether you&apos;re sending money, managing payroll, or making global business payments, 
             we ensure fast, low-cost, and reliable transfers.
           </p>

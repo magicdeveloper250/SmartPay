@@ -8,7 +8,7 @@ const testimonialData: Testimonial[] = [
     name: "Amina M.",
     designation: "Business Owner @ Nairobi Tech",
     content:
-      "SawaPay has transformed how I manage payments for my employees. The payroll system is intuitive and ensures timely and accurate payouts.",
+      "impanoPay has transformed how I manage payments for my employees. The payroll system is intuitive and ensures timely and accurate payouts.",
     image:  "/images/testimonials/author-01.png",
     star: 5,
   },
@@ -17,7 +17,7 @@ const testimonialData: Testimonial[] = [
     name: "Kwame A.",
     designation: "Driver @ Accra Rides",
     content:
-      "As a gig worker, accessing financial services through SawaPay has been life-changing. Saving and borrowing are now so much easier.",
+      "As a gig worker, accessing financial services through impanoPay has been life-changing. Saving and borrowing are now so much easier.",
     image: "/images/testimonials/author-01.png",
     star: 5,
   },
@@ -26,7 +26,7 @@ const testimonialData: Testimonial[] = [
     name: "Fatima S.",
     designation: "HR Manager @ Kigali Solutions",
     content:
-      "With SawaPay, payroll processing has never been smoother. It saves time and helps us focus on growing our business.",
+      "With impanoPay, payroll processing has never been smoother. It saves time and helps us focus on growing our business.",
     image:  "/images/testimonials/author-01.png",
     star: 5,
   },
@@ -39,7 +39,7 @@ const Testimonials = () => {
         <SectionTitle
           subtitle="Testimonials"
           title="What Our Clients Say"
-          paragraph="Discover how SawaPay has empowered businesses and gig workers across Africa with innovative financial solutions."
+          paragraph="Discover how impanoPay has empowered businesses and gig workers across Africa with innovative financial solutions."
           width="640px"
           center
         />

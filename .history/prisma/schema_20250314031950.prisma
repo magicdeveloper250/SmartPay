@@ -1,0 +1,557 @@
+datasource db {
+  provider          = "mongodb"
+  url               = env("DATABASE_URL")
+  shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model PredefinedTax {
+  id           String       @id @default(auto()) @map("_id") @db.ObjectId
+  rate         Float
+  name         String       
+  min          Float
+  max          Float?
+  companyId    String       @db.ObjectId
+  company      Company      @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  appliedTaxes AppliedTax[]
+}
+
+model AppliedTax {
+  id           String        @id @default(auto()) @map("_id") @db.ObjectId
+  employeeId   String?       @db.ObjectId
+  employee     Employee?     @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+  contractorId String?       @db.ObjectId
+  contractor   Contractor?   @relation(fields: [contractorId], references: [id], onDelete: Cascade)
+  taxId        String        @db.ObjectId
+  tax          PredefinedTax @relation(fields: [taxId], references: [id], onDelete: Cascade)
+  taxPaid      TaxPaid[]
+  Payroll      Payroll?      @relation(fields: [payrollId], references: [id])
+  payrollId    String?       @db.ObjectId
+}
+
+model Company {
+  id                 String          @id @default(auto()) @map("_id") @db.ObjectId
+  name               String
+  email                 String?   @unique
+  pensionCode        String
+  country            String
+  city               String
+  industry           String
+  onBoardingFinished Boolean?        @default(true)
+  employees          Employee[]
+  contractors        Contractor[]
+  contractTerms      ContractTerms[]
+  Benefits           Benefit[]
+  predefinedTaxes    PredefinedTax[]
+  payrolls            MainPayroll[]
+  users               User[]
+  settings           Settings?
+  payrollSettings    PayrollSettings?
+  subscribed_plan    Plan?         @relation(fields: [plan_id], references: [id])
+  plan_id            String?        @db.ObjectId
+  createdAt          DateTime        @default(now())
+  updatedAt          DateTime        @updatedAt
+}
+
+model Session {
+  id           String   @id @default(auto()) @map("_id") @db.ObjectId
+  sessionToken String   @unique
+  userId       String   @db.ObjectId
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model User {
+  id                    String    @id @default(auto()) @map("_id") @db.ObjectId
+  name                  String?
+  email                 String?   @unique
+  phoneNumber           String?   @unique
+  phoneNumberVerified   Boolean?   @default(false)
+  emailVerified         Boolean?   @default(false)
+  companyId             String    @db.ObjectId
+  image                 String?
+  password              String?
+  passwordResetToken    String?   @unique
+  passwordResetTokenExp DateTime?
+  otp                   String?   @unique
+  expires               DateTime?
+  sessions              Session[]
+  account               Account[]
+  company               Company                 @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  createdAt         DateTime                  @default(now())
+  updatedAt         DateTime                  @updatedAt
+}
+
+model Account {
+  id                String  @id @default(auto()) @map("_id") @db.ObjectId
+  userId            String     @db.ObjectId
+  
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+
+  user              User                 @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt         DateTime                  @default(now())
+  updatedAt         DateTime                  @updatedAt
+  @@unique([provider, providerAccountId])
+}
+
+ 
+model VerificationToken {
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  identifier String
+  token      String   @unique
+  expires    DateTime
+  createdAt         DateTime                  @default(now())
+  updatedAt         DateTime                  @updatedAt
+  @@unique([identifier, token])
+}
+
+model Employee {
+  id                String                  @id @default(auto()) @map("_id") @db.ObjectId
+  firstName         String
+  secondName        String
+  email             String                  @unique
+  phoneNumber       String                  @unique
+  address           String
+  employeeID        String                  @unique
+  nationalID        String                  @unique
+  startDate         DateTime
+  department        String
+  jobTitle          String
+  currency          Currency
+  paymentMethod     PaymentMethod           @default(phone)
+  paymentPhone      String?
+  monthlyGross      Float
+  bankName          String?
+  bankAccountNumber String?                 @unique
+  swiftCode         String?
+  Domicile          String?
+  walletAddress     String?
+  companyId         String                  @db.ObjectId
+  company           Company                 @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  createdAt         DateTime                @default(now())
+  updatedAt         DateTime                @updatedAt
+  benefits          EmployeeBenefit[]
+  salaries          EmployeeSalaryPayment[]
+  taxes             TaxPaid[]
+  appliedTaxes      AppliedTax[]
+  additionalIncomes AdditionalIncome[]
+  deductions        Deduction[]
+  payrolls          Payroll[]
+
+  @@index([companyId])
+}
+
+model Contractor {
+  id                String                    @id @default(auto()) @map("_id") @db.ObjectId
+  firstName         String
+  secondName        String
+  email             String                    @unique
+  phoneNumber       String                    @unique
+  address           String
+  contractorID      String                    @unique
+  nationalID        String                    @unique
+  department        String
+  jobTitle          String
+  currency          Currency
+  paymentMethod     PaymentMethod             @default(phone)
+  paymentPhone      String?
+  bankName          String?
+  bankAccountNumber String?                   @unique
+  swiftCode         String?
+  Domicile          String?
+  walletAddress     String?                   @unique
+  companyId         String                    @db.ObjectId
+  company           Company                   @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  contractsTerms    ContractTerms[]
+  benefits          ContractorBenefit[]
+  salaries          ContractorSalaryPayment[]
+  appliedTaxes      AppliedTax[]
+  payrolls          Payroll[]
+  createdAt         DateTime                  @default(now())
+  updatedAt         DateTime                  @updatedAt
+
+  @@index([companyId])
+}
+
+model ContractTerms {
+  companyId                   String     @db.ObjectId
+  id                          String     @id @default(auto()) @map("_id") @db.ObjectId
+  company                     Company    @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  contractorId                String     @db.ObjectId
+  contractor                  Contractor @relation(fields: [contractorId], references: [id], onDelete: Cascade)
+  salary                      Float
+  startDate                   DateTime
+  endDate                     DateTime
+  notes                       String?
+  createdAt                   DateTime   @default(now())
+  updatedAt                   DateTime   @updatedAt
+  status                      PaymentStatus  @default(Pending)
+  mainPayollId                String?            @db.ObjectId
+  mainPayroll                 MainPayroll?        @relation(fields: [mainPayollId], references: [id])
+  payrolls                    Payroll[]
+}
+
+model Benefit {
+  id        String      @id @default(auto()) @map("_id") @db.ObjectId
+  name      BenefitName
+  details   String?
+  companyId String      @db.ObjectId
+  company   Company     @relation(fields: [companyId], references: [id], onDelete: Cascade)
+}
+
+model EmployeeBenefit {
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  employeeId String   @db.ObjectId
+  benefit    String
+  employee   Employee @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+  payrollId  String?  @db.ObjectId
+  payroll    Payroll? @relation(fields: [payrollId], references: [id])
+}
+
+model ContractorBenefit {
+  id           String     @id @default(auto()) @map("_id") @db.ObjectId
+  contractorId String     @db.ObjectId
+  contractor   Contractor @relation(fields: [contractorId], references: [id], onDelete: Cascade)
+  benefit      String
+}
+
+model EmployeeSalaryPayment {
+  id           String   @id @default(auto()) @map("_id") @db.ObjectId
+  employeeId   String   @db.ObjectId
+  grossSalary  Float
+  netSalary    Float
+  salaryPeriod DateTime
+  employee     Employee @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+}
+
+model ContractorSalaryPayment {
+  id           String     @id @default(auto()) @map("_id") @db.ObjectId
+  contractorId String     @db.ObjectId
+  grossSalary  Float
+  netSalary    Float
+  salaryPeriod DateTime
+  contractor   Contractor @relation(fields: [contractorId], references: [id], onDelete: Cascade)
+}
+
+model TaxPaid {
+  id          String     @id @default(auto()) @map("_id") @db.ObjectId
+  taxId       String     @db.ObjectId
+  tax         AppliedTax @relation(fields: [taxId], references: [id], onDelete: Cascade)
+  amount      Float
+  employeeId  String     @db.ObjectId
+  employee    Employee   @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+  paymentDate DateTime?
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+  payrollId   String?    @db.ObjectId
+}
+
+enum PayrollType {
+  EMPLOYEE
+  CONTRACTOR
+  MIXED
+}
+
+model MainPayroll {
+  id                          String             @id @default(auto()) @map("_id") @db.ObjectId
+  paymentDate                 DateTime?
+  status                      PaymentStatus      @default(Pending)
+  payrollType                 PayrollType        @default(MIXED)
+  createdAt                   DateTime           @default(now())
+  updatedAt                   DateTime           @updatedAt
+  payrolls                    Payroll[]
+  contractTerms               ContractTerms[]
+  companyId                   String?            @db.ObjectId
+  company                     Company?            @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  paymentHistory              PaymentHistory[]
+  totalGrossAmount            Float?
+  totalNetAmount              Float?
+  totalTaxesAmount            Float?
+  totalAdditionalIncomeAmount Float?
+  totalDeductionAmount        Float?
+}
+
+model Payroll {
+  id                          String             @id @default(auto()) @map("_id") @db.ObjectId
+  status                      PaymentStatus      @default(Pending)
+  createdAt                   DateTime           @default(now())
+  updatedAt                   DateTime           @updatedAt
+  taxes                       AppliedTax[]
+  benefits                    EmployeeBenefit[]
+  additionalIncomes           AdditionalIncome[]
+  deductions                  Deduction[]
+  employeeId                  String?            @db.ObjectId
+  employee                    Employee?          @relation(fields: [employeeId], references: [id])
+  contractorId                String?            @db.ObjectId
+  contractor                  Contractor?        @relation(fields: [contractorId], references: [id])
+  salary                      Float
+  netSalary                   Float
+  mainPayollId                String?            @db.ObjectId
+  mainPayroll                 MainPayroll?        @relation(fields: [mainPayollId], references: [id])
+  contractId                  String?            @db.ObjectId
+  contract                   ContractTerms?        @relation(fields: [contractId], references: [id])
+  paymentHistory              PaymentHistory[]
+   
+  @@index([mainPayollId])
+  @@index([employeeId])
+  @@index([contractorId])
+}
+
+model AdditionalIncome {
+  id          String        @id @default(auto()) @map("_id") @db.ObjectId
+  employeeId  String        @db.ObjectId
+  amount      Float
+  description String?
+  incomeType  IncomeType    
+  paymentStatus PaymentStatus @default(Pending)  
+  paymentDate DateTime?  
+  currency    String        @default("USD")
+  payrollId   String?       @db.ObjectId  
+  createdAt   DateTime      @default(now())  
+  updatedAt   DateTime      @updatedAt  
+  employee    Employee      @relation(fields: [employeeId], references: [id])
+  payroll     Payroll?      @relation(fields: [payrollId], references: [id])
+}
+
+model Deduction {
+  id          String        @id @default(auto()) @map("_id") @db.ObjectId
+  employeeId  String        @db.ObjectId  
+  amount      Float
+  reason      String
+  status      PaymentStatus @default(Pending)
+  employee    Employee      @relation(fields: [employeeId], references: [id])
+  createdAt   DateTime      @default(now())  
+  updatedAt   DateTime      @updatedAt  
+  payrollId   String?       @db.ObjectId
+  payroll     Payroll?      @relation(fields: [payrollId], references: [id])
+}
+
+
+model Plan {
+  id            String        @id @default(auto()) @map("_id") @db.ObjectId
+  name          String
+  companyTier   CompanyTier   @relation(fields: [companyTierId], references: [id])
+  companyTierId String        @db.ObjectId
+  price         Float
+  isActive      Boolean
+  companies     Company[]   
+  offers        Offer[]   
+  features      PlanFeature[]  
+  createdAt     DateTime      @default(now())  
+  updatedAt     DateTime      @updatedAt  
+}
+
+model Feature {
+  id          String        @id @default(auto()) @map("_id") @db.ObjectId
+  name        String
+  description String?
+  plans       PlanFeature[]  
+  createdAt   DateTime      @default(now())  
+  updatedAt   DateTime      @updatedAt  
+}
+
+model PlanFeature {
+  id        String  @id @default(auto()) @map("_id") @db.ObjectId
+  planId    String  @db.ObjectId
+  featureId String  @db.ObjectId
+
+  plan      Plan    @relation(fields: [planId], references: [id])
+  feature   Feature @relation(fields: [featureId], references: [id])
+
+  @@unique([planId, featureId])  
+}
+
+
+ 
+
+model CompanyTier {
+  id           String  @id @default(auto()) @map("_id") @db.ObjectId
+  name         String
+  minEmployees Int
+  maxEmployees Int
+  plans        Plan[]
+  createdAt   DateTime      @default(now())  
+  updatedAt   DateTime      @updatedAt  
+}
+
+model Offer {
+  id                    String        @id @default(auto()) @map("_id") @db.ObjectId
+  name                  String
+  description           String?
+  discountAmount       Float?
+  discountPercentage   Float?
+  startDate            DateTime
+  endDate              DateTime?
+  includes              OfferInclude[]
+  plan               Plan  @relation(fields: [planId], references: [id])
+  planId   String   @db.ObjectId
+  createdAt   DateTime      @default(now())  
+  updatedAt   DateTime      @updatedAt  
+}
+
+model OfferInclude {
+  id           String @id @default(auto()) @map("_id") @db.ObjectId
+  offer        Offer  @relation(fields: [offerId], references: [id])
+  offerId     String @db.ObjectId
+}
+
+ 
+
+enum PayrollStatus {
+  DRAFT
+  PENDING
+  PROCESSING
+  PAID
+}
+
+enum IncomeType {
+  Bonus
+  Commission
+  Overtime
+  Allowance
+  Reimbursement
+  Adjustment
+}
+
+enum PaymentStatus {
+  All
+  Pending
+  Paid
+  Cancelled
+  Failed
+  Ready
+}
+
+enum Currency {
+  USD
+  EUR
+  GBP
+  JPY
+  AUD
+  CAD
+  CHF
+  CNY
+  HKD
+  NZD
+  SEK
+  KRW
+  SGD
+  NOK
+  MXN
+  INR
+  RUB
+  ZAR
+  BRL
+  AED
+  RWF
+}
+
+enum TaxType {
+  PAYE
+  SocialSecurity
+  Insurance
+  Other
+}
+
+enum BenefitName {
+  WORKING_HOURS_AND_TIME_OFF
+  SKILLS_DEVELOPMENT
+  FOOD_AND_BEVERAGE
+  GIFTS_AND_ACTIVITIES
+  HEALTH_CARE
+  WELLNESS
+  RETIREMENT_AND_PENSION_PLANS
+  INSURANCES
+  FINANCIAL_GROWTH_BENEFITS
+  PERSONAL_FINANCE_BENEFITS
+  MOBILITY_AND_OFFICE_SETUP
+  WORKLIFE_BALANCE
+}
+
+enum PaymentMethod {
+  bank
+  crypto
+  phone
+}
+
+model Settings {
+  id                String   @id @default(auto()) @map("_id") @db.ObjectId
+  companyId         String   @unique @db.ObjectId
+  company           Company  @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  defaultCurrency   Currency @default(USD)
+  payrollStartDate  Int      @default(1)     
+  payrollEndDate    Int      @default(30)     
+  paymentDay        Int      @default(5)      
+  taxCalculation    TaxCalculationType @default(PROGRESSIVE)
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+}
+
+enum TaxCalculationType {
+  PROGRESSIVE
+  FLAT_RATE
+}
+
+model PaymentHistory {
+  id              String        @id @default(auto()) @map("_id") @db.ObjectId
+  amount          Float
+  currency        Currency
+  status          PaymentStatus
+  paymentMethod   PaymentMethod
+  reference       String?       // Payment reference/transaction ID
+  payrollId       String?       @db.ObjectId
+  payroll         Payroll?     @relation(fields: [payrollId], references: [id])
+  mainPayrollId   String?      @db.ObjectId
+  mainPayroll     MainPayroll? @relation(fields: [mainPayrollId], references: [id])
+  recipientType   RecipientType
+  recipientId     String       @db.ObjectId   
+  description     String?
+  errorMessage    String?      
+  processedAt     DateTime?
+  createdAt       DateTime     @default(now())
+  updatedAt       DateTime     @updatedAt
+}
+
+model PayrollSettings {
+  id                      String   @id @default(auto()) @map("_id") @db.ObjectId
+  companyId              String   @unique @db.ObjectId
+  company                Company  @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  overtimeRate           Float    @default(1.5)    
+  weekendRate            Float    @default(2.0)     
+  holidayRate            Float    @default(2.0)     
+  maxOvertimeHours       Int      @default(40)     
+  minWorkingHours        Int      @default(160)    
+  taxDeductionOrder     String[]  
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+}
+
+enum RecipientType {
+  EMPLOYEE
+  CONTRACTOR
+}
+
+enum BillingFrequency {
+  WEEKLY
+  BIWEEKLY
+  MONTHLY
+  QUARTERLY
+  SEMI_ANNUALLY
+  ANNUALLY
+}
+
+
+

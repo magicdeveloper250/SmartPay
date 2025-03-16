@@ -8,6 +8,7 @@ import Loader from "@/components/Common/Loader";
 import countriesData from "@/data/countries.json"; 
 import industries from "@/data/industries.json";
 import HeaderLayout from "@/app/headerLayout";
+import { CompanyRegisterData } from "@/types/CompanyRegister";
 
 interface Country {
   name: string;
@@ -32,7 +33,7 @@ const SignUp = () => {
   const [isDirty, setIsDirty] = useState(false);
 
   // Form state object to track all field values
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState ({
     companyName: "",
     adminName: "",
     adminEmail: "",
@@ -40,7 +41,9 @@ const SignUp = () => {
     country: "",
     city: "",
     industry: "",
-    pensionCode: ""
+    pensionCode: "",
+    email:"",
+    phoneNumber:""
   });
 
   useEffect(() => {
@@ -146,7 +149,9 @@ const SignUp = () => {
         country: "",
         city: "",
         industry: "",
-        pensionCode: ""
+        pensionCode: "",
+        phoneNumber:"",
+        email:""
       });
       setPassword("");
       setConfirmPassword("");
@@ -262,6 +267,27 @@ const SignUp = () => {
                         className="w-full rounded-md border border-stroke bg-transparent px-5 py-3 text-base text-dark outline-none transition placeholder:text-dark-6 focus:border-primary focus-visible:shadow-none dark:border-dark-3 dark:text-white dark:focus:border-primary"
                       />
                     </div>
+                        {/* Company Email */}
+                        <div className="mb-4">
+                            <label htmlFor="adminEmail" className="block text-sm font-medium mb-1 text-left text-gray-700 dark:text-gray-300">
+                              Email of Company <span className="text-red-500">*</span>
+                            </label>
+                            <input
+                              type="email"
+                              id="email"
+                              placeholder="admin@company.com"
+                              name="email"
+                              required
+                              value={formData.email}
+                              onChange={handleInputChange}
+                              aria-required="true"
+                              aria-invalid={formData.email === ""}
+                              className="w-full rounded-md border border-stroke bg-transparent px-5 py-3 text-base text-dark outline-none transition placeholder:text-dark-6 focus:border-primary focus-visible:shadow-none dark:border-dark-3 dark:text-white dark:focus:border-primary"
+                            />
+                    </div>
+
+
+                    
 
                     {/* Admin Email */}
                     <div className="mb-4">
@@ -278,6 +304,25 @@ const SignUp = () => {
                         onChange={handleInputChange}
                         aria-required="true"
                         aria-invalid={formData.adminEmail === ""}
+                        className="w-full rounded-md border border-stroke bg-transparent px-5 py-3 text-base text-dark outline-none transition placeholder:text-dark-6 focus:border-primary focus-visible:shadow-none dark:border-dark-3 dark:text-white dark:focus:border-primary"
+                      />
+                    </div>
+
+                     {/* Admin Email */}
+                     <div className="mb-4">
+                      <label htmlFor="phoneNumber" className="block text-sm font-medium mb-1 text-left text-gray-700 dark:text-gray-300">
+                        Phone Number of Company Admin <span className="text-red-500">*</span>
+                      </label>
+                      <input
+                        type="number"
+                        id="phoneNumber"
+                        placeholder="+250790000000"
+                        name="phoneNumber"
+                        required
+                        value={formData.phoneNumber}
+                        onChange={handleInputChange}
+                        aria-required="true"
+                        aria-invalid={formData.phoneNumber === ""}
                         className="w-full rounded-md border border-stroke bg-transparent px-5 py-3 text-base text-dark outline-none transition placeholder:text-dark-6 focus:border-primary focus-visible:shadow-none dark:border-dark-3 dark:text-white dark:focus:border-primary"
                       />
                     </div>

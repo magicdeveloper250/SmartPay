@@ -1,6 +1,8 @@
 import { prisma } from "@/utils/prismaDB";
 import { handlePrismaError } from "@/lib/error-handler";
 import { PaymentStatus } from "@prisma/client";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/utils/auth";
 
 export async function getContractors(
   userEmail: string,
@@ -9,33 +11,38 @@ export async function getContractors(
   pageSize: number = 5,
   id?: string
 ) {
-  if (!userEmail) {
-    throw new Error("Unauthorized: User email is required");
+  const session = await getServerSession(authOptions);
+  if (!session?.user?.email) {
+    return { error: "Unauthorized" }
   }
 
   try {
     const skip = (page - 1) * pageSize;
     const take = pageSize;
 
-    const company = await prisma.company.findUnique({
-      where: { adminEmail: userEmail },
-      select:{
-        id:true,
-        settings:{
-          select:{
-            defaultCurrency:true
+    const user = await prisma.user.findUnique({
+      where: { email: session.user.email },
+     include:{
+      company: {
+        select:{
+          id:true,
+          settings:{
+            select:{
+              defaultCurrency:true
+            }
           }
         }
       }
+     }
     });
 
-    if (!company) {
+    if (!user ||!user.company) {
       throw new Error("Company not found");
     }
 
     const contractors = await prisma.contractor.findMany({
       where: {
-        companyId: company.id,  
+        companyId: user.company.id,  
         ...(id
           ? { id }  
           : query
@@ -111,13 +118,13 @@ export async function getContractors(
     });
 
     const totalCount = await prisma.contractor.count({
-      where: { companyId: company.id },
+      where: { companyId: user.company.id },
     });
 
     const totalTaxes = processedContractors.reduce((sum, contractor) => sum + contractor.TotalOverallTaxes, 0);
     const totalNetSalary = processedContractors.reduce((sum, contractor) => sum + contractor.NetOverallSalary, 0);
     const TotalOverallSalaries = processedContractors.reduce((sum, contractor) => sum + contractor.TotalContractsSalaries, 0);
-    const currency = company?.settings?.defaultCurrency ||"USD";
+    const currency = user.company?.settings?.defaultCurrency ||"USD";
     const payrollContractors = { processedContractors, totalTaxes, totalNetSalary, TotalOverallSalaries, currency };
 
     return id

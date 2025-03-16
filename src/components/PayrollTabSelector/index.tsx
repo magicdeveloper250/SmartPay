@@ -46,9 +46,9 @@ export default function PayrollTabSelector() {
           Employees
         </button>
         <button
-          className={`px-4 py-1.5 rounded-md transition-all duration-200 font-medium ${
+           className={`px-4 py-1.5 rounded-md transition-all duration-200 font-medium ${
             activeTab === "contractors"
-              ? "bg-primary-600 text-white shadow-lg hover:bg-blue-700"
+              ? "bg-primary text-white shadow-lg hover:bg-primary-700"
               : "bg-transparent text-gray-700 hover:bg-gray-300/80 dark:text-gray-300 dark:hover:bg-gray-600/80"
           }`}
           onClick={() => handleToggleTab("contractors")}

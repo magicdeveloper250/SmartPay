@@ -21,7 +21,7 @@ const Footer = () => {
                 />
               </Link>
               <p className="mb-8 max-w-[270px] text-base text-gray-7">
-              Revolutionize Your Digital Transactions with Sawa Pay 2.0.
+              Revolutionize Your Digital Transactions with impanoPay.
               </p>
               <div className="-mx-3 flex items-center">
                 <a

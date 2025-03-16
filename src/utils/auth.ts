@@ -1,5 +1,4 @@
-import bcrypt from "bcryptjs";
-import { NextAuthOptions } from "next-auth";
+import type { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import GitHubProvider from "next-auth/providers/github";
 import GoogleProvider from "next-auth/providers/google";
@@ -7,6 +6,7 @@ import EmailProvider from "next-auth/providers/email";
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import { prisma } from "./prismaDB";
 import type { Adapter } from "next-auth/adapters";
+ 
  
 
 export const authOptions: NextAuthOptions = {
@@ -17,6 +17,7 @@ export const authOptions: NextAuthOptions = {
   secret: process.env.NEXTAUTH_SECRET,
   session: {
     strategy: "jwt",
+    maxAge:600
     
   },
 
@@ -25,35 +26,34 @@ export const authOptions: NextAuthOptions = {
       name: "credentials",
       credentials: {
         email: { label: "Email", type: "text", placeholder: "Jhondoe" },
-        password: { label: "Password", type: "password" },
+        otp: { label: "Password", type: "password" },
         username: { label: "Username", type: "text", placeholder: "Jhon Doe" },
       },
 
-      async authorize(credentials) {
-        if (!credentials?.email || !credentials?.password) {
-          throw new Error("Please enter an email or password");
+      async authorize(credentials, req) {
+        if (!credentials?.email || !credentials.otp) {
+          throw new Error("Invalid OTP code.")
         }
 
-        const user = await prisma.company.findUnique({
-          where: {
-            adminEmail: credentials.email,
-          },
+        const user = await prisma.user.findUnique({
+          where: { email:credentials.email },
+         
         });
-
-        if (!user || !user?.password) {
-          throw new Error("Invalid email or password");
+      
+        if (!user || !user.otp || !user.otp) {
+        throw new Error("Invalid or expired OTP" )
         }
-
-        const passwordMatch = await bcrypt.compare(
-          credentials.password,
-          user.password,
-        );
-
-
-        if (!passwordMatch) {
-          console.log("test", passwordMatch);
-          throw new Error("Incorrect password");
+      
+        const now = new Date();
+        if (user.otp !== credentials.otp || user.expires! < now) {
+          throw new Error("Invalid or expired OTP")
         }
+       
+        await prisma.user.update({
+          where: { email:credentials.email },
+          data: { otp: null, expires: null },
+        });
+     
 
         return user;
       },
@@ -115,3 +115,11 @@ export const authOptions: NextAuthOptions = {
 
   // debug: process.env.NODE_ENV === "developement",
 };
+
+
+
+
+
+
+
+ 

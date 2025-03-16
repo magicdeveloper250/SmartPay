@@ -8,7 +8,7 @@ const Faq = () => {
         <SectionTitle
           subtitle="FAQ"
           title="Your Questions Answered"
-          paragraph="Find out more about how SawaPay supports businesses and the gig economy workforce across Africa."
+          paragraph="Find out more about how impanoPay supports businesses and the gig economy workforce across Africa."
           width="640px"
           center
         />
@@ -16,8 +16,8 @@ const Faq = () => {
         <div className="-mx-4 mt-[60px] flex flex-wrap lg:mt-20">
           <div className="w-full px-4 lg:w-1/2">
             <SingleFaq
-              question="What is SawaPay?"
-              answer="SawaPay is an Embedded Finance Platform designed to support businesses and gig economy workers across Africa by providing Payroll Management Systems and Financial Services tailored to their needs."
+              question="What is impanoPay?"
+              answer="impanoPay is an Embedded Finance Platform designed to support businesses and gig economy workers across Africa by providing Payroll Management Systems and Financial Services tailored to their needs."
             />
             <SingleFaq
               question="How does the Payroll Management System work?"
@@ -31,16 +31,16 @@ const Faq = () => {
 
           <div className="w-full px-4 lg:w-1/2">
             <SingleFaq
-              question="Who can use SawaPay?"
-              answer="SawaPay is ideal for companies, gig economy platforms, and individual workers across Africa looking for seamless payroll management and financial services."
+              question="Who can use impanoPay?"
+              answer="impanoPay is ideal for companies, gig economy platforms, and individual workers across Africa looking for seamless payroll management and financial services."
             />
             <SingleFaq
-              question="How do gig workers benefit from SawaPay?"
+              question="How do gig workers benefit from impanoPay?"
               answer="Gig workers gain access to financial services that help them manage their income, save, and access credit, empowering them to achieve financial stability."
             />
             <SingleFaq
-              question="Is SawaPay available across Africa?"
-              answer="Yes, SawaPay is designed to serve businesses and workers throughout Africa, supporting the diverse needs of the gig economy workforce."
+              question="Is impanoPay available across Africa?"
+              answer="Yes, impanoPay is designed to serve businesses and workers throughout Africa, supporting the diverse needs of the gig economy workforce."
             />
           </div>
         </div>

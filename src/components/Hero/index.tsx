@@ -16,10 +16,10 @@ const Hero = () => {
                 data-wow-delay=".2s"
               >
                 <h1 className="mb-6 text-3xl font-bold leading-snug text-white sm:text-4xl sm:leading-snug lg:text-5xl lg:leading-[1.2]">
-                  Revolutionize Your Digital Transactions with Sawa Pay 2.0
+                  Revolutionize Your Digital Transactions with impanoPay
                 </h1>
                 <p className="mx-auto mb-9 max-w-[600px] text-base font-medium text-white sm:text-lg sm:leading-[1.44]">
-                  Sawa Pay 2.0 is a cutting-edge financial technology platform designed to make sending, receiving, and managing funds seamless, secure, and efficient. Experience instant transfers, multi-currency support, and advanced security features today.
+                  impanoPay is a cutting-edge financial technology platform designed to make sending, receiving, and managing funds seamless, secure, and efficient. Experience instant transfers, multi-currency support, and advanced security features today.
                 </p>
                 <ul className="mb-10 flex flex-wrap items-center justify-center gap-5">
                   <li>

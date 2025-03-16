@@ -19,11 +19,12 @@ export async function processExcelFile(input: {
             if (!session?.user?.email) {
               return { error: "Unauthorized" }
             }
-         const company = await prisma.company.findUnique({
-                where: { adminEmail: session.user.email },
+         const user = await prisma.user.findUnique({
+                where: { email: session.user.email },
+                include:{company:true}
               });
           
-              if (!company) {
+              if (!user || !user.company) {
                 return { error: "Company not found" };
               }
     const fileValidation = FileUploadSchema.safeParse(input);
@@ -58,11 +59,11 @@ export async function processExcelFile(input: {
                ...emp,
                monthlyGross:Number.parseFloat(emp.monthlyGross),
                startDate: new Date(emp.startDate).toISOString(), 
-               companyId:company.id,
+               companyId:user.company.id,
                 
              })),
            }),  prisma.company.update({
-             where: { id: company.id },
+             where: { id: user.company.id },
              data: { onBoardingFinished: true },
            })])
      revalidatePath("/dashboard/employees/internal");

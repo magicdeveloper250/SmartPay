@@ -90,37 +90,41 @@ export async function getOverviewData(): Promise<OverviewData | ErrorResponse> {
       return { error: "Unauthorized" };
     }
 
-    const company = await prisma.company.findUnique({
+    const user = await prisma.user.findUnique({
       where: {
-        adminEmail: session.user.email,
+        email: session.user.email,
       },
-      include: {
-        employees: {
-          select: { createdAt: true, monthlyGross: true },
-        },
-        contractors: {
-          select: { createdAt: true,},
-        },
-        payrolls: {
-          select: { 
-            id: true,
-            paymentDate: true,
-            status: true,
-            createdAt: true, 
-            updatedAt: true,
-            companyId: true,
-            payrollType: true,
-            totalNetAmount: true,
-            totalGrossAmount: true,
-            totalTaxesAmount: true,
-            totalAdditionalIncomeAmount: true,
-            totalDeductionAmount: true
+      include:{
+        company:{
+          include: {
+            employees: {
+              select: { createdAt: true, monthlyGross: true },
+            },
+            contractors: {
+              select: { createdAt: true,},
+            },
+            payrolls: {
+              select: { 
+                id: true,
+                paymentDate: true,
+                status: true,
+                createdAt: true, 
+                updatedAt: true,
+                companyId: true,
+                payrollType: true,
+                totalNetAmount: true,
+                totalGrossAmount: true,
+                totalTaxesAmount: true,
+                totalAdditionalIncomeAmount: true,
+                totalDeductionAmount: true
+              },
+            }
           },
         }
-      },
+      }
     });
 
-    if (!company) {
+    if (!user|| !user.company) {
       return { error: "Company not found" };
     }
 
@@ -193,16 +197,16 @@ export async function getOverviewData(): Promise<OverviewData | ErrorResponse> {
       };
     };
 
-    const employeeGrowthRate = calculateMonthlyGrowth(company.employees);
-    const contractorGrowthRate = calculateMonthlyGrowth(company.contractors);
+    const employeeGrowthRate = calculateMonthlyGrowth(user.company.employees);
+    const contractorGrowthRate = calculateMonthlyGrowth(user.company.contractors);
     
    
     const employeePayrolls = calculatePayrollMonthlyGrowth(
-      company.payrolls.filter(payroll => payroll.payrollType === PayrollType.EMPLOYEE)
+      user.company.payrolls.filter(payroll => payroll.payrollType === PayrollType.EMPLOYEE)
     );
     
     const contractorPayrolls = calculatePayrollMonthlyGrowth(
-      company.payrolls.filter(payroll => payroll.payrollType === PayrollType.CONTRACTOR)
+      user.company.payrolls.filter(payroll => payroll.payrollType === PayrollType.CONTRACTOR)
     );
 
     return {
@@ -219,11 +223,11 @@ export async function getOverviewData(): Promise<OverviewData | ErrorResponse> {
         growthRate: 2.59,
       },
       users: {
-        employees: { value: company.employees.length, growthRate: employeeGrowthRate },
-        contractors: { value: company.contractors.length, growthRate: contractorGrowthRate },
+        employees: { value: user.company.employees.length, growthRate: employeeGrowthRate },
+        contractors: { value: user.company.contractors.length, growthRate: contractorGrowthRate },
       },
       payrolls: {
-        count:company.payrolls.length,
+        count:user.company.payrolls.length,
         employees: employeePayrolls,
       }
     };
@@ -241,31 +245,35 @@ export async function getTopEmployees() {
       return { error: "Unauthorized" };
     }
 
-    const company = await prisma.company.findUnique({
+    const user = await prisma.user.findUnique({
       where: {
-        adminEmail: session.user.email,
+        email: session.user.email,
       },
-      include: {
+      include:{
+        company:{
+          include: {
 
-        settings:{
-          select:{
-            defaultCurrency:true
-          }
-        },
-        employees: {
-          orderBy: {
-            monthlyGross: "desc",
+            settings:{
+              select:{
+                defaultCurrency:true
+              }
+            },
+            employees: {
+              orderBy: {
+                monthlyGross: "desc",
+              },
+              take: 5,
+            },
           },
-          take: 5,
-        },
-      },
+        }
+      }
     });
 
-    if (!company) {
+    if (!user|| !user.company) {
       return { error: "Company not found" };
     }
 
-    return {employees:company.employees, settings: company.settings};
+    return {employees:user.company.employees, settings: user.company.settings};
   } catch (error) {
     return handleActionsPrismaError(error);
   }
@@ -289,29 +297,33 @@ export async function getPayrollHistoryData(
       return { error: "Unauthorized" };
     }
 
-    const company = await prisma.company.findUnique({
+    const user= await prisma.user.findUnique({
       where: {
-        adminEmail: session.user.email,
+        email: session.user.email,
       },
-      include: {
-        payrolls: {
-          select: {
-            id: true,
-            paymentDate: true,
-            status: true,
-            createdAt: true,
-            totalGrossAmount: true,
+     include:{
+      company:{
+        include: {
+          payrolls: {
+            select: {
+              id: true,
+              paymentDate: true,
+              status: true,
+              createdAt: true,
+              totalGrossAmount: true,
+            },
+          },
+          settings: {
+            select: {
+              defaultCurrency: true,
+            },
           },
         },
-        settings: {
-          select: {
-            defaultCurrency: true,
-          },
-        },
-      },
+      }
+     }
     });
 
-    if (!company) {
+    if (!user||!user.company) {
       return { error: "Company not found" };
     }
 
@@ -346,7 +358,7 @@ export async function getPayrollHistoryData(
         break;
     }
  
-    const payrolls = company.payrolls;
+    const payrolls = user.company.payrolls;
     const filteredPayrolls = payrolls.filter(payroll => {
       const payrollDate = new Date(payroll.createdAt);
       payrollDate.setHours(0, 0, 0, 0); // Normalize to UTC
@@ -389,7 +401,7 @@ export async function getPayrollHistoryData(
     const dueAmounts = months.map(month => monthlyData[month].due);
     const totalPaid = paidAmounts.reduce((sum, amount) => sum + amount, 0);
     const totalDue = dueAmounts.reduce((sum, amount) => sum + amount, 0);
-    const currency = company.settings?.defaultCurrency || "USD";
+    const currency = user.company.settings?.defaultCurrency || "USD";
  
 
     return {
@@ -418,28 +430,32 @@ export async function getDailyPaymentData(
       return { error: "Unauthorized" };
     }
 
-    const company = await prisma.company.findUnique({
+    const user = await prisma.user.findUnique({
       where: {
-        adminEmail: session.user.email,
+        email: session.user.email,
       },
-      include: {
-        payrolls: {
-          select: {
-            id: true,
-            paymentDate: true,
-            status: true,
-            totalGrossAmount: true,
+     include:{
+      company:{
+        include: {
+          payrolls: {
+            select: {
+              id: true,
+              paymentDate: true,
+              status: true,
+              totalGrossAmount: true,
+            },
+          },
+          settings: {
+            select: {
+              defaultCurrency: true,
+            },
           },
         },
-        settings: {
-          select: {
-            defaultCurrency: true,
-          },
-        },
-      },
+      }
+     }
     });
 
-    if (!company) {
+    if (!user||!user.company) {
       return { error: "Company not found" };
     }
 
@@ -481,7 +497,7 @@ export async function getDailyPaymentData(
     };
 
     // Filter payrolls for the week
-    let payrolls = company.payrolls.filter(payroll => {
+    let payrolls = user.company.payrolls.filter(payroll => {
       if (!payroll.paymentDate) return;
       const payrollDate = payroll.paymentDate ? new Date(payroll.paymentDate) : null;
       return payrollDate !== null && payrollDate >= startOfWeek && payrollDate <= endOfWeek;
@@ -529,7 +545,7 @@ export async function getDailyPaymentData(
       ready: chartData.data.Ready.reduce((sum, item) => sum + item.y, 0),
     };
     
-    const currency = company.settings?.defaultCurrency || "USD";
+    const currency = user.company.settings?.defaultCurrency || "USD";
    
 
     return {

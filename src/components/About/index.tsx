@@ -13,12 +13,12 @@ const About = () => {
           <div className="w-full px-4 lg:w-1/2">
             <div className="mb-12 max-w-[540px] lg:mb-0">
               <h2 className="mb-5 text-3xl font-bold leading-tight text-dark dark:text-white sm:text-[40px] sm:leading-[1.2]">
-                Sawa Pay 2.0: A Revolutionary Financial Solution
+                impanoPay: A Revolutionary Financial Solution
               </h2>
               <p className="mb-10 text-base leading-relaxed text-body-color dark:text-dark-6">
-                Sawa Pay 2.0 is designed to simplify and secure digital transactions, making it easier than ever to manage your finances.
+                impanoPay is designed to simplify and secure digital transactions, making it easier than ever to manage your finances.
                 <br /> <br />
-                With a focus on user experience, security, and global reach, Sawa Pay 2.0 offers a seamless, efficient platform for handling money transfers, bill payments, and more.
+                With a focus on user experience, security, and global reach, impanoPay offers a seamless, efficient platform for handling money transfers, bill payments, and more.
               </p>
 
               <a

@@ -10,19 +10,22 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
   try {
-    const company = await prisma.company.findUnique({
+    const user = await prisma.user.findUnique({
       where: {
-        adminEmail: session.user.email,
+        email: session.user.email,
       },
+      include:{
+        company:true
+      }
      
     });
 
-    if (!company) {
+    if (!user ||!user.company) {
       return NextResponse.json({ error: "Company not found" }, { status: 404 });
     }
 
     const taxes = await prisma.predefinedTax.findMany({
-      where: {companyId:company.id},  
+      where: {companyId:user.company.id},  
        
     });
 

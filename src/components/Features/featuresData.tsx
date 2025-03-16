@@ -9,7 +9,7 @@ const featuresData: Feature[] = [
       </svg>
     ),
     title: "Instant Money Transfers",
-    paragraph: "Transfer funds instantly between Sawa Pay users, banks, and mobile wallets with competitive exchange rates.",
+    paragraph: "Transfer funds instantly between impanoPay users, banks, and mobile wallets with competitive exchange rates.",
     btn: "Learn More",
     btnLink: "/#",
   },
@@ -69,7 +69,7 @@ const featuresData: Feature[] = [
       </svg>
     ),
     title: "Merchant & Business Solutions",
-    paragraph: "Integrate Sawa Pay with your e-commerce or POS, automate invoicing, and access custom APIs for business transactions.",
+    paragraph: "Integrate impanoPay with your e-commerce or POS, automate invoicing, and access custom APIs for business transactions.",
     btn: "Learn More",
     btnLink: "/#",
   },

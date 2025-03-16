@@ -3,6 +3,8 @@
 import React, { useState, useEffect, useRef } from "react";
 import { exportPayrollToCSV, exportPayrollToJSON, SavePayroll, SaveContractorPayroll } from "@/actions/payroll";
 import toast from "react-hot-toast";
+import { useRouter } from "next/navigation";
+import { PayrollType } from "@prisma/client";
 
 interface ExportControlProps {
   query: string;
@@ -16,6 +18,7 @@ export default function ExportControl({ query, page, type }: ExportControlProps)
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const router= useRouter()
 
   const isValidPayDate = (dateString: string): boolean => {
     const date = new Date(dateString);
@@ -67,6 +70,8 @@ export default function ExportControl({ query, page, type }: ExportControlProps)
         resp = type === 'employees' 
           ? await SavePayroll(selectedDate)
           : await SaveContractorPayroll(selectedDate);
+      type=="employees"? router.push(`/history/${resp.payroll.id}/detail?type=${PayrollType.EMPLOYEE}`, {scroll:false}):router.push(`/history/${resp.payroll.id}/detail?type=${PayrollType.CONTRACTOR}`, {scroll:false})
+
       } else {
         resp = await exportPayrollToJSON(query, page);
       }
@@ -181,7 +186,7 @@ export default function ExportControl({ query, page, type }: ExportControlProps)
                   </div>
                 </button>
 
-                <button
+                {/* <button
                   onClick={() => handleExport("csv")}
                   disabled={isExporting}
                   className="group flex w-full items-center rounded-md px-3 py-2.5
@@ -217,7 +222,7 @@ export default function ExportControl({ query, page, type }: ExportControlProps)
                     <p className="font-medium">JSON Export <span className="text-xs text-indigo-500">[draft]</span></p>
                     <p className="text-xs text-gray-500">Download as JSON file</p>
                   </div>
-                </button>
+                </button> */}
               </div>
             </div>
           )}

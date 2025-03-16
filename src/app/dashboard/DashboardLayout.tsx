@@ -13,11 +13,11 @@ import OnBoardingRequiredLayout from "@/components/Layouts/onBoardingRequired";
 
 export const metadata: Metadata = {
   title: {
-    template: "%s | SawaPay 2.0 - Dashboard",
-    default: "SawaPay 2.0 - Dashboard",
+    template: "%s | impanoPay - Dashboard",
+    default: "impanoPay - Dashboard",
   },
   description:
-    "Sawa Pay 2.0 is a cutting-edge financial technology platform designed to make sending, receiving, and managing funds seamless, secure, and efficient. Experience instant transfers, multi-currency support, and advanced security features today",
+    "impanoPay is a cutting-edge financial technology platform designed to make sending, receiving, and managing funds seamless, secure, and efficient. Experience instant transfers, multi-currency support, and advanced security features today",
 };
 
 export default function DashboardLayout({ children }:Readonly<{children:React.ReactNode}>) {

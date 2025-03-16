@@ -11,21 +11,26 @@ export async function GET(req: NextRequest) {
   }
 
   try {
-    const company = await prisma.company.findUnique({
+    const user = await prisma.user.findUnique({
       where: {
-        adminEmail: session.user.email,
+        email: session.user.email,
       },
-      select:{
-        onBoardingFinished:true,
-        _count:{
-        select:{employees:true, contractors:true},
-      }}
+      include:{company:{
+        select:{
+          onBoardingFinished:true,
+          _count:{
+          select:{employees:true, contractors:true},
+        }}
+      }
+
+      }
+      
     });
 
-    if (!company) {
+    if (!user ||!user.company) {
       return NextResponse.json({ error: "Company not found" }, { status: 404 });
     }
-    const { _count, ...companyInfo } = company;
+    const { _count, ...companyInfo } = user.company;
     const { employees = 0, contractors = 0 } = _count || {};
 
     return NextResponse.json({

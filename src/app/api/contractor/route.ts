@@ -16,11 +16,12 @@ export async function GET(req: NextRequest) {
     const { searchParams } = new URL(req.url);
     const id = searchParams.get('id');
 
-    const company = await prisma.company.findUnique({
-      where: { adminEmail: session.user.email }
+    const user= await prisma.user.findUnique({
+      where: {email: session.user.email },
+      include:{company:true}
     });
 
-    if (!company) {
+    if (!user ||!user.company) {
       return NextResponse.json({ error: "Contractor not found" }, { status: 404 });
     }
 
@@ -28,7 +29,7 @@ export async function GET(req: NextRequest) {
       const contractor = await prisma.contractor.findFirst({
         where: {
           id,
-          companyId: company.id
+          companyId: user.company.id
         },
         include:{
           contractsTerms:true
@@ -43,7 +44,7 @@ export async function GET(req: NextRequest) {
     }
 
     const contractors = await prisma.contractor.findMany({
-      where: { companyId: company.id }
+      where: { companyId: user.company.id }
     });
 
     return NextResponse.json({ contractors });
@@ -65,17 +66,18 @@ export async function POST(req: NextRequest) {
     const body = await req.json();
     const { salary, startDate, endDate, notes, ...contractorData } = body;
 
-    const company = await prisma.company.findUnique({
-      where: { adminEmail: session.user.email },
+    const user = await prisma.user.findUnique({
+      where: { email: session.user.email },
+      include:{company:true}
     });
 
-    if (!company) {
+    if (!user ||!user.company) {
       return NextResponse.json({ error: "Company not found" }, { status: 404 });
     }
 
     const result = await prisma.$transaction(async (tx) => {
       const newContractor = await tx.contractor.create({
-        data: { ...contractorData, companyId: company.id },
+        data: { ...contractorData, companyId: user.company.id },
       });
 
       const contract = await tx.contractTerms.create({
@@ -84,13 +86,13 @@ export async function POST(req: NextRequest) {
           startDate: new Date(startDate).toISOString(),
           endDate: new Date(endDate).toISOString(),
           notes,
-          companyId: company.id,
+          companyId: user.company.id,
           contractorId: newContractor.id,  
         },
       });
  
       const updatedCompany = await tx.company.update({
-        where: { id: company.id },
+        where: { id: user.company.id },
         data: { onBoardingFinished: true },
       });
 
@@ -118,18 +120,19 @@ export async function PUT(req: NextRequest) {
     const body = await req.json();
     const { id, ...updateData } = body;
 
-    const company = await prisma.company.findUnique({
-      where: { adminEmail: session.user.email },
+    const user = await prisma.user.findUnique({
+      where: { email: session.user.email },
+      include:{company:true}
     });
 
-    if (!company) {
+    if (!user|| !user.company) {
       return NextResponse.json({ error: "Company not found" }, { status: 404 });
     }
 
     const employee = await prisma.employee.findFirst({
       where: { 
         id,
-        companyId: company.id
+        companyId: user.company.id
       }
     });
 
@@ -165,18 +168,19 @@ export async function DELETE(req: NextRequest) {
       return NextResponse.json({ error: "Employee ID is required" }, { status: 400 });
     }
 
-    const company = await prisma.company.findUnique({
-      where: { adminEmail: session.user.email },
+    const user = await prisma.user.findUnique({
+      where: { email: session.user.email },
+      include:{company:true}
     });
 
-    if (!company) {
+    if (!user ||!user.company) {
       return NextResponse.json({ error: "Company not found" }, { status: 404 });
     }
 
     const employee = await prisma.employee.findFirst({
       where: { 
         id,
-        companyId: company.id
+        companyId: user.company.id
       }
     });
 
