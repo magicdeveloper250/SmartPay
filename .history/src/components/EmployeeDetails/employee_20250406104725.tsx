@@ -1,0 +1,824 @@
+"use client"
+import React, {  useEffect, useState, useTransition } from 'react';
+import { Plus, PencilIcon, MinusIcon,  Loader, Building2, Phone, Wallet2, CreditCard, BadgeCheck, BookHeartIcon, Trash, X, AlertCircle, Loader2 } from "lucide-react";
+import { Employee, EmployeeBenefit, AppliedTax, PredefinedTax, AdditionalIncome, PaymentStatus, Deduction, PredefinedContribution, AppliedContribution} from '@prisma/client';
+import toast from 'react-hot-toast';
+import { addEmployeeBenefit, addEmployeeContribution, addEmployeeTax, changeEmployeeDeductionStatus, changeEmployeeIncomeStatus, deleteEmployee, deleteEmployeeBenefit, deleteEmployeeContribution, deleteEmployeeDeduction, deleteEmployeeIncome, deleteEmployeeTax } from '@/actions/employeeActions';
+import Link from 'next/link';
+import { BenefitName } from '@prisma/client';
+import { formatPaymentFrequency } from '@/utils/fomatters';
+import { Dialog, DialogBackdrop, DialogPanel, DialogTitle } from '@headlessui/react';
+import { useRouter } from 'next/navigation';
+
+export default function EmployeeDisplay({ employee, benefits, taxes,contributions, additionalIncomes, deductions }: { employee: Employee, benefits: EmployeeBenefit[], taxes: AppliedTax[], contributions:AppliedContribution[],additionalIncomes:AdditionalIncome[], deductions:Deduction[] }) {
+ 
+  const [showBenefits, setShowBenefits] = useState<Boolean>(false);
+  const [showTaxes, setShowTaxes] = useState<Boolean>(false);
+  const [showContributions, setShowContributions] = useState<Boolean>(false);
+  const [AllTaxes, setTaxes] = useState<PredefinedTax[]>([]);
+  const [AllContributions, setContributions] = useState<PredefinedContribution[]>([]);
+  const[isAddingBenefit, startAdddingBenefitTransition]= useTransition()
+  const[isDeletingBenefit, startDeletingBenefitTransition]= useTransition() 
+  const[isAddingTax, startAdddingTaxTransition]= useTransition()
+  const[isAddingContribution, startAdddingContributionTransition]= useTransition()
+  const[isDeletingTax, startDeletingTaxTransition]= useTransition() 
+  const[isDeletingContribution, startDeletingContributionTransition]= useTransition() 
+  const[isDeletingIncome, startDeletingIncomeTransition]= useTransition() 
+  const[isChangingIncomeStatus, startChangingStatusTransition]= useTransition() 
+  const[isAddingDeduction, startAdddingDeductionTransition]= useTransition()
+  const[isDeletingDeduction, startDeletingDeductionTransition]= useTransition() 
+  const[isChangingDeductionStatus, startChangingDeductionStatusTransition]= useTransition() 
+  const [loadingBenefitId, setLoadingBenefitId] = useState<string | null>(null);
+  const [loadingIncomeId, setLoadingIncomeId] = useState<string | null>(null);
+  const [loadingDeductionId, setLoadingDeductionId] = useState<string | null>(null);
+  const [showDeleteDialog, setShowDeletDialog]= useState<boolean>(false)
+  const[isDeletingEmployee, startDeletingEmployeeTransition]= useTransition()
+  const router= useRouter()
+
+  const getTaxes = async () => {
+    try {
+      const resp = await fetch("/api/tax");
+      const data = await resp.json();
+      if ("error" in data){
+        toast.error(data.error)
+      }else{
+        setTaxes(data.taxes);
+      }
+    } catch (error) {
+      toast.error("Unable to fetch taxes");
+    }
+  };
+
+  const getContributions = async () => {
+    try {
+      const resp = await fetch("/api/contributions");
+      const data = await resp.json();
+      if ("error" in data){
+        toast.error(data.error)
+      }else{
+        setContributions(data.contributions);
+      }
+    } catch (error) {
+      toast.error("Unable to fetch Contributions");
+    }
+  };
+ 
+
+  const handleAddingBenefit = (employeeId: string, benefit: string) => {
+    startAdddingBenefitTransition(async () => {
+      try {
+        const response = await addEmployeeBenefit(employeeId, benefit);
+        if ("error" in response) {
+          toast.error(response.error);
+        } else {
+          toast.success("Benefit added successfully.");
+        }
+      } catch (error) {
+        toast.error("Failed to add new benefit.");
+      }
+    });
+  };
+  
+  const handleDeletingBenefit = (id: string, employeeId: string, benefit: string) => {
+    setLoadingBenefitId(id);
+    startDeletingBenefitTransition(async () => {
+      try {
+        const response = await deleteEmployeeBenefit(id, employeeId, benefit);
+        setLoadingBenefitId(null);
+        if ("error" in response) {
+          toast.error(response.error);
+        } else {
+          toast.success("Benefit deleted successfully.");
+        }
+      } catch (error) {
+        toast.error("Failed to delete benefit.");
+      } finally {
+        setLoadingBenefitId(null);
+      }
+    });
+  };
+
+
+  const handleAddingContribution = (employeeId: string, contributionId: string) => {
+    startAdddingContributionTransition(async () => {
+      try {
+        const response = await addEmployeeContribution(employeeId, contributionId);
+        if ("error" in response) {
+          toast.error(response.error);
+        } else {
+          toast.success("Contribution added successfully.");
+        }
+      } catch (error) {
+        toast.error("Failed to add new tax.");
+      }
+    });
+  };
+  
+  const handleDeletingTax = (id: string, employeeId: string) => {
+    startDeletingTaxTransition(async () => {
+      try {
+        const response = await deleteEmployeeTax(id, employeeId);
+        if ("error" in response) {
+          toast.error(response.error);
+        } else {
+          toast.success("Tax deleted successfully.");
+        }
+      } catch (error) {
+        toast.error("Failed to delete contribution.");
+      }
+    });
+  };
+
+    
+  const handleAddingTax = (employeeId: string, taxId: string) => {
+    startAdddingTaxTransition(async () => {
+      try {
+        const response = await addEmployeeTax(employeeId, taxId);
+        if ("error" in response) {
+          toast.error(response.error);
+        } else {
+          toast.success("Tax added successfully.");
+        }
+      } catch (error) {
+        toast.error("Failed to add new tax.");
+      }
+    });
+  };
+
+ const handleDeleteEmployee=(employeeId:string)=>{
+  startDeletingEmployeeTransition(async () => {
+    try {
+      const response = await deleteEmployee(employeeId);
+      if ("error" in response) {
+        toast.error(response.error);
+        router.push("/dashboard/employees/internal")
+      } else {
+        toast.success("Employee deleted successfully.");
+      }
+    } catch (error) {
+      toast.error("Failed to deleted employee.");
+    }
+  });
+ }
+  const handleDeletingContribution = (id: string, employeeId: string) => {
+    startDeletingContributionTransition(async () => {
+      try {
+        const response = await deleteEmployeeContribution(id, employeeId);
+        if ("error" in response) {
+          toast.error(response.error);
+        } else {
+          toast.success("Contribition deleted successfully.");
+        }
+      } catch (error) {
+        toast.error("Failed to delete contribution.");
+      }
+    });
+  };
+  
+  const handleDeletingIncome = (id: string, employeeId: string) => {
+    setLoadingIncomeId(id);
+    startDeletingIncomeTransition(async () => {
+      try {
+        const response = await deleteEmployeeIncome(id, employeeId);
+        if ("error" in response) {
+          toast.error(response.error);
+        } else {
+          toast.success("Income deleted successfully.");
+        }
+      } catch (error) {
+        toast.error("Failed to delete income.");
+      } finally {
+        setLoadingIncomeId(null);
+      }
+    });
+  };
+  
+  const handleChanngeIncomeStatus = (id: string, employeeId: string, newStatus: PaymentStatus) => {
+    setLoadingIncomeId(id);
+    startChangingStatusTransition(async () => {
+      try {
+        const response = await changeEmployeeIncomeStatus(id, employeeId, newStatus);
+        if ("error" in response) {
+          toast.error(response.error);
+        } else {
+          toast.success("Income status updated successfully.");
+        }
+      } catch (error) {
+        toast.error("Failed to change income status.");
+      } finally {
+        setLoadingIncomeId(null);
+      }
+    });
+  };
+  
+  const handleDeletingDeduction = (id: string, employeeId: string) => {
+    setLoadingDeductionId(id);
+    startDeletingDeductionTransition(async () => {
+      try {
+        const response = await deleteEmployeeDeduction(id, employeeId);
+        if ("error" in response) {
+          toast.error(response.error);
+        } else {
+          toast.success("Deduction deleted successfully.");
+        }
+      } catch (error) {
+        toast.error("Failed to delete deduction.");
+      } finally {
+        setLoadingDeductionId(null);
+      }
+    });
+  };
+  
+  const handleChanngeDeductionStatus = (id: string, employeeId: string, newStatus: PaymentStatus) => {
+    setLoadingDeductionId(id);
+    startChangingDeductionStatusTransition(async () => {
+      try {
+        const response = await changeEmployeeDeductionStatus(id, employeeId, newStatus);
+        if ("error" in response) {
+          toast.error(response.error);
+        } else {
+          toast.success("Deduction status updated successfully.");
+        }
+      } catch (error) {
+        toast.error("Failed to change deduction status.");
+      } finally {
+        setLoadingDeductionId(null);
+      }
+    });
+  };
+  
+  useEffect(() => {
+    Promise.all([ getTaxes(), getContributions()]);
+  }, []);
+
+  return (
+   
+ 
+    <div className="w-full max-w-7xl mx-auto p-4">
+  
+      <div className="flex flex-col lg:flex-row gap-6">
+   
+        <div className="w-full lg:w-1/3 bg-white rounded-lg shadow-sm p-6 border border-gray-100">
+        <div className="flex justify-between items-center mb-6">
+          <div className="space-y-1">
+            <h1 className="text-2xl font-bold text-gray-900">
+              {employee.firstName} {employee.secondName}
+            </h1>
+            <p className="text-sm text-gray-500">Employee ID: {employee.id}</p>
+          </div>
+          <Link
+            href={`/employee/internal/${employee.id}/edit`}
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-blue-50 hover:bg-blue-100 transition-colors"
+            scroll={false}
+          >
+            <PencilIcon className="w-4 h-4 text-blue-600" />
+            
+          </Link>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-1 gap-6">
+          <div className="flex items-start gap-3">
+            <div className="p-2 bg-blue-50 rounded-lg">
+              <Building2 className="w-5 h-5 text-blue-600" />
+            </div>
+            <div>
+              <p className="text-sm font-medium text-gray-500">Current Status</p>
+              <p className="text-base font-semibold text-gray-900">Active Employee</p>
+            </div>
+          </div>
+
+          <div className="flex items-start gap-3">
+            <div className="p-2 bg-green-50 rounded-lg">
+              <Phone className="w-5 h-5 text-green-600" />
+            </div>
+            <div>
+              <p className="text-sm font-medium text-gray-500">Contact</p>
+              <p className="text-base font-semibold text-gray-900">{employee.phoneNumber}</p>
+            </div>
+          </div>
+
+          <div className="flex items-start gap-3">
+            <div className="p-2 bg-purple-50 rounded-lg">
+              <Wallet2 className="w-5 h-5 text-purple-600" />
+            </div>
+            <div>
+              <p className="text-sm font-medium text-gray-500">{formatPaymentFrequency(employee.paymentFrequency)} Salary</p>
+              <p className="text-base font-semibold text-gray-900">
+                {new Intl.NumberFormat('en-US', { 
+                  style: 'currency', 
+                  currency: employee.currency 
+                }).format(employee.monthlyGross)}
+              </p>
+            </div>
+          </div>
+
+          <div className="flex items-start gap-3">
+            <div className="p-2 bg-amber-50 rounded-lg">
+              <CreditCard className="w-5 h-5 text-amber-600" />
+            </div>
+            <div>
+              <p className="text-sm font-medium text-gray-500">Payment Method</p>
+              <p className="text-base font-semibold text-gray-900">{employee.paymentMethod}</p>
+            </div>
+          </div>
+ 
+            
+            
+              <button className="font-medium text-white bg-red-700 w-full rounded-md hover:bg-red-500 py-2" onClick={()=>setShowDeletDialog(true)}>   
+                
+                Delete
+                </button>
+               
+           
+          
+        </div>
+      </div>
+
+      
+        <div className="w-full lg:w-2/3">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            
+          <div className="bg-white rounded-lg shadow-sm border border-gray-100 p-6">
+            <div className="flex justify-between items-center mb-6">
+              <div className="flex items-center gap-3">
+                <BadgeCheck className="w-5 h-5 text-blue-600" />
+                <h2 className="text-lg font-semibold text-gray-900">Benefits</h2>
+              </div>
+              <PrimaryButton 
+                onClick={() => setShowBenefits(!showBenefits)}
+                
+              >
+                     {!showBenefits ?  <Plus className="w-5 h-5" /> : isAddingBenefit ? <Loader className="w-4 h-4 animate-spin text-green" />:isDeletingBenefit ? <Loader className="w-4 h-4 animate-spin text-red" />: <MinusIcon className="w-5 h-5" />}
+              </PrimaryButton>
+            </div>
+        <div className="mb-4">
+          {showBenefits && (
+            <select className="w-full p-2 border border-primary-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" onChange={(e:React.ChangeEvent<HTMLSelectElement>)=>handleAddingBenefit(employee.id, e.target.value)}>
+              <option value="" disabled selected>Select Benefit</option>
+              {Object.values(BenefitName).map((eBenefit, index) => (
+                <option key={index} className={`text-gray-700 ${benefits.some((benefit)=>benefit.benefit==eBenefit) && "bg-gray-6"}`} disabled={benefits.some((benefit)=>benefit.benefit==eBenefit)}>{eBenefit}</option>
+              ))}
+            </select>
+          )}
+        </div>
+        {benefits.length > 0 ? (
+          <ul className="list-disc pl-5 text-gray-600">
+            {benefits.map((benefit, index) => (
+                 <div className="w-full flex justify-between gap-4 mb-6" key={index}>
+                  <li  className="mb-2 w-full overflow-x-hidden">{benefit.benefit}</li>
+                 <SecondaryButton
+                   variant="danger"
+                   onClick={() => handleDeletingBenefit(benefit.id, employee.id, benefit.benefit)}
+                   
+                 >
+                   <MinusIcon className="w-5 h-5" />
+                 </SecondaryButton>
+               </div>
+             
+            ))}
+          </ul>
+        ) : <span className="text-gray-500">No allowed Benefit Found</span>}
+      </div>
+
+      <div className="bg-white rounded-lg shadow-sm border border-gray-100 p-6">
+        <div className="flex justify-between items-center mb-6">
+          <div className="flex items-center gap-3">
+            <Wallet2 className="w-5 h-5 text-green-600" />
+            <h2 className="text-lg font-semibold text-gray-900">Additional Incomes</h2>
+          </div>
+          <Link
+            href={`/employee/internal/${employee.id}/additionals`}
+            scroll={false}
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-primary text-white 
+              hover:bg-primary-600 transition-all duration-200"
+          >
+           { isDeletingIncome ? <Loader className="w-4 h-4 animate-spin text-red" />:isChangingIncomeStatus? <Loader className="w-4 h-4 animate-spin text-orange "/>: <Plus className="w-5 h-5" />}
+          </Link>
+        </div>
+        <div>
+        { additionalIncomes.length > 0 ? (
+          <ul className="list-disc pl-5 text-gray-600">
+          {additionalIncomes.map((income, index) => (
+            <div className="w-full flex justify-between gap-4 mb-6" key={index}>
+         <li className="mb-4 p-4 bg-white rounded-lg shadow-md hover:shadow-lg transition-all duration-200 border border-gray-100"  key={index}>
+            <div className="flex flex-col space-y-3">
+              <div className="flex flex-wrap items-center justify-between gap-4">
+                <div className="flex flex-wrap items-center gap-3">
+                  <span className="font-semibold text-gray-800">{income.incomeType}</span>
+                  <span className="text-emerald-600 font-medium">
+                    {new Intl.NumberFormat('en-US', { style: 'currency', currency: employee.currency }).format(income.amount)}
+                  </span>
+                  <span className="text-gray-600 text-sm">
+                    {new Date(income.createdAt).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}
+                  </span>
+                </div>
+
+                <div className="flex flex-wrap items-center ju gap-3">
+                  <span className={`px-3 py-1 rounded-full text-sm font-medium ${
+                    income.paymentStatus === PaymentStatus.Paid
+                      ? 'bg-emerald-50 text-emerald-700'
+                      : income.paymentStatus === PaymentStatus.Pending
+                      ? 'bg-amber-50 text-amber-700'
+                      : 'bg-red-50 text-red-700'
+                  }`}>
+                    {income.paymentStatus}
+                  </span>
+                  
+                 <div className='p-5'>
+                 {income.paymentStatus === PaymentStatus.Pending && (
+                    <SecondaryButton
+                      variant="danger"
+                      onClick={() => handleChanngeIncomeStatus(income.id, employee.id, PaymentStatus.Cancelled)}
+                      
+                    >
+                      Cancel
+                    </SecondaryButton>
+                  )}
+                   {(income.paymentStatus == PaymentStatus.Cancelled) && (
+                    <SecondaryButton
+                      onClick={() => handleChanngeIncomeStatus(income.id, employee.id, PaymentStatus.Pending)}
+                     
+                    >
+                      Pending
+                    </SecondaryButton>
+                  )}
+                  {(income.paymentStatus !== PaymentStatus.Paid && income.paymentStatus !== PaymentStatus.Cancelled) && (
+                    <PrimaryButton
+                      onClick={() => handleChanngeIncomeStatus(income.id, employee.id, PaymentStatus.Paid)}
+                     
+                    >
+                      Pay
+                    </PrimaryButton>
+                  )}
+
+                  
+                  <SecondaryButton
+                    variant="danger"
+                    onClick={() => handleDeletingIncome(income.id, employee.id)}
+                     
+                    className="!p-2"
+                  >
+                    <MinusIcon className="w-5 h-5" />
+                  </SecondaryButton>
+                 </div>
+                </div>
+              </div>
+
+              {income.description && (
+                <div className="text-gray-500 text-sm italic border-t border-gray-100 pt-2">
+                  {income.description}
+                </div>
+              )}
+            </div>
+          </li>
+         </div>
+          
+          ))}
+        </ul>
+        
+        ) : <span className="text-gray-500">No additional income Found</span>}
+        </div>
+      </div>
+
+          
+          <div className="bg-white rounded-lg shadow-sm border border-gray-100 p-6">
+           
+            <div className="flex justify-between items-center mb-6">
+              <div className="flex items-center gap-3">
+                <BadgeCheck className="w-5 h-5 text-blue-600" />
+                <h2 className="text-lg font-semibold text-gray-900">RRA Taxes</h2>
+              </div>
+              <button
+                onClick={() => setShowTaxes(!showTaxes)}
+                className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-primary text-white 
+                  hover:bg-primary-600 transition-all duration-200"
+              >
+               
+                {!showTaxes ?  <Plus className="w-5 h-5" /> : isAddingTax ? <Loader className="w-4 h-4 animate-spin text-green" />:isDeletingTax ? <Loader className="w-4 h-4 animate-spin text-red" />: <MinusIcon className="w-5 h-5" />}
+              </button>
+            </div>
+        <div className="mb-4">
+          {showTaxes && (
+            <select 
+              className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" 
+              onChange={(e:React.ChangeEvent<HTMLSelectElement>)=>handleAddingTax(employee.id, e.target.value)}
+            >
+              <option value="" disabled selected>Select Tax</option>
+              {AllTaxes.map((tax, index) => {
+                const disabled = taxes.some(etax => etax.taxId === tax.id)
+                return (
+                  <option 
+                    key={index} 
+                    className={`text-gray-700 ${disabled && "bg-gray-100"}`} 
+                    value={tax.id} 
+                    disabled={disabled}
+                  >
+                    {tax.name}
+                  </option>
+                )
+              })}
+            </select>
+          )}
+        </div>
+        {taxes.length > 0 ? (
+          <ul className="space-y-4">
+            {taxes.map((tax, index) => (
+              <li 
+                key={index}
+                className="flex items-center justify-between p-4 bg-white rounded-lg shadow-sm border border-gray-100"
+              >
+                <span className="font-medium text-gray-900">
+                  {AllTaxes.find((Atax) => Atax.id === tax.taxId)?.name || "Unknown Tax"}
+                </span>
+                <SecondaryButton
+                  variant="danger"
+                  onClick={() => handleDeletingTax(tax.id, employee.id)}
+                  className="!p-2"
+                >
+                  <MinusIcon className="w-5 h-5" />
+                </SecondaryButton>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <span className="text-gray-500">No assigned Taxes Found</span>
+        )}
+      </div>
+
+           
+            <div className="bg-white rounded-lg shadow-sm border border-gray-100 p-6">
+        <div className="flex justify-between items-center mb-6">
+          <div className="flex items-center gap-3">
+            <BookHeartIcon className="w-5 h-5 text-blue-600" />
+            <h2 className="text-lg font-semibold text-gray-900">RSSB Contributions</h2>
+          </div>
+          <button
+            onClick={() => setShowContributions(!showContributions)}
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-primary text-white 
+              hover:bg-primary-600 transition-all duration-200"
+          >
+                 {!showContributions ?  <Plus className="w-5 h-5" /> : isAddingContribution ? <Loader className="w-4 h-4 animate-spin text-green" />:isDeletingContribution ? <Loader className="w-4 h-4 animate-spin text-red" />: <MinusIcon className="w-5 h-5" />}
+          </button>
+        </div>
+        <div className="mb-4">
+          {showContributions && (
+            <select 
+              className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" 
+              onChange={(e:React.ChangeEvent<HTMLSelectElement>)=>handleAddingContribution(employee.id, e.target.value)}
+            >
+              <option value="" disabled selected>Select Contribution</option>
+              {AllContributions.map((contribution, index) => {
+                const disabled = contributions.some(eContribution => eContribution.contributionId === contribution.id)
+                return (
+                  <option 
+                    key={index} 
+                    className={`text-gray-700 ${disabled && "bg-gray-100"}`} 
+                    value={contribution.id} 
+                    disabled={disabled}
+                  >
+                    {contribution.name}
+                  </option>
+                )
+              })}
+            </select>
+          )}
+        </div>
+        {contributions.length > 0 ? (
+          <ul className="space-y-4">
+            {contributions.map((contribution, index) => (
+              <li 
+                key={index}
+                className="flex items-center justify-between p-4 bg-white rounded-lg shadow-sm border border-gray-100"
+              >
+                <span className="font-medium text-gray-900">
+                  {AllContributions.find((AContribution) => AContribution.id === contribution.contributionId)?.name || "Unknown Contribution"}
+                </span>
+                <SecondaryButton
+                  variant="danger"
+                  onClick={() => handleDeletingContribution(contribution.id, employee.id)}
+                  className="!p-2"
+                >
+                  <MinusIcon className="w-5 h-5" />
+                </SecondaryButton>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <span className="text-gray-500">No assigned Contributions Found</span>
+        )}
+      </div>
+      <div className="bg-white rounded-lg shadow-sm border border-gray-100 p-6">
+        <div className="flex justify-between items-center mb-6">
+          <div className="flex items-center gap-3">
+            <Wallet2 className="w-5 h-5 text-red-600" />
+            <h2 className="text-lg font-semibold text-gray-900">Deductions</h2>
+          </div>
+          <Link
+            href={`/employee/internal/${employee.id}/deduction`}
+            scroll={false}
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-primary text-white 
+              hover:bg-primary-600 transition-all duration-200"
+          >
+           
+                  {isAddingDeduction? <Loader className="w-4 h-4 animate-spin text-green" />:isDeletingDeduction ? <Loader className="w-4 h-4 animate-spin text-red" />:isChangingDeductionStatus? <Loader className="w-4 h-4 animate-spin text-orange "/>: <Plus className="w-5 h-5" />}
+          </Link>
+        </div>
+        <div>
+        { deductions.length > 0 ? (
+          <ul className="list-disc pl-5 text-gray-600">
+          {deductions.map((deduction, index) => (
+            <div className="w-full flex justify-between gap-4 mb-6" key={index} >
+         <li className="mb-4 p-4 bg-white rounded-lg shadow-md hover:shadow-lg transition-all duration-200 border border-gray-100">
+            <div className="flex flex-col space-y-3">
+              <div className="flex flex-wrap items-center justify-between gap-4">
+                <div className="flex flex-wrap items-center gap-3">
+                  <span className="text-red-600 font-medium">
+                    {new Intl.NumberFormat('en-US', { style: 'currency', currency: employee.currency }).format(deduction.amount)}
+                  </span>
+                  <span className="text-gray-600 text-sm">
+                  {new Date(deduction.createdAt).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}
+                  </span>
+                </div>
+
+                <div className="flex flex-wrap items-center ju gap-3">
+                  <span className={`px-3 py-1 rounded-full text-sm font-medium ${
+                    deduction.status === PaymentStatus.Paid
+                      ? 'bg-emerald-50 text-emerald-700'
+                      : deduction.status === PaymentStatus.Pending
+                      ? 'bg-amber-50 text-amber-700'
+                      : 'bg-red-50 text-red-700'
+                  }`}>
+                    {deduction.status}
+                  </span>
+                  
+                 <div className='p-5'>
+                 {deduction.status === PaymentStatus.Pending && (
+                    <SecondaryButton
+                      variant="danger"
+                      onClick={() => handleChanngeDeductionStatus(deduction.id, employee.id, PaymentStatus.Cancelled)}
+                      
+                    >
+                      Cancel
+                    </SecondaryButton>
+                  )}
+                   {(deduction.status == PaymentStatus.Cancelled) && (
+                    <SecondaryButton
+                      onClick={() => handleChanngeDeductionStatus(deduction.id, employee.id, PaymentStatus.Pending)}
+                      
+                    >
+                      Pending
+                    </SecondaryButton>
+                  )}
+                  {(deduction.status !== PaymentStatus.Paid && deduction.status !== PaymentStatus.Cancelled) && (
+                    <PrimaryButton
+                      onClick={() => handleChanngeDeductionStatus(deduction.id, employee.id, PaymentStatus.Paid)}
+                      
+                    >
+                      Pay
+                    </PrimaryButton>
+                  )}
+
+                  
+                  <SecondaryButton
+                    variant="danger"
+                    onClick={() => handleDeletingDeduction(deduction.id, employee.id)}
+                    className="!p-2"
+                  >
+                    <MinusIcon className="w-5 h-5" />
+                  </SecondaryButton>
+                 </div>
+                </div>
+              </div>
+
+              {deduction.reason && (
+                <div className="text-gray-500 text-sm italic border-t border-gray-100 pt-2">
+                  {deduction.reason}
+                </div>
+              )}
+            </div>
+          </li>
+         </div>
+          
+          ))}
+        </ul>
+        
+        ) : <span className="text-gray-500">No Deductions Found</span>}
+        </div>
+       
+      </div>
+          </div>
+        </div>
+      </div>
+
+
+
+      <Dialog
+      open={ showDeleteDialog}
+      onClose={ ()=>setShowDeletDialog(false)}  
+      className="relative z-50"
+    >
+       <DialogBackdrop
+        transition
+        className="fixed inset-0 bg-gray-500/75 transition-opacity data-closed:opacity-0 data-enter:duration-300 data-enter:ease-out data-leave:duration-200 data-leave:ease-in"
+      />
+
+<div className="fixed inset-0 z-10 w-screen overflow-y-auto">
+<div className="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
+      <DialogPanel
+            transition
+            className="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all data-closed:translate-y-4 data-closed:opacity-0 data-enter:duration-300 data-enter:ease-out data-leave:duration-200 data-leave:ease-in sm:my-8 sm:w-full sm:max-w-lg data-closed:sm:translate-y-0 data-closed:sm:scale-95"
+          >
+         <div className="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+              <div className="sm:flex sm:items-start">
+                <div className="mx-auto flex size-12 shrink-0 items-center justify-center rounded-full bg-red-100 sm:mx-0 sm:size-10">
+                  <AlertCircle aria-hidden="true" className="size-6 text-white bg-red-700" />
+                </div>
+                <div className="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
+                  <DialogTitle as="h3" className="text-base font-semibold text-gray-900">
+                    Delete employee account ({employee.firstName})
+                  </DialogTitle>
+                  <div className="mt-2">
+                    <p className="text-sm text-gray-500">
+                      Are you sure you want to delete this employee account? All of the data will be permanently removed.
+                      This action cannot be undone.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
+              <button
+                type="button"
+                disabled={isDeletingEmployee}
+                onClick={()=>handleDeleteEmployee(employee.id)}
+                className="inline-flex w-full justify-center rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-xs hover:bg-red-500 sm:ml-3 sm:w-auto"
+              >
+                 {isDeletingEmployee && <Loader2 className='animate-spin'/>} Delete
+              </button>
+              <button
+                type="button"
+                data-autofocus
+                onClick={() => setShowDeletDialog(false)}
+                className="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 ring-1 shadow-xs ring-gray-300 ring-inset hover:bg-gray-50 sm:mt-0 sm:w-auto"
+              >
+                Cancel
+              </button>
+            </div>
+          
+        </DialogPanel>
+      </div>
+</div>
+    </Dialog>
+    </div>
+  );
+}
+
+ 
+ 
+ 
+
+function PrimaryButton({ children, onClick, loading, className = "" }: { 
+  children: React.ReactNode, 
+  onClick?: () => void, 
+  loading?: boolean,
+  className?: string 
+}) {
+  return (
+    <button
+      onClick={onClick}
+      disabled={loading}
+      className={`inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-primary text-white 
+        hover:bg-primary-600 disabled:bg-primary-300 transition-all duration-200 
+        focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 ${className}`}
+    >
+      {loading && <Loader className="w-4 h-4 animate-spin" />}
+      {children}
+    </button>
+  );
+}
+
+function SecondaryButton({ children, onClick, loading, variant = "default", className = "" }: { 
+  children: React.ReactNode, 
+  onClick?: () => void, 
+  loading?: boolean,
+  variant?: "default" | "danger",
+  className?: string 
+}) {
+  const variants = {
+    default: "bg-gray-50 text-gray-700 hover:bg-gray-100",
+    danger: "bg-red-50 text-red-700 hover:bg-red-100"
+  };
+
+  return (
+    <button
+      onClick={onClick}
+      disabled={loading}
+      className={`inline-flex items-center gap-2 px-4 py-2 rounded-lg
+        ${variants[variant]} disabled:opacity-50 transition-all duration-200
+        focus:outline-none focus:ring-2 focus:ring-offset-2 ${className}`}
+    >
+      {loading && <Loader className="w-4 h-4 animate-spin" />}
+      {children}
+    </button>
+  );
+}
