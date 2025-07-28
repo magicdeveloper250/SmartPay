@@ -61,13 +61,7 @@ export async function getContractors(
       include: {
         appliedTaxes: {
           include: {
-            tax: {
-              select: {
-                id: true,
-                companyId: true,
-                name: true
-              }
-            }
+            tax: true
           }
         },
         benefits: true,
@@ -94,14 +88,14 @@ export async function getContractors(
     const processedContractors = contractors.map((contractor) => {
       const contractsWithTaxes = contractor.contractsTerms.map((contract) => {
         const totalTaxes = contractor.appliedTaxes.reduce((sum, appliedTax) => {
-          return sum + (appliedTax.tax ? contract.salary * 0.3 : 0);
+          return sum + (contract.salary * appliedTax.tax.rate);
         }, 0);
         const netSalary = contract.salary - totalTaxes;
         return {
           ...contract,
           taxes: contractor.appliedTaxes.map((appliedTax) => ({
             ...appliedTax.tax,
-            amount: appliedTax.tax ? contract.salary * 0.3: 0,
+            amount: contract.salary * appliedTax.tax.rate,
           })),
           totalTaxes: totalTaxes,
           netSalary: netSalary,

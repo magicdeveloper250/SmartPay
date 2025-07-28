@@ -211,7 +211,7 @@ const OTPInput: React.FC<OTPInputProps> = ({ length = 6,  identifier, callback }
       </div>
       
       <div className="mt-6 text-center text-gray-700 flex items-center justify-center gap-2">
-        It may take a minute to receive verification message. Haven&apos;t received it yet?{' '}
+        It may take a minute to receive verification message. Haven't received it yet?{' '}
         {timeLeft > 0 && (
           <div className="inline-flex items-center justify-center">
             <svg width="28" height="28" className="transform -rotate-90">

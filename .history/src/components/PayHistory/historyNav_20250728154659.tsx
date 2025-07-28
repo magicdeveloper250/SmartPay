@@ -49,7 +49,7 @@ export function HistoryNav() {
       params.set('type', PayrollType.MIXED);
       replace(`${pathname}?${params.toString()}`, { scroll: false });
     }
-  }, [pathname, searchParams, replace]);
+  }, [pathname]);
 
   return (
     <div className="flex flex-col gap-4 pb-3">

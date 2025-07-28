@@ -2,41 +2,40 @@ import { Suspense } from 'react'
 import SettingsForm from '@/components/Settings'
 import { getCompanySettings } from '@/actions/settingsActions'
 import { Skeleton } from '@/components/ui/skeleton'
+import Breadcrumb from '@/components/Breadcrumbs/Breadcrumb'
+import { SettingsFormValues } from '@/validations/settingsSchema'
 
 export default async function SettingsPage() {
-  const settings = await getCompanySettings()
+  const settings = await getCompanySettings() as SettingsFormValues | { error: string }
+  
 
-  // Check for PrismaErrorResponse (assuming it has a 'message' property)
-  if ('message' in settings) {
+  if ('error' in settings) {
     return (
       <div className="container max-w-4xl py-8">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold tracking-tight">Company Settings</h1>
+          <Breadcrumb pageName='settings'/>
           <p className="text-muted-foreground mt-2">
-            Manage your company&apos;s global settings and preferences
+            An error occurred while fetching settings. {settings.error}
           </p>
-        </div>
-        <div className="text-red-500">
-          Error: {String(settings.message)}
         </div>
       </div>
     )
   }
 
+
   return (
     <div className="container max-w-4xl py-8">
       <div className="mb-8">
-        <h1 className="text-3xl font-bold tracking-tight">Company Settings</h1>
+      <Breadcrumb pageName='settings'/>
         <p className="text-muted-foreground mt-2">
-          Manage your company&apos;s global settings and preferences
+          Manage your company's global settings and preferences
         </p>
+    
       </div>
+
       
       <Suspense fallback={<SettingsSkeleton />}>
-        {/* Only render SettingsForm if settings is not an error */}
-        {('message' in settings)
-          ? null
-          : <SettingsForm initialData={settings as Parameters<typeof SettingsForm>[0]['initialData']} />}
+        <SettingsForm initialData={settings} />
       </Suspense>
     </div>
   )

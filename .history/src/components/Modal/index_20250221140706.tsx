@@ -33,7 +33,7 @@ export  function Modal({
     } else {
       router.back( );
     }
-  },[router])
+  },[])
 
   useEffect(() => {
     const handleEscKey = (event: KeyboardEvent) => {

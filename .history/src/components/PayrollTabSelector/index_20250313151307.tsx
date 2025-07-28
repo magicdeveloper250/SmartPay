@@ -30,7 +30,7 @@ export default function PayrollTabSelector() {
       params.set('tab', "employees");
       replace(`${pathname}?${params.toString()}`, { scroll: false });
     }
-  }, [pathname, searchParams, replace]);
+  }, []);
   
   return (
     <div className="flex items-center justify-between border-b border-gray-200 dark:border-gray-700 pb-3">

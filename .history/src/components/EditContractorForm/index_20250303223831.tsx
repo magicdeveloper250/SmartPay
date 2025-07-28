@@ -63,7 +63,7 @@ export default function EditContractorForm({contractorId}:{contractorId:string})
  
 useEffect(()=>{
   getContractor()
-},[contractor])
+},[])
    
 useEffect(()=>{
   setValue("id", contractor?.id || "" ),

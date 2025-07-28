@@ -311,11 +311,8 @@ export default function ContractorDisplay({ contractor, benefits, taxes, contrac
             >
               <option value="" disabled selected>Select Tax</option>
               {AllTaxes.map((tax, index) => {
-                const min = (tax as any).min ?? 0;
-                const max = (tax as any).max ?? null;
-                const rate = (tax as any).rate ?? 0;
-                const disabled = contracts[0].salary < min ||
-                  (max !== null && contracts[0].salary > max) ||
+                const disabled = contracts[0].salary < tax.min ||
+                  (tax.max !== null && contracts[0].salary > tax.max) ||
                   taxes.some(etax => etax.taxId === tax.id)
                 return (
                   <option 
@@ -325,13 +322,13 @@ export default function ContractorDisplay({ contractor, benefits, taxes, contrac
                     disabled={disabled}
                   >
                     {tax.name} [
-                    {new Intl.NumberFormat('en-US', { style: 'currency', currency: contractor.currency }).format(min)}
+                    {new Intl.NumberFormat('en-US', { style: 'currency', currency: contractor.currency }).format(tax.min ?? 0)}
                     -
-                    {max !== null 
-                      ? new Intl.NumberFormat('en-US', { style: 'currency', currency: contractor.currency }).format(max) 
+                    {tax.max !== null 
+                      ? new Intl.NumberFormat('en-US', { style: 'currency', currency: contractor.currency }).format(tax.max) 
                       : "More"} 
                       =
-                    {` ${rate * 100}%`}]
+                    {` ${tax.rate * 100}%`}]
                   </option>
                 )
               })}

@@ -8,14 +8,10 @@ type PropsType = {
   className?: string;
 };
 
-import { PayrollTimeRange } from "@/types/payroll";
-
 export async function UsedDevices({
   timeFrame = "monthly",
   className,
 }: PropsType) {
-  // Convert string timeFrame to PayrollTimeRange if necessary
-  const defaultTimeFrame = timeFrame as PayrollTimeRange;
   const data = await getDevicesUsedData(timeFrame);
 
   return (
@@ -30,7 +26,7 @@ export async function UsedDevices({
           Used Devices
         </h2>
 
-        <PeriodPicker defaultValue={defaultTimeFrame} sectionKey="used_devices" />
+        <PeriodPicker defaultValue={timeFrame} sectionKey="used_devices" />
       </div>
 
       <div className="grid place-items-center">
